@@ -1,22 +1,77 @@
 "use client";
 
-import { BarChart, Code2, Globe, Layout, Search, Smartphone, Layers, Cpu, Users } from "lucide-react";
-import { motion } from "framer-motion";
+import { useState } from "react";
+import { 
+  Search, 
+  Settings, 
+  PieChart, 
+  Users, 
+  Zap, 
+  Compass, 
+  ArrowRight, 
+  X 
+} from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const services = [
-  { title: "Sistem Manajemen Terpadu", description: "Membangun fondasi digital yang mengintegrasikan seluruh operasional bisnis Anda secara presisi.", icon: <Layers size={24} /> },
-  { title: "Otomatisasi Proses Bisnis", description: "Mengurangi beban repetitif melalui teknologi cerdas agar Anda fokus pada pengambilan keputusan strategis.", icon: <Cpu size={24} /> },
-  { title: "Dashboard & Analitik Progres", description: "Visualisasi data yang jernih untuk memantau kesehatan bisnis dan merencanakan langkah pertumbuhan ke depan.", icon: <BarChart size={24} /> },
-  { title: "Pengembangan Software Khusus", description: "Solusi perangkat lunak yang dirancang unik mengikuti pola pikir dan kebutuhan spesifik pengusaha.", icon: <Code2 size={24} /> },
-  { title: "Pendampingan Transformasi", description: "Bukan sekadar instalasi tools, kami mendampingi tim Anda dalam mengadopsi budaya kerja berbasis data.", icon: <Users size={24} /> },
-  { title: "Optimasi Ekosistem Digital", description: "Menyelaraskan seluruh instrumen digital Anda agar bekerja secara harmonis dan efisien.", icon: <Globe size={24} /> },
+  { 
+    title: "Business Checkup 360", 
+    tagline: "Diagnosa Struktur", 
+    perumpamaan: "Digital MRI untuk memetakan kesehatan organ bisnis.", 
+    penjelasan: "Pembedahan alur operasional untuk menemukan sumbatan inefisiensi.",
+    icon: <Search size={24} /> 
+  },
+  { 
+    title: "Growth OS", 
+    tagline: "Integrasi Sistem", 
+    perumpamaan: "Sistem Autopilot agar bisnis melaju stabil tanpa harus memegang kemudi 24 jam.", 
+    penjelasan: "Membangun kemandirian operasional untuk kebebasan waktu Anda.",
+    icon: <Settings size={24} /> 
+  },
+  { 
+    title: "Founder Finance Clarity", 
+    tagline: "Arsitektur Keuangan", 
+    perumpamaan: "Cockpit Pesawat yang presisi—membuat setiap angka bicara tentang peluang.", 
+    penjelasan: "Dashboard intuitif untuk kejernihan pengambilan keputusan strategis.",
+    icon: <PieChart size={24} /> 
+  },
+  { 
+    title: "People & Culture Reset", 
+    tagline: "Penyelarasan Budaya", 
+    perumpamaan: "Menyelaraskan Detak Jantung Tim agar bergerak dalam satu harmoni.", 
+    penjelasan: "Membangun budaya ownership untuk meminimalisir drama internal.",
+    icon: <Users size={24} /> 
+  },
+  { 
+    title: "Market & Product Sprint", 
+    tagline: "Akselerasi Validasi", 
+    perumpamaan: "Lensa Teropong untuk memastikan produk mendarat tepat di titik keinginan pelanggan.", 
+    penjelasan: "Memangkas risiko kegagalan melalui validasi data pasar yang nyata.",
+    icon: <Zap size={24} /> 
+  },
+  { 
+    title: "Aksana Partner", 
+    tagline: "Elevasi Strategis", 
+    perumpamaan: "Navigator Ahli yang duduk di samping Anda menemani setiap tikungan tajam bisnis.", 
+    penjelasan: "Pendampingan rutin untuk memastikan strategi tereksekusi dengan benar.",
+    icon: <Compass size={24} /> 
+  },
 ];
 
 export default function LayananPage() {
+  const [selectedService, setSelectedService] = useState<typeof services[0] | null>(null);
+
+  const handleConsultation = (serviceName: string) => {
+    const message = `Halo Aksana, saya tertarik berdiskusi lebih lanjut mengenai layanan ${serviceName}.`;
+    const whatsappUrl = `https://wa.me/6281234567890?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, "_blank");
+    setSelectedService(null);
+  };
+
   return (
-    <div className="max-w-7xl mx-auto px-8 py-20 md:py-24 min-h-screen">
+    <div className="max-w-7xl mx-auto px-8 py-20 md:py-24 min-h-screen font-[family-name:var(--font-inter)]">
       <div className="max-w-3xl mb-24 space-y-6">
-        <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-slate-900 dark:text-slate-50 leading-tight">
+        <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-slate-900 dark:text-slate-50 leading-tight font-[family-name:var(--font-plus-jakarta)]">
           Solusi Terintegrasi untuk Bisnis yang <span className="text-slate-400 dark:text-slate-500 italic">Lebih Berdaya</span>
         </h1>
         <p className="text-slate-500 dark:text-slate-400 text-lg md:text-xl leading-relaxed font-medium">
@@ -30,20 +85,98 @@ export default function LayananPage() {
             key={index} 
             whileHover={{ y: -5 }}
             transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
-            className="group p-10 rounded-3xl bg-white/70 dark:bg-slate-900/40 aksana-glass shadow-sm space-y-6"
+            onClick={() => setSelectedService(service)}
+            className="group cursor-pointer p-10 rounded-[2rem] bg-white/70 dark:bg-slate-900/40 aksana-glass shadow-sm space-y-6 relative overflow-hidden"
           >
             <div className="w-14 h-14 rounded-2xl bg-slate-50 dark:bg-slate-800/50 flex items-center justify-center text-slate-500 group-hover:scale-110 group-hover:bg-slate-900 group-hover:text-slate-50 dark:group-hover:bg-slate-50 dark:group-hover:text-slate-900 transition-all duration-500">
               {service.icon}
             </div>
             <div className="space-y-3">
-              <h3 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-50">{service.title}</h3>
-              <p className="text-slate-500 dark:text-slate-400 leading-relaxed text-sm font-medium">
-                {service.description}
+              <p className="text-xs font-bold tracking-[0.2em] text-amber-600 dark:text-amber-400 uppercase font-[family-name:var(--font-plus-jakarta)]">
+                {service.tagline}
               </p>
+              <h3 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-50 font-[family-name:var(--font-plus-jakarta)]">
+                {service.title}
+              </h3>
+              <p className="text-slate-500 dark:text-slate-400 leading-relaxed text-sm font-medium">
+                {service.perumpamaan}
+              </p>
+            </div>
+            
+            <div className="pt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center gap-2 text-slate-900 dark:text-slate-50 font-bold text-xs tracking-wider">
+              LIHAT DETAIL <ArrowRight size={14} />
             </div>
           </motion.div>
         ))}
       </div>
+
+      <AnimatePresence>
+        {selectedService && (
+          <div className="fixed inset-0 flex items-center justify-center z-[60] p-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setSelectedService(null)}
+              className="fixed inset-0 bg-slate-950/60 backdrop-blur-xl"
+            />
+            
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="max-w-2xl w-[90%] bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 md:p-12 shadow-2xl relative z-10 overflow-hidden"
+            >
+              <button 
+                onClick={() => setSelectedService(null)}
+                className="absolute top-8 right-8 text-slate-400 hover:text-slate-900 dark:hover:text-slate-50 transition-colors"
+              >
+                <X size={24} />
+              </button>
+
+              <div className="space-y-8">
+                <div className="space-y-4">
+                  <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800/50 flex items-center justify-center text-slate-900 dark:text-slate-50">
+                    {selectedService.icon}
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold tracking-[0.2em] text-amber-600 dark:text-amber-400 uppercase font-[family-name:var(--font-plus-jakarta)] mb-1">
+                      {selectedService.tagline}
+                    </p>
+                    <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-slate-50 font-[family-name:var(--font-plus-jakarta)]">
+                      {selectedService.title}
+                    </h2>
+                  </div>
+                </div>
+
+                <div className="p-6 md:p-8 rounded-3xl bg-amber-50/50 dark:bg-amber-900/10 border border-amber-200/30 space-y-3">
+                  <p className="text-[10px] font-bold tracking-[0.3em] text-amber-600/70 dark:text-amber-400/70 uppercase">
+                    PERUMPAMAAN
+                  </p>
+                  <p className="text-lg md:text-xl text-slate-800 dark:text-slate-200 font-medium leading-relaxed italic">
+                    &ldquo;{selectedService.perumpamaan}&rdquo;
+                  </p>
+                </div>
+
+                <div className="space-y-4">
+                  <p className="text-slate-500 dark:text-slate-400 text-lg leading-relaxed font-medium">
+                    {selectedService.penjelasan}
+                  </p>
+                </div>
+
+                <motion.button 
+                  whileHover={{ scale: 1.01 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => handleConsultation(selectedService.title)}
+                  className="w-full bg-slate-900 dark:bg-slate-50 text-white dark:text-slate-900 py-5 rounded-2xl font-bold flex items-center justify-center gap-3 group hover:bg-slate-800 dark:hover:bg-slate-200 transition-all duration-300 cursor-pointer"
+                >
+                  Konsultasikan Masalah Ini <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                </motion.button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
