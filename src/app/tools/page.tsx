@@ -25,13 +25,15 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 
 // Import Kalkulator
-import CashflowCalculator from "@/components/tools/CashflowCalculator";
-import GrowthSimulator from "@/components/tools/GrowthSimulator";
-import SOPGenerator from "@/components/tools/SOPGenerator";
-import CacLtvCalculator from "@/components/tools/CacLtvCalculator";
-import FunnelSimulator from "@/components/tools/FunnelSimulator";
-import ProductionTargetSimulator from "@/components/tools/ProductionTargetSimulator";
-import L10Meeting from "@/components/tools/L10Meeting";
+import CashflowCalculator from "@/components/tools/cashflow-calculator";
+import GrowthSimulator from "@/components/tools/growth-simulator";
+import SOPGenerator from "@/components/tools/sop-generator";
+import CacLtvCalculator from "@/components/tools/cac-ltv-calculator";
+import FunnelSimulator from "@/components/tools/funnel-simulator";
+import ProductionTargetSimulator from "@/components/tools/production-target-simulator";
+import L10Meeting from "@/components/tools/l10-meeting";
+import PeopleAnalyzer from "@/components/tools/people-analyzer";
+import ToDoTracker from "@/components/tools/todo-tracker";
 
 const tools = [
   { name: "Cashflow Analysis", description: "Analisis arus kas untuk kesehatan finansial bisnis.", icon: <DollarSign size={24} />, status: "Active" },
@@ -41,8 +43,8 @@ const tools = [
   { name: "Funnel Simulator", description: "Simulasikan konversi funnel marketing Anda.", icon: <Filter size={24} />, status: "Active" },
   { name: "Production Target Simulator", description: "Hitung target produksi optimal perusahaan.", icon: <Target size={24} />, status: "Active" },
   { name: "Template L10 Meeting", description: "Struktur meeting mingguan yang efektif.", icon: <Users size={24} />, status: "Active" },
-  { name: "People Analyzer", description: "Evaluasi keselarasan tim dengan nilai budaya.", icon: <SearchCode size={24} />, status: "Pro" },
-  { name: "To-Do Tracker", description: "Pantau eksekusi tugas strategis tim.", icon: <CheckSquare size={24} />, status: "Pro" },
+  { name: "People Analyzer", description: "Evaluasi keselarasan tim dengan nilai budaya.", icon: <SearchCode size={24} />, status: "Active" },
+  { name: "To-Do Tracker", description: "Pantau eksekusi tugas strategis tim.", icon: <CheckSquare size={24} />, status: "Active" },
 ];
 
 export default function ToolsPage() {
@@ -343,6 +345,22 @@ export default function ToolsPage() {
                   user={user} 
                   initialData={savedToolData}
                   onSave={(data) => saveToolState("Template L10 Meeting", data)} 
+                  isSyncing={isSyncing} 
+                />
+              )}
+              {activeTool === "People Analyzer" && (
+                <PeopleAnalyzer 
+                  user={user} 
+                  initialData={savedToolData}
+                  onSave={(data) => saveToolState("People Analyzer", data)} 
+                  isSyncing={isSyncing} 
+                />
+              )}
+              {activeTool === "To-Do Tracker" && (
+                <ToDoTracker 
+                  user={user} 
+                  initialData={savedToolData}
+                  onSave={(data) => saveToolState("To-Do Tracker", data)} 
                   isSyncing={isSyncing} 
                 />
               )}

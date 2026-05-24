@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo, useEffect, useCallback } from "react";
+import React, { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import { 
   Filter, 
   Zap, 
@@ -12,7 +12,8 @@ import {
   CheckCircle2,
   RefreshCcw,
   BarChart3,
-  Info
+  Info,
+  Download
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -96,6 +97,32 @@ export default function FunnelSimulator({ user, onSave, isSyncing, initialData }
   });
 
   const [isSimulated, setIsSimulated] = useState<boolean>(false);
+  const [isExporting, setIsExporting] = useState<boolean>(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const exportToImage = async () => {
+    if (!containerRef.current) return;
+    setIsExporting(true);
+    try {
+      const domtoimage = (await import('dom-to-image-more')).default;
+      const dataUrl = await domtoimage.toPng(containerRef.current, {
+        quality: 1.0,
+        bgcolor: document.documentElement.classList.contains('dark') ? '#050505' : '#ffffff',
+        filter: (node) => {
+          // Abaikan tombol unduh saat capture
+          return (node as HTMLElement).getAttribute ? (node as HTMLElement).getAttribute('data-export-ignore') !== 'true' : true;
+        }
+      });
+      const link = document.createElement("a");
+      link.href = dataUrl;
+      link.download = `aksana-funnel-${profiling.industry}-${new Date().getTime()}.png`;
+      link.click();
+    } catch (err) {
+      console.error("Gagal export:", err);
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   // --- Syncing ---
   const [prevInitialData, setPrevInitialData] = useState<FunnelSimulatorInitialData | undefined>(initialData);
@@ -251,7 +278,7 @@ export default function FunnelSimulator({ user, onSave, isSyncing, initialData }
   };
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-700">
+    <div ref={containerRef} className="p-8 space-y-8 animate-in fade-in duration-700 bg-[var(--background)]">
       {/* HEADER & CONTROLS */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
@@ -259,6 +286,20 @@ export default function FunnelSimulator({ user, onSave, isSyncing, initialData }
           <p className="text-slate-500 font-medium">Simulasikan aliran trafik dan potensi revenue bisnis Anda.</p>
         </div>
         <div className="flex items-center gap-3">
+          <button
+            data-export-ignore="true"
+            onClick={exportToImage}
+            disabled={isExporting}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900 dark:bg-slate-50 text-slate-50 dark:text-slate-900 text-xs font-bold hover:opacity-90 transition-all disabled:opacity-50 shadow-lg"
+          >
+            {isExporting ? (
+              <RefreshCcw size={14} className="animate-spin" />
+            ) : (
+              <Download size={14} />
+            )}
+            {isExporting ? 'Exporting...' : 'Unduh PNG'}
+          </button>
+
           {isSyncing && (
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 text-xs font-bold">
               <RefreshCcw size={14} className="animate-spin" />
@@ -530,7 +571,7 @@ export default function FunnelSimulator({ user, onSave, isSyncing, initialData }
                 <div className="space-y-4">
                   <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Rekomendasi Strategis AI</p>
                   <p className="text-sm font-medium leading-relaxed text-slate-600 dark:text-slate-400 italic">
-                    "{diagnostic.recommendation}"
+                    &quot;{diagnostic.recommendation}&quot;
                   </p>
                 </div>
               </div>
