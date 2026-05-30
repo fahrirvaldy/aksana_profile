@@ -2,66 +2,524 @@
 
 import React, { useState, useMemo, useEffect, useRef } from "react";
 import { 
-  Clock, Play, Pause, RotateCcw, Settings, ChevronLeft, ChevronRight, 
-  Trash2, Plus, RefreshCw, CheckCircle2, Users, MessageSquare, 
-  FileText, X, Loader2, Trophy, Download 
+  Clock, 
+  Play, 
+  Pause, 
+  RotateCcw, 
+  Settings, 
+  ChevronLeft, 
+  ChevronRight, 
+  Trash2, 
+  Plus, 
+  RefreshCw, 
+  CheckCircle2,
+  Users,
+  MessageSquare,
+  FileText,
+  X,
+  Loader2,
+  Trophy,
+  Download
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { 
+  Document, 
+  Page, 
+  Text, 
+  View, 
+  StyleSheet, 
+  pdf
+} from "@react-pdf/renderer";
 
-export interface L10Config { companyName: string; divisions: string[]; rocks: string[]; }
-export interface KPI { kpi: string; target: string; realisasi: string; jenis: 'output' | 'outcome'; status: 'on' | 'off'; }
-export interface TodoItem { id: number; text: string; owner: string; isDone: boolean; }
-export interface L10Data {
-  config: L10Config; meetingDate: string; attendance: Record<number, boolean>;
-  goodNews: { owner: string; integrator: string; team: string };
-  scorecards: Record<string, KPI[]>; rocksStatus: Array<{ pic: string; status: 'on' | 'off'; notes: string }>;
-  headlines: { customer: string[]; internal: string[] }; todoList: TodoItem[];
-  idsSession: { manualIssues: string[]; notes: string; solutions: string }; ratings: Record<number, number>;
+// --- Interfaces ---
+export interface L10Config {
+  companyName: string;
+  divisions: string[];
+  rocks: string[];
 }
 
+export interface KPI {
+  kpi: string;
+  target: string;
+  realisasi: string;
+  jenis: 'output' | 'outcome';
+  status: 'on' | 'off';
+}
+
+export interface TodoItem {
+  id: number;
+  text: string;
+  owner: string;
+  isDone: boolean;
+}
+
+export interface IDSIssue {
+  id: string;
+  source: string;
+  text: string;
+  isResolved: boolean;
+}
+
+export interface L10Data {
+  config: L10Config;
+  meetingDate: string;
+  attendance: Record<number, boolean>;
+  goodNews: {
+    owner: string;
+    integrator: string;
+    team: string;
+  };
+  scorecards: Record<string, KPI[]>;
+  rocksStatus: Array<{ pic: string; status: 'on' | 'off'; notes: string }>;
+  headlines: {
+    customer: string[];
+    internal: string[];
+  };
+  todoList: TodoItem[];
+  idsSession: {
+    issues: IDSIssue[];
+    notes: string;
+    solutions: string;
+  };
+  ratings: Record<number, number>;
+}
+
+interface L10MeetingProps {
+  user?: { id: string; [key: string]: unknown };
+  onSave?: (data: L10Data) => void;
+  isSyncing?: boolean;
+  initialData?: L10Data;
+}
+
+// --- Default Data ---
 const DEFAULT_DATA: L10Data = {
-  config: { companyName: "Aksana Team", divisions: ["Marketing", "Operations", "Finance"], rocks: ["Target Sales Q2", "Riset Produk Baru"] },
+  config: {
+    companyName: "Aksana Business Lab",
+    divisions: ["Marketing", "Operations", "Finance"],
+    rocks: ["Target Sales Q2 >2M/bulan", "Riset 4 Produk Baru"]
+  },
   meetingDate: new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }),
-  attendance: {}, goodNews: { owner: "", integrator: "", team: "" },
-  scorecards: {}, rocksStatus: [], headlines: { customer: [""], internal: [""] },
-  todoList: [], idsSession: { manualIssues: [], notes: "", solutions: "" }, ratings: {}
+  attendance: {},
+  goodNews: { owner: "", integrator: "", team: "" },
+  scorecards: {},
+  rocksStatus: [],
+  headlines: { customer: [""], internal: [""] },
+  todoList: [],
+  idsSession: { issues: [], notes: "", solutions: "" },
+  ratings: {}
 };
 
-export default function L10Meeting({ onSave, isSyncing, initialData }: any) {
+// ============================================================================
+// 📄 ARCHITECTURE: @react-pdf/renderer Layout Definition Matrix
+// Optimized for OKLCH/LAB Color Fidelity (Hex Mapping)
+// ============================================================================
+const pdfStyles = StyleSheet.create({
+  page: { 
+    padding: 40, 
+    backgroundColor: "#fbfcfd", 
+    fontSize: 10, 
+    color: "#1e293b", 
+    fontFamily: "Helvetica" 
+  },
+  header: { 
+    borderBottom: "3pt solid #3b82f6", 
+    paddingBottom: 12, 
+    marginBottom: 24,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-end"
+  },
+  headerLeft: {
+    flex: 1
+  },
+  title: { 
+    fontSize: 22, 
+    fontWeight: "bold", 
+    color: "#0f172a", 
+    letterSpacing: -0.5
+  },
+  subtitle: { 
+    fontSize: 11, 
+    color: "#3b82f6", 
+    marginTop: 2, 
+    textTransform: "uppercase",
+    fontWeight: "bold",
+    letterSpacing: 1
+  },
+  metaDate: { 
+    fontSize: 9, 
+    color: "#64748b", 
+    marginTop: 4 
+  },
+  section: { 
+    marginBottom: 24, 
+    padding: 16, 
+    backgroundColor: "#ffffff", 
+    borderRadius: 12,
+    border: "1pt solid #e2e8f0"
+  },
+  sectionTitle: { 
+    fontSize: 13, 
+    fontWeight: "bold", 
+    marginBottom: 12, 
+    color: "#0f172a", 
+    borderBottom: "1pt solid #f1f5f9", 
+    paddingBottom: 6,
+    textTransform: "uppercase",
+    letterSpacing: 0.5
+  },
+  row: { 
+    flexDirection: "row", 
+    borderBottom: "1pt solid #f1f5f9", 
+    paddingVertical: 8, 
+    alignItems: "center" 
+  },
+  tableHeader: { 
+    flexDirection: "row", 
+    backgroundColor: "#f8fafc", 
+    padding: 8, 
+    borderRadius: 6,
+    marginBottom: 4
+  },
+  tableHeaderLabel: {
+    fontSize: 8,
+    fontWeight: "bold",
+    color: "#64748b",
+    textTransform: "uppercase",
+    letterSpacing: 0.5
+  },
+  cellCol1: { width: "35%", paddingHorizontal: 4 },
+  cellCol2: { width: "20%", paddingHorizontal: 4 },
+  cellCol3: { width: "15%", paddingHorizontal: 4 },
+  cellCol4: { width: "15%", paddingHorizontal: 4 },
+  cellCol5: { width: "15%", paddingHorizontal: 4 },
+  
+  badge: { 
+    paddingHorizontal: 8, 
+    paddingVertical: 3, 
+    borderRadius: 99, 
+    fontSize: 7, 
+    fontWeight: "bold", 
+    textAlign: "center",
+    textTransform: "uppercase"
+  },
+  badgeOn: { 
+    backgroundColor: "#dcfce7", 
+    color: "#15803d" 
+  },
+  badgeOff: { 
+    backgroundColor: "#fee2e2", 
+    color: "#b91c1c" 
+  },
+  badgeInfo: { 
+    backgroundColor: "#f3e8ff", 
+    color: "#7e22ce" 
+  },
+  
+  textBold: { fontWeight: "bold", color: "#334155" },
+  textArea: { 
+    marginTop: 8, 
+    padding: 10, 
+    backgroundColor: "#f8fafc", 
+    borderRadius: 8, 
+    minHeight: 50, 
+    fontSize: 9, 
+    lineHeight: 1.5,
+    color: "#475569",
+    border: "0.5pt solid #e2e8f0"
+  },
+  ratingCircle: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: "#3b82f6",
+    color: "#ffffff",
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  ratingValue: {
+    fontSize: 24,
+    fontWeight: "bold"
+  }
+});
+
+const L10PDFDocument = ({ data, attendees, averageRating }: { data: L10Data; attendees: string[]; averageRating: string }) => (
+  <Document author="Aksana L10 Engine" title={`L10 Report - ${data.config.companyName}`}>
+    {/* PAGE 1: EXECUTIVE SUMMARY */}
+    <Page size="A4" orientation="landscape" style={pdfStyles.page}>
+      <View style={pdfStyles.header}>
+        <View style={pdfStyles.headerLeft}>
+          <Text style={pdfStyles.title}>LEVEL 10 MEETING REPORT</Text>
+          <Text style={pdfStyles.subtitle}>{data.config.companyName}</Text>
+          <Text style={pdfStyles.metaDate}>Sesi Rapat: {data.meetingDate}</Text>
+        </View>
+        <View style={pdfStyles.ratingCircle}>
+          <Text style={pdfStyles.ratingValue}>{averageRating}</Text>
+          <Text style={{ fontSize: 6, fontWeight: "bold" }}>RATING</Text>
+        </View>
+      </View>
+
+      <View style={pdfStyles.section}>
+        <Text style={pdfStyles.sectionTitle}>Attendance & Team Pulse</Text>
+        <View style={{ flexDirection: "row", marginBottom: 16 }}>
+          <View style={{ flex: 1 }}>
+            <Text style={[pdfStyles.textBold, { marginBottom: 4 }]}>Peserta Hadir:</Text>
+            <Text style={{ color: "#64748b", fontSize: 9 }}>
+              {attendees.filter((_, idx) => data.attendance[idx]).join(", ") || "Tidak ada data kehadiran."}
+            </Text>
+          </View>
+        </View>
+        
+        <View style={{ flexDirection: "row", gap: 12 }}>
+          <View style={{ flex: 1 }}>
+            <Text style={pdfStyles.textBold}>Kabar Syukur (Owner):</Text>
+            <Text style={pdfStyles.textArea}>{data.goodNews.owner || "Tidak ada kabar syukur terekam."}</Text>
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={pdfStyles.textBold}>Kabar Syukur (Integrator):</Text>
+            <Text style={pdfStyles.textArea}>{data.goodNews.integrator || "Tidak ada kabar syukur terekam."}</Text>
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={pdfStyles.textBold}>Kabar Syukur (Team):</Text>
+            <Text style={pdfStyles.textArea}>{data.goodNews.team || "Tidak ada kabar syukur terekam."}</Text>
+          </View>
+        </View>
+      </View>
+
+      <View style={{ flexDirection: "row", gap: 12 }}>
+        <View style={[pdfStyles.section, { flex: 1 }]}>
+          <Text style={pdfStyles.sectionTitle}>Customer Headlines</Text>
+          {(data.headlines.customer || []).filter(h => h.trim()).length > 0 ? (
+            data.headlines.customer.map((h, idx) => h.trim() && (
+              <Text key={idx} style={{ paddingVertical: 4, fontSize: 9, color: "#475569" }}>• {h}</Text>
+            ))
+          ) : (
+            <Text style={{ fontSize: 9, color: "#94a3b8", italic: true }}>Tidak ada headline pelanggan.</Text>
+          )}
+        </View>
+        <View style={[pdfStyles.section, { flex: 1 }]}>
+          <Text style={pdfStyles.sectionTitle}>Internal Headlines</Text>
+          {(data.headlines.internal || []).filter(h => h.trim()).length > 0 ? (
+            data.headlines.internal.map((h, idx) => h.trim() && (
+              <Text key={idx} style={{ paddingVertical: 4, fontSize: 9, color: "#475569" }}>• {h}</Text>
+            ))
+          ) : (
+            <Text style={{ fontSize: 9, color: "#94a3b8", italic: true }}>Tidak ada headline internal.</Text>
+          )}
+        </View>
+      </View>
+    </Page>
+
+    {/* PAGE 2: KPI SCORECARDS */}
+    <Page size="A4" orientation="landscape" style={pdfStyles.page}>
+      <View style={pdfStyles.header}>
+        <View style={pdfStyles.headerLeft}>
+          <Text style={pdfStyles.title}>KPI SCORECARDS METRICS</Text>
+          <Text style={pdfStyles.subtitle}>Weekly Operational Performance</Text>
+        </View>
+      </View>
+
+      {data.config.divisions.map((division) => {
+        const divId = division.toLowerCase().replace(/[^a-z0-9]/g, '-');
+        const kpis = data.scorecards[divId] || [];
+        return (
+          <View key={division} style={pdfStyles.section} wrap={false}>
+            <Text style={pdfStyles.sectionTitle}>Divisi: {division}</Text>
+            <View style={pdfStyles.tableHeader}>
+              <View style={pdfStyles.cellCol1}><Text style={pdfStyles.tableHeaderLabel}>KPI Metric</Text></View>
+              <View style={pdfStyles.cellCol2}><Text style={pdfStyles.tableHeaderLabel}>Target</Text></View>
+              <View style={pdfStyles.cellCol3}><Text style={pdfStyles.tableHeaderLabel}>Realisasi</Text></View>
+              <View style={pdfStyles.cellCol4}><Text style={pdfStyles.tableHeaderLabel}>Jenis</Text></View>
+              <View style={pdfStyles.cellCol5}><Text style={pdfStyles.tableHeaderLabel}>Status</Text></View>
+            </View>
+            {kpis.length === 0 ? (
+              <Text style={{ padding: 10, color: "#94a3b8", italic: true, fontSize: 9 }}>Tidak ada data KPI untuk divisi ini.</Text>
+            ) : (
+              kpis.map((k, idx) => (
+                <View key={idx} style={pdfStyles.row}>
+                  <View style={pdfStyles.cellCol1}><Text style={{ fontWeight: "bold" }}>{k.kpi}</Text></View>
+                  <View style={pdfStyles.cellCol2}><Text>{k.target}</Text></View>
+                  <View style={pdfStyles.cellCol3}><Text style={{ color: "#3b82f6", fontWeight: "bold" }}>{k.realisasi}</Text></View>
+                  <View style={pdfStyles.cellCol4}><Text style={{ textTransform: "uppercase", fontSize: 8 }}>{k.jenis}</Text></View>
+                  <View style={pdfStyles.cellCol5}>
+                    <Text style={[pdfStyles.badge, k.status === 'on' ? pdfStyles.badgeOn : pdfStyles.badgeOff]}>
+                      {k.status === 'on' ? "ON TRACK" : "OFF TRACK"}
+                    </Text>
+                  </View>
+                </View>
+              ))
+            )}
+          </View>
+        );
+      })}
+    </Page>
+
+    {/* PAGE 3: ROCKS & ACTION ITEMS */}
+    <Page size="A4" orientation="landscape" style={pdfStyles.page}>
+      <View style={pdfStyles.header}>
+        <View style={pdfStyles.headerLeft}>
+          <Text style={pdfStyles.title}>STRATEGIC ROCKS & TO-DO LIST</Text>
+          <Text style={pdfStyles.subtitle}>90-Day Priorities & Accountability</Text>
+        </View>
+      </View>
+
+      <View style={pdfStyles.section}>
+        <Text style={pdfStyles.sectionTitle}>Rock Review (Prioritas 90 Hari)</Text>
+        <View style={pdfStyles.tableHeader}>
+          <View style={{ width: "20%" }}><Text style={pdfStyles.tableHeaderLabel}>PIC</Text></View>
+          <View style={{ width: "45%" }}><Text style={pdfStyles.tableHeaderLabel}>Rock Description</Text></View>
+          <View style={{ width: "15%" }}><Text style={pdfStyles.tableHeaderLabel}>Status</Text></View>
+          <View style={{ width: "20%" }}><Text style={pdfStyles.tableHeaderLabel}>Notes</Text></View>
+        </View>
+        {data.config.rocks.map((rock, i) => {
+          const status = data.rocksStatus[i] || { pic: "-", status: "on", notes: "-" };
+          return (
+            <View key={i} style={pdfStyles.row}>
+              <View style={{ width: "20%" }}><Text style={{ fontWeight: "bold" }}>{status.pic || "Unassigned"}</Text></View>
+              <View style={{ width: "45%" }}><Text>{rock || "No description provided."}</Text></View>
+              <View style={{ width: "15%" }}>
+                <Text style={[pdfStyles.badge, status.status === 'on' ? pdfStyles.badgeOn : pdfStyles.badgeOff]}>
+                  {status.status === 'on' ? "ON TRACK" : "OFF TRACK"}
+                </Text>
+              </View>
+              <View style={{ width: "20%" }}><Text style={{ fontSize: 8, color: "#64748b" }}>{status.notes || "-"}</Text></View>
+            </View>
+          );
+        })}
+      </View>
+
+      <View style={pdfStyles.section}>
+        <Text style={pdfStyles.sectionTitle}>To-Do List (Review Akuntabilitas)</Text>
+        <View style={pdfStyles.tableHeader}>
+          <View style={{ width: "12%" }}><Text style={pdfStyles.tableHeaderLabel}>Status</Text></View>
+          <View style={{ width: "63%" }}><Text style={pdfStyles.tableHeaderLabel}>Tugas / Action Item</Text></View>
+          <View style={{ width: "25%" }}><Text style={pdfStyles.tableHeaderLabel}>Owner</Text></View>
+        </View>
+        {data.todoList.length === 0 ? (
+          <Text style={{ padding: 10, color: "#94a3b8", italic: true, fontSize: 9 }}>Tidak ada tugas yang terekam.</Text>
+        ) : (
+          data.todoList.map((todo) => (
+            <View key={todo.id} style={pdfStyles.row}>
+              <View style={{ width: "12%" }}>
+                <Text style={[pdfStyles.badge, todo.isDone ? pdfStyles.badgeOn : pdfStyles.badgeOff]}>
+                  {todo.isDone ? "DONE" : "PENDING"}
+                </Text>
+              </View>
+              <View style={{ width: "63%" }}>
+                <Text style={{ color: todo.isDone ? "#94a3b8" : "#1e293b", textDecoration: todo.isDone ? "line-through" : "none" }}>
+                  {todo.text}
+                </Text>
+              </View>
+              <View style={{ width: "25%" }}><Text style={{ fontWeight: "bold", color: "#3b82f6" }}>{todo.owner}</Text></View>
+            </View>
+          ))
+        )}
+      </View>
+    </Page>
+
+    {/* PAGE 4: IDS RESOLUTIONS */}
+    <Page size="A4" orientation="landscape" style={pdfStyles.page}>
+      <View style={pdfStyles.header}>
+        <View style={pdfStyles.headerLeft}>
+          <Text style={pdfStyles.title}>IDS SESSION RESOLUTIONS</Text>
+          <Text style={pdfStyles.subtitle}>Identify, Discuss, Solve</Text>
+        </View>
+      </View>
+
+      <View style={{ flexDirection: "row", gap: 16, height: "100%" }}>
+        <View style={{ flex: 1 }}>
+          <View style={pdfStyles.section}>
+            <Text style={pdfStyles.sectionTitle}>1. Issues Identified</Text>
+            {(data.idsSession?.issues || []).map((issue) => (
+              <View key={issue.id} style={{ marginBottom: 6, flexDirection: "row", alignItems: "flex-start" }}>
+                <Text style={{ width: 15, fontSize: 8, color: "#3b82f6", fontWeight: "bold" }}>{issue.isResolved ? "✓" : "•"}</Text>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 9, fontWeight: "bold", color: "#64748b", textTransform: "uppercase", marginBottom: 1 }}>[{issue.source}]</Text>
+                  <Text style={{ fontSize: 10, color: issue.isResolved ? "#94a3b8" : "#1e293b" }}>{issue.text}</Text>
+                </View>
+              </View>
+            ))}
+          </View>
+        </View>
+
+        <View style={{ flex: 1.5 }}>
+          <View style={pdfStyles.section}>
+            <Text style={pdfStyles.sectionTitle}>2. Discussion Notes</Text>
+            <Text style={[pdfStyles.textArea, { minHeight: 120 }]}>{data.idsSession.notes || "Tidak ada catatan diskusi khusus."}</Text>
+          </View>
+          <View style={pdfStyles.section}>
+            <Text style={pdfStyles.sectionTitle}>3. Solutions & Execution</Text>
+            <Text style={[pdfStyles.textArea, { minHeight: 120, borderLeft: "4pt solid #7e22ce", backgroundColor: "#faf5ff" }]}>
+              {data.idsSession.solutions || "Tidak ada item solusi yang dihasilkan."}
+            </Text>
+          </View>
+        </View>
+      </View>
+    </Page>
+  </Document>
+);
+
+// ============================================================================
+// 📊 Main Component View Layer Engine
+// ============================================================================
+export default function L10Meeting({ onSave, isSyncing, initialData }: L10MeetingProps) {
+  // Move getAttendees inside component scope
+  const getAttendees = () => [
+    "Owner",
+    "Integrator",
+    "Marketing",
+    "Operations",
+    "Finance",
+    "Product",
+    "Sales",
+    "Customer Success",
+    "Human Resources"
+  ];
+
   const [data, setData] = useState<L10Data>(initialData || DEFAULT_DATA);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [showSetup, setShowSetup] = useState(!initialData);
-  const [timeLeft, setTimeLeft] = useState(5400);
-  const [isTimerRunning, setIsTimerRunning] = useState(false);
-  const [endTime, setEndTime] = useState<number | null>(null);
-  const [isExporting, setIsExporting] = useState(false);
   
-  const pdfContainerRef = useRef<HTMLDivElement>(null);
+  const [timeLeft, setTimeLeft] = useState(5400); // 90 minutes
+  const [isTimerRunning, setIsTimerRunning] = useState(false);
+  const timerEndTimeRef = useRef<number | null>(null);
 
+  const [isExporting, setIsExporting] = useState(false);
+
+  // Sync data with parent component
   useEffect(() => {
-    const timer = setTimeout(() => { if (onSave) onSave(data); }, 1500);
+    const timer = setTimeout(() => {
+      if (onSave) onSave(data);
+    }, 1500);
     return () => clearTimeout(timer);
   }, [data, onSave]);
 
+  // Timer logic
   useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (isTimerRunning && endTime !== null) {
-      interval = setInterval(() => {
-        const remaining = Math.max(0, Math.floor((endTime - Date.now()) / 1000));
-        setTimeLeft(remaining);
-        if (remaining <= 0) { setIsTimerRunning(false); setEndTime(null); }
-      }, 1000);
+    let intervalId: NodeJS.Timeout;
+    if (isTimerRunning) {
+      timerEndTimeRef.current = Date.now() + timeLeft * 1000;
+      intervalId = setInterval(() => {
+        if (timerEndTimeRef.current) {
+          const remainingMs = timerEndTimeRef.current - Date.now();
+          if (remainingMs <= 0) {
+            setTimeLeft(0);
+            setIsTimerRunning(false);
+            clearInterval(intervalId);
+          } else {
+            setTimeLeft(Math.ceil(remainingMs / 1000));
+          }
+        }
+      }, 250);
     }
-    return () => clearInterval(interval);
-  }, [isTimerRunning, endTime]);
+    return () => { if (intervalId) clearInterval(intervalId); };
+  }, [isTimerRunning]);
 
-  const toggleTimer = () => {
-    if (isTimerRunning) { setIsTimerRunning(false); setEndTime(null); } 
-    else { setIsTimerRunning(true); setEndTime(Date.now() + timeLeft * 1000); }
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
-
-  const resetTimer = () => { setIsTimerRunning(false); setEndTime(null); setTimeLeft(5400); };
-  const formatTime = (sec: number) => `${Math.floor(sec / 60).toString().padStart(2, '0')}:${(sec % 60).toString().padStart(2, '0')}`;
 
   const totalSlides = 7 + data.config.divisions.length;
   const nextSlide = () => setCurrentSlide(prev => Math.min(prev + 1, totalSlides - 1));
@@ -69,189 +527,314 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: any) {
 
   const updateData = (path: string, value: any) => {
     setData(prev => {
-      const newData = JSON.parse(JSON.stringify(prev));
+      const newData = { ...prev };
       const keys = path.split('.');
-      let current = newData;
-      for (let i = 0; i < keys.length - 1; i++) current = current[keys[i]];
+      let current: any = newData;
+      for (let i = 0; i < keys.length - 1; i++) { 
+        if (!current[keys[i]]) current[keys[i]] = {};
+        current = current[keys[i]]; 
+      }
       current[keys[keys.length - 1]] = value;
       return newData;
     });
   };
 
-  const getAttendees = () => ["Owner", "Integrator", ...data.config.divisions, "Moderator"];
+  const attendees = useMemo(() => getAttendees(), []);
 
   const averageRating = useMemo(() => {
-    const ratings = Object.entries(data.ratings).filter(([idx]) => data.attendance[parseInt(idx)]).map(([, val]) => val);
+    const ratings = Object.entries(data.ratings)
+      .filter(([idx]) => data.attendance[parseInt(idx)])
+      .map(([, val]) => val);
     if (ratings.length === 0) return "0.0";
     return (ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(1);
   }, [data.ratings, data.attendance]);
 
   const pullOffTrackData = () => {
-    const issues: string[] = [];
-    Object.entries(data.scorecards).forEach(([div, kpis]) => { kpis.forEach(k => { if (k.status === 'off') issues.push(`[${div}] ${k.kpi}`); }); });
-    data.rocksStatus.forEach((r, i) => { if (r.status === 'off') issues.push(`[Rock] ${data.config.rocks[i]}`); });
-    updateData('idsSession.manualIssues', [...data.idsSession.manualIssues, ...issues]);
+    const issuesList = data.idsSession?.issues || [];
+    const existingTexts = new Set(issuesList.map(i => i.text.toLowerCase()));
+    const newIssues: IDSIssue[] = [];
+
+    // Pull from Scorecards
+    Object.entries(data.scorecards).forEach(([div, kpis]) => {
+      kpis.forEach(k => {
+        if (k.status === 'off' && !existingTexts.has(k.kpi.toLowerCase())) {
+          newIssues.push({
+            id: `sc-${div}-${Date.now()}-${Math.random()}`,
+            source: div.toUpperCase(),
+            text: k.kpi,
+            isResolved: false
+          });
+        }
+      });
+    });
+
+    // Pull from Rocks
+    data.rocksStatus.forEach((r, i) => {
+      const rockText = data.config.rocks[i];
+      if (r.status === 'off' && rockText && !existingTexts.has(rockText.toLowerCase())) {
+        const picLabel = r.pic ? `ROCK - ${r.pic.toUpperCase()}` : "ROCK";
+        newIssues.push({
+          id: `rock-${i}-${Date.now()}-${Math.random()}`,
+          source: picLabel,
+          text: rockText,
+          isResolved: false
+        });
+      }
+    });
+
+    if (newIssues.length > 0) {
+      updateData('idsSession.issues', [...issuesList, ...newIssues]);
+    }
   };
 
-  const handleExportPdf = async () => {
-    // 1. Set exporting menjadi true terlebih dahulu agar React merender kontainer PDF tersembunyi
-    setIsExporting(true);
-    
-    // 2. Beri waktu bagi React untuk selesai melakukan siklus re-render DOM
-    await new Promise(resolve => setTimeout(resolve, 800));
-
-    // 3. Sekarang cek apakah kontainer sudah berhasil dimuat di DOM
-    if (!pdfContainerRef.current) {
-      console.error("Kontainer PDF tidak ditemukan setelah re-render.");
-      setIsExporting(false);
-      return;
+  const handleIssueCheck = (index: number, checked: boolean) => {
+    const issuesList = [...(data.idsSession?.issues || [])];
+    if (issuesList[index]) {
+      issuesList[index].isResolved = checked;
+      // Move resolved issues to the bottom
+      const sortedIssues = issuesList.sort((a, b) => Number(a.isResolved) - Number(b.isResolved));
+      updateData('idsSession.issues', sortedIssues);
     }
+  };
 
+  // --- PDF EXPORT ENGINE: @react-pdf/renderer Implementation ---
+  const handleExportPDF = async () => {
+    if (isExporting) return;
+    setIsExporting(true);
     try {
-      const html2canvas = (await import("html2canvas")).default;
-      const { jsPDF } = await import("jspdf");
-
-      const pdf = new jsPDF({ orientation: 'landscape', unit: 'px', format: [1200, 800] });
-      const slides = document.querySelectorAll('.export-slide');
-
-      for (let i = 0; i < slides.length; i++) {
-        const canvas = await html2canvas(slides[i] as HTMLElement, {
-          scale: 2, useCORS: true, logging: false, backgroundColor: '#ffffff',
-          onclone: (doc) => {
-            const all = doc.querySelectorAll('*');
-            all.forEach(el => {
-              el.classList.remove('dark');
-              if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-                (el as HTMLElement).style.color = '#000000';
-              }
-            });
-          }
-        });
-        const imgData = canvas.toDataURL('image/png');
-        if (i > 0) pdf.addPage([1200, 800], 'landscape');
-        pdf.addImage(imgData, 'PNG', 0, 0, 1200, 800);
-      }
-      pdf.save(`L10-Meeting-${data.config.companyName}.pdf`);
-    } catch (err) {
-      console.error(err);
+      const docBlob = await pdf(
+        <L10PDFDocument 
+          data={data} 
+          attendees={attendees} 
+          averageRating={averageRating} 
+        />
+      ).toBlob();
+      
+      const downloadUrl = URL.createObjectURL(docBlob);
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.download = `L10_Report_${data.config.companyName.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(downloadUrl);
+    } catch (error) {
+      console.error("PDF Export Error:", error);
+      alert("Gagal mengekspor PDF. Pastikan data valid.");
     } finally {
       setIsExporting(false);
     }
   };
 
-  const renderSlideContent = (index: number) => {
-    const attendees = getAttendees();
-
-    if (index === 0) return (
-      <div className="flex flex-col items-center justify-center h-full text-center space-y-8 p-12">
-        <div className="mx-auto w-24 h-24 rounded-3xl bg-blue-500/10 flex items-center justify-center text-blue-600 mb-6"><Trophy size={48} /></div>
-        <h1 className="text-6xl font-black tracking-tight text-slate-900 dark:text-white">LEVEL 10 MEETING</h1>
-        <p className="text-3xl text-blue-500 font-bold uppercase tracking-widest">{data.config.companyName}</p>
-        <div className="bg-white dark:bg-slate-800 p-8 rounded-[2.5rem] shadow-sm border border-slate-100 dark:border-slate-700 w-full max-w-xl">
-          <p className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-2">Tanggal Rapat Efektif</p>
-          <input type="text" value={data.meetingDate} onChange={(e) => updateData('meetingDate', e.target.value)} className="text-3xl font-bold bg-transparent border-none text-center focus:ring-0 outline-none w-full text-slate-900 dark:text-white" />
+  const renderSlide = () => {
+    if (currentSlide === 0) return (
+      <div className="flex flex-col items-center justify-center h-full text-center space-y-8">
+        <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="space-y-4">
+          <div className="mx-auto w-24 h-24 rounded-3xl bg-blue-500/10 flex items-center justify-center text-blue-600 mb-6 border border-blue-500/20">
+            <Trophy size={48} />
+          </div>
+          <h1 className="text-6xl font-black tracking-tight text-slate-900 dark:text-white">LEVEL 10 MEETING</h1>
+          <p className="text-3xl text-blue-500 font-bold uppercase tracking-widest">{data.config.companyName}</p>
+        </motion.div>
+        
+        <div className="bg-white/70 dark:bg-slate-900/50 backdrop-blur-md p-8 rounded-[2.5rem] border border-white/40 dark:border-slate-800 shadow-xl max-w-md w-full">
+          <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Tanggal Rapat Efektif</p>
+          <input 
+            type="text" 
+            value={data.meetingDate}
+            onChange={(e) => updateData('meetingDate', e.target.value)}
+            className="text-2xl font-bold bg-transparent border-none text-center focus:ring-0 outline-none w-full text-slate-800 dark:text-slate-100"
+          />
         </div>
       </div>
     );
 
-    if (index === 1) return (
-      <div className="space-y-8 h-full flex flex-col p-12">
-        <div><h2 className="text-4xl font-bold mb-2 text-slate-900 dark:text-white">Segmen Awal</h2><p className="text-slate-500 font-medium">Kehadiran & Kabar Baik</p></div>
-        <div className="grid grid-cols-2 gap-8 flex-1">
-          <div className="bg-white dark:bg-slate-800 p-10 rounded-[2.5rem] shadow-sm border border-slate-100 dark:border-slate-700 space-y-6">
-            <h3 className="text-xl font-bold flex items-center gap-2 text-slate-900 dark:text-white"><Users className="text-blue-500" /> Daftar Hadir</h3>
-            <div className="grid grid-cols-2 gap-4">
+    if (currentSlide === 1) return (
+      <div className="space-y-6 h-full flex flex-col">
+        <div className="flex justify-between items-end">
+          <div>
+            <h2 className="text-4xl font-bold text-slate-900 dark:text-white mb-1">Segmen Awal</h2>
+            <p className="text-slate-500 font-medium">Kehadiran & Kabar Baik (5 Menit)</p>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 flex-1 min-h-0 overflow-hidden pb-4">
+          <div className="bg-white/60 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-8 flex flex-col">
+            <h3 className="text-xl font-bold flex items-center gap-2 mb-4 text-slate-800 dark:text-slate-200"><Users size={20} className="text-blue-500" /> Daftar Hadir</h3>
+            <div className="grid grid-cols-2 gap-3 overflow-y-auto pr-1 custom-scrollbar">
               {attendees.map((role, i) => (
-                <label key={i} className="flex items-center gap-3 p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-700 cursor-pointer">
-                  <input type="checkbox" checked={data.attendance[i] || false} onChange={(e) => updateData(`attendance.${i}`, e.target.checked)} className="w-5 h-5 text-blue-600 rounded" />
-                  <span className="font-bold text-slate-700 dark:text-slate-200">{role}</span>
+                <label key={i} className={`cursor-pointer transition-all rounded-xl p-4 flex items-center gap-3 border ${data.attendance[i] ? 'bg-blue-500/10 border-blue-500/30' : 'bg-white/50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-800 hover:bg-white dark:hover:bg-slate-800/80'}`}>
+                  <input 
+                    type="checkbox" 
+                    checked={data.attendance[i] || false}
+                    onChange={(e) => updateData(`attendance.${i}`, e.target.checked)}
+                    className="w-5 h-5 rounded-lg border-slate-300 text-blue-600 focus:ring-blue-500"
+                  />
+                  <span className={`font-bold text-sm truncate ${data.attendance[i] ? 'text-blue-700 dark:text-blue-300' : 'text-slate-700 dark:text-slate-200'}`}>{role}</span>
                 </label>
               ))}
             </div>
           </div>
-          <div className="bg-white dark:bg-slate-800 p-10 rounded-[2.5rem] shadow-sm border border-slate-100 dark:border-slate-700 space-y-6">
-            <h3 className="text-xl font-bold flex items-center gap-2 text-slate-900 dark:text-white"><MessageSquare className="text-emerald-500" /> Kabar Baik</h3>
-            {['owner', 'integrator', 'team'].map((pic) => (
-              <div key={pic}>
-                <label className="text-xs font-bold uppercase tracking-widest text-slate-400 px-1">{pic}</label>
-                <textarea value={data.goodNews[pic as keyof typeof data.goodNews]} onChange={(e) => updateData(`goodNews.${pic}`, e.target.value)} className="w-full p-4 rounded-xl bg-slate-50 dark:bg-slate-900 border-none outline-none font-medium text-slate-900 dark:text-white mt-1 resize-none" rows={2} />
-              </div>
-            ))}
+          <div className="bg-white/60 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-8 flex flex-col">
+            <h3 className="text-xl font-bold flex items-center gap-2 mb-4 text-slate-800 dark:text-slate-200"><MessageSquare size={20} className="text-emerald-500" /> Good News</h3>
+            <div className="space-y-4 flex-1 overflow-y-auto pr-1 custom-scrollbar">
+              {['owner', 'integrator', 'team'].map((pic) => (
+                <div key={pic} className="space-y-1">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1">{pic}</label>
+                  <textarea 
+                    value={data.goodNews[pic as keyof typeof data.goodNews]}
+                    onChange={(e) => updateData(`goodNews.${pic}`, e.target.value)}
+                    placeholder={`Kabar baik dari ${pic}...`}
+                    className="w-full p-4 rounded-xl bg-white/40 dark:bg-slate-900/30 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-emerald-500 outline-none h-20 resize-none font-medium text-sm text-slate-800 dark:text-slate-200 transition-shadow"
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
     );
 
-    const divIndex = index - 2;
-    if (divIndex >= 0 && divIndex < data.config.divisions.length) {
-      const division = data.config.divisions[divIndex];
-      const kpis = data.scorecards[division] || [{ kpi: "KPI Baru", target: "-", realisasi: "-", jenis: 'output', status: 'on' }];
+    const divisionIndex = currentSlide - 2;
+    if (divisionIndex >= 0 && divisionIndex < data.config.divisions.length) {
+      const division = data.config.divisions[divisionIndex];
+      const divId = division.toLowerCase().replace(/[^a-z0-9]/g, '-');
+      const kpis = data.scorecards[divId] || [];
+
       return (
-        <div className="space-y-8 h-full flex flex-col p-12">
-          <div><h2 className="text-4xl font-bold mb-2 text-slate-900 dark:text-white">Scorecard: {division}</h2><p className="text-slate-500 font-medium">Review KPI Mingguan</p></div>
-          <div className="bg-white dark:bg-slate-800 p-8 rounded-[2.5rem] shadow-sm border border-slate-100 dark:border-slate-700 flex-1 overflow-auto">
-            <table className="w-full border-separate border-spacing-y-2">
-              <thead><tr className="text-left text-xs font-black uppercase text-slate-400"><th className="p-2">KPI</th><th className="p-2">Target</th><th className="p-2">Actual</th><th className="p-2 text-center">Status</th><th></th></tr></thead>
-              <tbody>
-                {kpis.map((k, i) => (
-                  <tr key={i} className="bg-slate-50 dark:bg-slate-900 rounded-xl">
-                    <td className="p-3"><input type="text" value={k.kpi} onChange={(e) => { const n = [...kpis]; n[i].kpi = e.target.value; updateData(`scorecards.${division}`, n); }} className="bg-transparent border-none outline-none font-bold text-slate-900 dark:text-white w-full" /></td>
-                    <td className="p-3"><input type="text" value={k.target} onChange={(e) => { const n = [...kpis]; n[i].target = e.target.value; updateData(`scorecards.${division}`, n); }} className="bg-transparent border-none outline-none text-slate-900 dark:text-white w-full" /></td>
-                    <td className="p-3"><input type="text" value={k.realisasi} onChange={(e) => { const n = [...kpis]; n[i].realisasi = e.target.value; updateData(`scorecards.${division}`, n); }} className="bg-transparent border-none outline-none font-mono text-blue-600 w-full" /></td>
-                    <td className="p-3 text-center"><button onClick={() => { const n = [...kpis]; n[i].status = k.status === 'on' ? 'off' : 'on'; updateData(`scorecards.${division}`, n); }} className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase ${k.status === 'on' ? 'bg-emerald-500/10 text-emerald-600' : 'bg-rose-500/10 text-rose-600'}`}>{k.status === 'on' ? 'On Track' : 'Off Track'}</button></td>
-                    <td className="p-3"><button onClick={() => { const n = kpis.filter((_, idx) => idx !== i); updateData(`scorecards.${division}`, n); }} className="text-rose-500"><Trash2 size={16}/></button></td>
+        <div className="space-y-6 h-full flex flex-col">
+          <div>
+            <h2 className="text-4xl font-bold text-slate-900 dark:text-white mb-1">Scorecard: {division}</h2>
+            <p className="text-slate-500 font-medium">Review KPI Mingguan</p>
+          </div>
+          <div className="bg-white/60 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-8 flex flex-col flex-1 min-h-0 overflow-hidden pb-6">
+            <div className="overflow-y-auto flex-1 custom-scrollbar">
+              <table className="w-full border-separate border-spacing-y-2">
+                <thead>
+                  <tr className="text-left text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+                    <th className="px-4 pb-2">KPI Metric</th>
+                    <th className="px-4 pb-2">Target</th>
+                    <th className="px-4 pb-2">Realisasi</th>
+                    <th className="px-4 pb-2 text-center">Jenis</th>
+                    <th className="px-4 pb-2 text-center">Status</th>
+                    <th className="px-4 pb-2"></th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-            <button onClick={() => updateData(`scorecards.${division}`, [...kpis, { kpi: "Baru", target: "-", realisasi: "-", jenis: 'output', status: 'on' }])} className="mt-4 text-sm font-bold text-blue-500">+ Tambah KPI</button>
+                </thead>
+                <tbody>
+                  {kpis.map((k, i) => (
+                    <tr key={i} className="bg-white/50 dark:bg-slate-900/30 border border-slate-200 dark:border-slate-800 rounded-xl group overflow-hidden">
+                      <td className="p-3"><input type="text" value={k.kpi} onChange={(e) => {
+                        const newKpis = [...kpis]; newKpis[i].kpi = e.target.value; updateData(`scorecards.${divId}`, newKpis);
+                      }} className="bg-transparent border-none focus:ring-0 w-full font-bold text-sm text-slate-800 dark:text-slate-200" /></td>
+                      <td className="p-3"><input type="text" value={k.target} onChange={(e) => {
+                        const newKpis = [...kpis]; newKpis[i].target = e.target.value; updateData(`scorecards.${divId}`, newKpis);
+                      }} className="bg-transparent border-none focus:ring-0 w-full font-medium text-sm text-slate-600 dark:text-slate-400" /></td>
+                      <td className="p-3"><input type="text" value={k.realisasi} onChange={(e) => {
+                        const newKpis = [...kpis]; newKpis[i].realisasi = e.target.value; updateData(`scorecards.${divId}`, newKpis);
+                      }} className="bg-transparent border-none focus:ring-0 w-full font-mono text-sm text-blue-600 dark:text-blue-400" /></td>
+                      <td className="p-3 text-center">
+                        <button onClick={() => {
+                          const newKpis = [...kpis]; newKpis[i].jenis = k.jenis === 'output' ? 'outcome' : 'output'; updateData(`scorecards.${divId}`, newKpis);
+                        }} className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${k.jenis === 'outcome' ? 'bg-purple-500/10 text-purple-600 dark:bg-purple-500/20' : 'bg-orange-500/10 text-orange-600 dark:bg-orange-500/20'}`}>{k.jenis}</button>
+                      </td>
+                      <td className="p-3 text-center">
+                        <button onClick={() => {
+                          const newKpis = [...kpis]; newKpis[i].status = k.status === 'on' ? 'off' : 'on'; updateData(`scorecards.${divId}`, newKpis);
+                        }} className={`px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${k.status === 'on' ? 'bg-emerald-500/10 text-emerald-600 dark:bg-emerald-500/20' : 'bg-rose-500/10 text-rose-600 dark:bg-rose-500/20'}`}>{k.status === 'on' ? 'On Track' : 'Off Track'}</button>
+                      </td>
+                      <td className="p-3 text-center">
+                        <button onClick={() => {
+                          const newKpis = kpis.filter((_, idx) => idx !== i); updateData(`scorecards.${divId}`, newKpis);
+                        }} className="p-1.5 opacity-0 group-hover:opacity-100 text-rose-500 hover:bg-rose-500/10 rounded-lg transition-all"><Trash2 size={14}/></button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              {kpis.length === 0 && (
+                <div className="text-center py-12 text-slate-400 font-medium">Belum ada metrik untuk divisi ini.</div>
+              )}
+            </div>
+            <button 
+              onClick={() => updateData(`scorecards.${divId}`, [...kpis, { kpi: "Metric Baru", target: "0", realisasi: "-", jenis: 'output', status: 'on' }])}
+              className="mt-4 flex items-center justify-center gap-2 p-4 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl text-slate-400 hover:text-blue-500 hover:border-blue-500 transition-all font-bold text-sm bg-slate-50/50 dark:bg-slate-900/20"
+            >
+              <Plus size={16} /> Tambah Metrik KPI
+            </button>
           </div>
         </div>
       );
     }
 
-    if (index === 2 + data.config.divisions.length) {
+    if (currentSlide === 2 + data.config.divisions.length) {
       const rocks = data.config.rocks;
-      const rockStatus = data.rocksStatus.length === rocks.length ? data.rocksStatus : rocks.map(() => ({ pic: "", status: 'on', notes: "" }));
-      if (data.rocksStatus.length !== rocks.length) updateData('rocksStatus', rockStatus);
       return (
-        <div className="space-y-8 h-full flex flex-col p-12">
-          <div><h2 className="text-4xl font-bold mb-2 text-slate-900 dark:text-white">Rock Review</h2><p className="text-slate-500 font-medium">Prioritas Strategis 90 Hari</p></div>
-          <div className="bg-white dark:bg-slate-800 p-8 rounded-[2.5rem] shadow-sm border border-slate-100 dark:border-slate-700 flex-1">
-            <table className="w-full border-separate border-spacing-y-2">
-              <thead><tr className="text-left text-xs font-black uppercase text-slate-400"><th className="p-2 w-1/4">PIC</th><th className="p-2 w-1/3">Target (Rock)</th><th className="p-2 text-center">Status</th><th className="p-2">Catatan</th></tr></thead>
-              <tbody>
-                {rocks.map((rock, i) => (
-                  <tr key={i} className="bg-slate-50 dark:bg-slate-900 rounded-xl">
-                    <td className="p-3"><input type="text" value={rockStatus[i]?.pic} onChange={(e) => { const n = [...rockStatus]; n[i].pic = e.target.value; updateData('rocksStatus', n); }} placeholder="PIC" className="bg-transparent border-none outline-none font-bold text-slate-900 dark:text-white w-full" /></td>
-                    <td className="p-3 font-bold text-slate-600 dark:text-slate-300">{rock}</td>
-                    <td className="p-3 text-center"><button onClick={() => { const n = [...rockStatus]; n[i].status = rockStatus[i].status === 'on' ? 'off' : 'on'; updateData('rocksStatus', n); }} className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase ${rockStatus[i]?.status === 'on' ? 'bg-emerald-500/10 text-emerald-600' : 'bg-rose-500/10 text-rose-600'}`}>{rockStatus[i]?.status === 'on' ? 'On Track' : 'Off Track'}</button></td>
-                    <td className="p-3"><input type="text" value={rockStatus[i]?.notes} onChange={(e) => { const n = [...rockStatus]; n[i].notes = e.target.value; updateData('rocksStatus', n); }} placeholder="Catatan..." className="bg-transparent border-none outline-none text-sm w-full text-slate-900 dark:text-white" /></td>
+        <div className="space-y-6 h-full flex flex-col">
+          <div>
+            <h2 className="text-4xl font-bold text-slate-900 dark:text-white mb-1">Rock Review</h2>
+            <p className="text-slate-500 font-medium">Prioritas Strategis 90 Hari</p>
+          </div>
+          <div className="bg-white/60 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-8 flex flex-col flex-1 min-h-0 overflow-hidden pb-6">
+            <div className="overflow-y-auto flex-1 custom-scrollbar">
+              <table className="w-full border-separate border-spacing-y-2">
+                <thead>
+                  <tr className="text-left text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+                    <th className="px-4 pb-2 w-[20%]">PIC / Tim</th>
+                    <th className="px-4 pb-2 w-[40%]">Target (Rock)</th>
+                    <th className="px-4 pb-2 text-center">Status</th>
+                    <th className="px-4 pb-2">Catatan Progres</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {rocks.map((rock, i) => (
+                    <tr key={i} className="bg-white/50 dark:bg-slate-900/30 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden group">
+                      <td className="p-3"><input type="text" value={data.rocksStatus[i]?.pic || ""} onChange={(e) => {
+                        const newStatus = [...data.rocksStatus]; if(!newStatus[i]) newStatus[i] = {pic: "", status: "on", notes: ""};
+                        newStatus[i].pic = e.target.value; updateData('rocksStatus', newStatus);
+                      }} placeholder="Nama PIC" className="bg-transparent border-none focus:ring-0 w-full font-bold text-sm text-slate-800 dark:text-slate-200" /></td>
+                      <td className="p-3 font-bold text-sm text-slate-600 dark:text-slate-300 max-w-xs truncate">{rock}</td>
+                      <td className="p-3 text-center">
+                        <button onClick={() => {
+                          const newStatus = [...data.rocksStatus]; if(!newStatus[i]) newStatus[i] = {pic: "", status: "on", notes: ""};
+                          newStatus[i].status = newStatus[i].status === 'on' ? 'off' : 'on'; updateData('rocksStatus', newStatus);
+                        }} className={`px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${data.rocksStatus[i]?.status === 'off' ? 'bg-rose-500/10 text-rose-600 dark:bg-rose-500/20' : 'bg-emerald-500/10 text-emerald-600 dark:bg-emerald-500/20'}`}>{data.rocksStatus[i]?.status === 'off' ? 'Off Track' : 'On Track'}</button>
+                      </td>
+                      <td className="p-3"><input type="text" value={data.rocksStatus[i]?.notes || ""} onChange={(e) => {
+                        const newStatus = [...data.rocksStatus]; if(!newStatus[i]) newStatus[i] = {pic: "", status: "on", notes: ""};
+                        newStatus[i].notes = e.target.value; updateData('rocksStatus', newStatus);
+                      }} placeholder="Update status..." className="bg-transparent border-none focus:ring-0 w-full italic text-sm text-slate-600 dark:text-slate-400" /></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       );
     }
 
-    if (index === 3 + data.config.divisions.length) return (
-      <div className="space-y-8 h-full flex flex-col p-12">
-        <div><h2 className="text-4xl font-bold mb-2 text-slate-900 dark:text-white">Headlines</h2><p className="text-slate-500 font-medium">Berita Penting</p></div>
-        <div className="grid grid-cols-2 gap-8 flex-1">
+    if (currentSlide === 3 + data.config.divisions.length) return (
+      <div className="space-y-6 h-full flex flex-col">
+        <div>
+          <h2 className="text-4xl font-bold text-slate-900 dark:text-white mb-1">Headlines</h2>
+          <p className="text-slate-500 font-medium">Berita Penting Rapat</p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1 min-h-0 overflow-hidden pb-4">
           {['customer', 'internal'].map(type => (
-            <div key={type} className="bg-white dark:bg-slate-800 p-8 rounded-[2.5rem] shadow-sm border border-slate-100 dark:border-slate-700 flex flex-col space-y-4">
-              <h3 className={`text-xl font-bold flex items-center gap-2 ${type === 'customer' ? 'text-blue-500' : 'text-emerald-500'}`}><FileText /> {type === 'customer' ? 'Customer Headlines' : 'Internal Headlines'}</h3>
-              <div className="flex-1 space-y-3">
+            <div key={type} className="bg-white/60 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-8 flex flex-col space-y-4">
+              <h3 className={`text-xl font-bold flex items-center gap-2 ${type === 'customer' ? 'text-blue-500' : 'text-emerald-500'}`}><FileText size={20} /> {type === 'customer' ? 'Customer Headlines' : 'Internal Headlines'}</h3>
+              <div className="flex-1 overflow-y-auto space-y-3 pr-1 custom-scrollbar">
                 {(data.headlines[type as keyof typeof data.headlines] || []).map((h, i) => (
-                  <div key={i} className="flex gap-4 group items-center">
-                    <span className="text-lg font-black text-slate-300">{i + 1}.</span>
-                    <input type="text" value={h} onChange={(e) => { const n = [...data.headlines[type as keyof typeof data.headlines]]; n[i] = e.target.value; updateData(`headlines.${type}`, n); }} placeholder="Berita..." className="flex-1 bg-transparent border-none outline-none text-lg text-slate-900 dark:text-white" />
-                    <button onClick={() => { const n = data.headlines[type as keyof typeof data.headlines].filter((_, idx) => idx !== i); updateData(`headlines.${type}`, n); }} className="text-rose-500"><Trash2 size={16}/></button>
+                  <div key={i} className="flex gap-3 items-center group bg-slate-50 dark:bg-slate-900/30 p-3 rounded-xl border border-slate-200 dark:border-slate-800 focus-within:ring-2 focus-within:ring-blue-500/20">
+                    <span className="text-sm font-black text-slate-300 w-4">{i + 1}.</span>
+                    <input type="text" value={h} onChange={(e) => {
+                      const newH = [...data.headlines[type as keyof typeof data.headlines]]; newH[i] = e.target.value; updateData(`headlines.${type}`, newH);
+                    }} placeholder="Masukkan berita..." className="flex-1 bg-transparent border-none focus:ring-0 p-0 text-sm font-semibold text-slate-800 dark:text-slate-200" />
+                    <button onClick={() => {
+                      const newH = data.headlines[type as keyof typeof data.headlines].filter((_, idx) => idx !== i); updateData(`headlines.${type}`, newH);
+                    }} className="opacity-0 group-hover:opacity-100 text-rose-500 p-1.5 hover:bg-rose-500/10 rounded-md transition-all"><Trash2 size={16}/></button>
                   </div>
                 ))}
-                <button onClick={() => updateData(`headlines.${type}`, [...data.headlines[type as keyof typeof data.headlines], ""])} className="text-sm font-bold text-blue-500">+ Tambah Headline</button>
+                <button onClick={() => updateData(`headlines.${type}`, [...data.headlines[type as keyof typeof data.headlines], ""])} className="w-full py-3 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl text-slate-400 hover:text-blue-500 transition-all font-bold text-xs bg-slate-50/50 dark:bg-slate-900/20">+ Tambah Headline Baru</button>
               </div>
             </div>
           ))}
@@ -259,156 +842,182 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: any) {
       </div>
     );
 
-    if (index === 4 + data.config.divisions.length) return (
-      <div className="space-y-8 h-full flex flex-col p-12">
-        <div><h2 className="text-4xl font-bold mb-2 text-slate-900 dark:text-white">To-Do List</h2><p className="text-slate-500 font-medium">Action Plan</p></div>
-        <div className="bg-white dark:bg-slate-800 p-8 rounded-[2.5rem] shadow-sm border border-slate-100 dark:border-slate-700 flex-1 overflow-y-auto">
-          <div className="space-y-4">
+    if (currentSlide === 4 + data.config.divisions.length) return (
+      <div className="space-y-6 h-full flex flex-col">
+        <div>
+          <h2 className="text-4xl font-bold text-slate-900 dark:text-white mb-1">To-Do List</h2>
+          <p className="text-slate-500 font-medium">Review Minggu Lalu & Action Plan</p>
+        </div>
+        <div className="bg-white/60 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-8 flex flex-col flex-1 min-h-0 overflow-hidden pb-6">
+          <div className="flex-1 overflow-y-auto space-y-3 pr-1 custom-scrollbar">
             {data.todoList.map((todo, i) => (
-              <div key={todo.id} className="flex items-center gap-6 p-6 bg-slate-50 dark:bg-slate-900 rounded-2xl group">
-                <button onClick={() => { const n = [...data.todoList]; n[i].isDone = !todo.isDone; updateData('todoList', n); }} className={`w-8 h-8 rounded-full flex items-center justify-center ${todo.isDone ? 'bg-emerald-500 text-white' : 'border-2 border-slate-300'}`}>{todo.isDone && <CheckCircle2 size={20} />}</button>
-                <div className="flex-1 space-y-1">
-                  <input type="text" value={todo.text} onChange={(e) => { const n = [...data.todoList]; n[i].text = e.target.value; updateData('todoList', n); }} className={`bg-transparent border-none outline-none w-full font-bold text-lg text-slate-900 dark:text-white ${todo.isDone ? 'line-through opacity-50' : ''}`} />
-                  <div className="flex items-center gap-2"><span className="text-[10px] font-black text-slate-400">OWNER:</span><input type="text" value={todo.owner} onChange={(e) => { const n = [...data.todoList]; n[i].owner = e.target.value; updateData('todoList', n); }} className="bg-transparent border-none outline-none text-sm font-bold text-blue-500" /></div>
+              <div key={todo.id} className="flex items-center gap-4 p-4 bg-slate-50 dark:bg-slate-900/30 rounded-xl group border border-slate-200 dark:border-slate-800 transition-all hover:bg-white dark:hover:bg-slate-800/60 shadow-sm">
+                <button onClick={() => {
+                  const newList = [...data.todoList]; newList[i].isDone = !todo.isDone; updateData('todoList', newList);
+                }} className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 transition-colors ${todo.isDone ? 'bg-emerald-500 text-white' : 'bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700'}`}>{todo.isDone && <CheckCircle2 size={18} />}</button>
+                <div className="flex-1 min-w-0 space-y-0.5">
+                  <input type="text" value={todo.text} onChange={(e) => {
+                    const newList = [...data.todoList]; newList[i].text = e.target.value; updateData('todoList', newList);
+                  }} placeholder="Apa tugasnya?" className={`bg-transparent border-none focus:ring-0 w-full font-bold text-base p-0 text-slate-800 dark:text-slate-200 ${todo.isDone ? 'line-through opacity-40' : ''}`} />
+                  <div className="flex items-center gap-1.5"><span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Owner:</span>
+                    <input type="text" value={todo.owner} onChange={(e) => {
+                      const newList = [...data.todoList]; newList[i].owner = e.target.value; updateData('todoList', newList);
+                    }} className="bg-transparent border-none focus:ring-0 text-xs font-bold text-blue-500 p-0 h-auto w-40" />
+                  </div>
                 </div>
-                <button onClick={() => updateData('todoList', data.todoList.filter(t => t.id !== todo.id))} className="text-rose-500"><Trash2 size={20}/></button>
+                <button onClick={() => {
+                  const newList = data.todoList.filter(t => t.id !== todo.id); updateData('todoList', newList);
+                }} className="opacity-0 group-hover:opacity-100 text-rose-500 p-2 hover:bg-rose-500/10 rounded-lg transition-all"><Trash2 size={18}/></button>
               </div>
             ))}
-            <button onClick={() => updateData('todoList', [...data.todoList, { id: Date.now(), text: "Tugas Baru", owner: "PIC", isDone: false }])} className="w-full p-6 border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-3xl text-slate-400 font-bold hover:text-blue-500">+ Tambah To-Do</button>
+            {data.todoList.length === 0 && (
+              <div className="text-center py-12 text-slate-400 font-medium">Belum ada tugas untuk minggu ini.</div>
+            )}
+            <button onClick={() => updateData('todoList', [...data.todoList, { id: Date.now(), text: "", owner: "PIC", isDone: false }])} className="w-full p-4 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl text-slate-400 hover:text-blue-500 hover:border-blue-500 transition-all font-bold text-sm bg-slate-50/50 dark:bg-slate-900/20">+ Tambah To-Do List Baru</button>
           </div>
         </div>
       </div>
     );
 
-    if (index === 5 + data.config.divisions.length) return (
-      <div className="space-y-8 h-full flex flex-col p-12">
-        <div className="flex justify-between items-center">
-          <div><h2 className="text-4xl font-bold mb-2 text-slate-900 dark:text-white">IDS Session</h2><p className="text-slate-500 font-medium">Identify, Discuss, Solve</p></div>
-          <button onClick={pullOffTrackData} className="flex items-center gap-2 px-6 py-3 bg-rose-500 text-white rounded-2xl font-bold"><RefreshCw size={18} /> Tarik Data Off-Track</button>
+    if (currentSlide === 5 + data.config.divisions.length) return (
+      <div className="space-y-6 h-full flex flex-col">
+        <div className="flex justify-between items-center flex-shrink-0">
+          <div><h2 className="text-4xl font-bold text-slate-900 dark:text-white mb-1">IDS Session</h2><p className="text-slate-500 font-medium">Identify, Discuss, Solve (60 Menit)</p></div>
+          <button onClick={pullOffTrackData} className="flex items-center gap-2 px-6 py-3 bg-rose-500 hover:bg-rose-600 text-white rounded-2xl font-bold transition-all shadow-lg active:scale-95 text-sm"><RefreshCw size={18} /> Tarik Data Off-Track</button>
         </div>
-        <div className="grid grid-cols-3 gap-6 flex-1">
-          <div className="bg-white dark:bg-slate-800 p-6 rounded-[2rem] shadow-sm border border-slate-100 dark:border-slate-700 flex flex-col space-y-4">
-            <h3 className="text-lg font-bold text-blue-500">1. Identify (Issues)</h3>
-            <div className="flex-1 space-y-2 overflow-y-auto">
-              {data.idsSession.manualIssues.map((issue, i) => (
-                <div key={i} className="flex gap-2 p-3 bg-slate-50 dark:bg-slate-900 rounded-xl items-center"><div className="w-2 h-2 rounded-full bg-blue-500" /><input type="text" value={issue} onChange={(e) => { const n = [...data.idsSession.manualIssues]; n[i] = e.target.value; updateData('idsSession.manualIssues', n); }} className="flex-1 bg-transparent border-none outline-none text-sm font-bold text-slate-900 dark:text-white" /><button onClick={() => updateData('idsSession.manualIssues', data.idsSession.manualIssues.filter((_, idx) => idx !== i))} className="text-rose-500"><Trash2 size={14}/></button></div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1 min-h-0 overflow-hidden pb-4">
+          <div className="bg-white/60 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-8 flex flex-col overflow-hidden shadow-sm">
+            <h3 className="text-base font-black border-b border-slate-200 dark:border-slate-800 pb-4 text-blue-500 uppercase tracking-wider flex-shrink-0">1. Identify (Issues)</h3>
+            <div className="flex-1 overflow-y-auto space-y-3 mt-5 pr-1 custom-scrollbar">
+              {(data.idsSession?.issues || []).map((issue, i) => (
+                <div key={issue.id} className={`flex items-start gap-3 p-4 rounded-2xl group border transition-all ${issue.isResolved ? 'bg-slate-100/50 dark:bg-slate-800/20 border-slate-200 dark:border-slate-800 opacity-50' : 'bg-white dark:bg-slate-900/50 border-slate-200 dark:border-slate-800 shadow-sm'}`}>
+                  <input type="checkbox" checked={issue.isResolved} onChange={(e) => handleIssueCheck(i, e.target.checked)} className="mt-1.5 w-5 h-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer" />
+                  <div className="flex-1 min-w-0 space-y-1"><span className="inline-block px-2.5 py-1 rounded-lg text-[10px] bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-extrabold uppercase tracking-widest">{issue.source}</span>
+                    <input type="text" value={issue.text} onChange={(e) => {
+                      const newI = [...(data.idsSession?.issues || [])]; newI[i].text = e.target.value; updateData('idsSession.issues', newI);
+                    }} className={`bg-transparent border-none focus:ring-0 w-full p-0 text-sm font-bold text-slate-800 dark:text-slate-200 transition-all ${issue.isResolved ? 'line-through font-medium text-slate-400' : ''}`} />
+                  </div>
+                  <button onClick={() => {
+                    const newI = (data.idsSession?.issues || []).filter((_, idx) => idx !== i); updateData('idsSession.issues', newI);
+                  }} className="opacity-0 group-hover:opacity-100 text-rose-500 p-1.5 hover:bg-rose-500/10 rounded-lg transition-all flex-shrink-0"><Trash2 size={16}/></button>
+                </div>
               ))}
-              <button onClick={() => updateData('idsSession.manualIssues', [...data.idsSession.manualIssues, "Issue baru..."])} className="text-xs font-bold text-slate-400">+ Manual Issue</button>
+              <button onClick={() => updateData('idsSession.issues', [...(data.idsSession?.issues || []), { id: `manual-${Date.now()}`, source: 'Manual', text: 'Masalah baru...', isResolved: false }])} className="w-full py-3.5 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-2xl text-slate-400 hover:text-blue-500 transition-all font-bold text-xs bg-slate-50/50 dark:bg-slate-900/20">+ Input Masalah Baru</button>
             </div>
           </div>
-          <div className="bg-white dark:bg-slate-800 p-6 rounded-[2rem] shadow-sm border border-slate-100 dark:border-slate-700 flex flex-col space-y-4">
-            <h3 className="text-lg font-bold text-emerald-500">2. Discuss (Notes)</h3>
-            <textarea value={data.idsSession.notes} onChange={(e) => updateData('idsSession.notes', e.target.value)} className="flex-1 bg-transparent border-none outline-none text-base font-medium resize-none text-slate-900 dark:text-white" placeholder="Catat diskusi..." />
+          <div className="bg-white/60 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-8 flex flex-col shadow-sm">
+            <h3 className="text-base font-black border-b border-slate-200 dark:border-slate-800 pb-4 text-emerald-500 uppercase tracking-wider flex-shrink-0">2. Discuss (Notes)</h3>
+            <textarea value={data.idsSession.notes} onChange={(e) => updateData('idsSession.notes', e.target.value)} placeholder="Tulis catatan diskusi penting di sini..." className="flex-1 bg-transparent border-none focus:ring-0 text-base font-medium leading-relaxed resize-none custom-scrollbar text-slate-800 dark:text-slate-200 mt-5 outline-none" />
           </div>
-          <div className="bg-white dark:bg-slate-800 p-6 rounded-[2rem] shadow-sm border border-slate-100 dark:border-slate-700 flex flex-col space-y-4">
-            <h3 className="text-lg font-bold text-purple-500">3. Solve (Action Items)</h3>
-            <textarea value={data.idsSession.solutions} onChange={(e) => updateData('idsSession.solutions', e.target.value)} className="flex-1 bg-transparent border-none outline-none text-base font-bold resize-none text-purple-700 dark:text-purple-400" placeholder="- Solusi..." />
+          <div className="bg-white/60 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-8 flex flex-col shadow-sm">
+            <h3 className="text-base font-black border-b border-slate-200 dark:border-slate-800 pb-4 text-purple-500 uppercase tracking-wider flex-shrink-0">3. Solve (Action Items)</h3>
+            <textarea value={data.idsSession.solutions} onChange={(e) => updateData('idsSession.solutions', e.target.value)} placeholder="Apa solusi finalnya? Masukkan ke To-Do List jika perlu..." className="flex-1 bg-transparent border-none focus:ring-0 text-base font-bold leading-relaxed resize-none custom-scrollbar text-purple-700 dark:text-purple-400 mt-5 outline-none" />
           </div>
         </div>
       </div>
     );
 
-    if (index === 6 + data.config.divisions.length) return (
-      <div className="flex flex-col items-center justify-center h-full text-center space-y-12 p-12">
-        <div><h2 className="text-4xl font-bold text-slate-900 dark:text-white">Conclude</h2><p className="text-slate-500 font-medium italic">&quot;Seberapa efektif rapat hari ini?&quot;</p></div>
-        <div className="text-[10rem] font-black leading-none tracking-tighter text-blue-600">{averageRating}</div>
-        <div className="bg-white dark:bg-slate-800 p-8 rounded-[3rem] w-full flex flex-wrap justify-center gap-6 shadow-sm border border-slate-100 dark:border-slate-700">
-          {attendees.map((role, i) => data.attendance[i] && (
-            <div key={i} className="flex flex-col items-center gap-2 w-28">
-              <label className="text-[10px] font-black text-slate-400 uppercase truncate w-full text-center">{role}</label>
-              <input type="number" min="1" max="10" value={data.ratings[i] || ""} onChange={(e) => updateData(`ratings.${i}`, parseFloat(e.target.value))} className="w-full h-14 rounded-2xl bg-slate-50 dark:bg-slate-900 text-center text-2xl font-black outline-none text-slate-900 dark:text-white" />
+    if (currentSlide === 6 + data.config.divisions.length) return (
+      <div className="flex flex-col items-center justify-center h-full text-center space-y-10 overflow-hidden">
+        <div className="space-y-2 flex-shrink-0"><h2 className="text-5xl font-black text-slate-900 dark:text-white">Conclude</h2><p className="text-slate-500 font-bold italic tracking-wide">"Seberapa efektif rapat ini bagi pencapaian visi?" (1 - 10)</p></div>
+        <div className="space-y-1 flex-shrink-0 relative">
+          <motion.div initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="text-[12rem] font-black leading-none tracking-tighter text-blue-600 drop-shadow-2xl">{averageRating}</motion.div>
+          <p className="text-sm font-black text-slate-400 uppercase tracking-[0.4em]">Composite Quality Score</p>
+        </div>
+        <div className="bg-white/50 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 p-10 rounded-[3rem] max-w-5xl w-full flex flex-wrap justify-center gap-6 overflow-y-auto max-h-[250px] custom-scrollbar shadow-xl backdrop-blur-sm">
+          {attendees.map((role, i) => data.attendance[i] ? (
+            <div key={i} className="flex flex-col items-center gap-2.5 w-28">
+              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest truncate w-full text-center" title={role}>{role}</label>
+              <input type="number" min="1" max="10" step="0.5" value={data.ratings[i] || ""} onChange={(e) => {
+                let val = parseFloat(e.target.value); if (val > 10) val = 10; if (val < 1) val = 1; updateData(`ratings.${i}`, isNaN(val) ? "" : val);
+              }} placeholder="-" className="w-full h-14 rounded-2xl bg-white dark:bg-slate-900 text-center text-2xl font-black border-2 border-slate-200 dark:border-slate-800 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all shadow-inner" />
             </div>
-          ))}
+          ) : null)}
+          {Object.values(data.attendance).filter(Boolean).length === 0 && (
+            <p className="text-base font-bold text-slate-400 py-6">Pilih peserta yang hadir untuk memberikan rating.</p>
+          )}
         </div>
       </div>
     );
-
     return null;
   };
 
   return (
-    <div className="relative min-h-[800px] h-[85vh] w-full flex flex-col font-[family-name:var(--font-plus-jakarta)] bg-slate-50 dark:bg-slate-950">
-      
-      {/* Header Panel */}
-      <div className="absolute top-0 left-0 right-0 flex justify-between items-center p-6 z-40">
-        <div className="flex items-center gap-4">
-          <div className={`bg-white dark:bg-slate-800 px-6 py-3 rounded-full flex items-center gap-4 shadow-sm border border-slate-100 dark:border-slate-700 ${timeLeft < 300 ? 'text-rose-600' : 'text-blue-600'}`}>
-            <Clock size={20} />
-            <span className="text-2xl font-black font-mono">{formatTime(timeLeft)}</span>
-            <div className="flex gap-3 border-l border-slate-200 dark:border-slate-700 pl-4">
-              <button onClick={toggleTimer} className="hover:scale-110">{isTimerRunning ? <Pause size={18} /> : <Play size={18} />}</button>
-              <button onClick={resetTimer} className="hover:scale-110 text-slate-400"><RotateCcw size={18} /></button>
+    <div className="relative h-full w-full flex flex-col bg-slate-50 dark:bg-slate-950 p-1 select-none overflow-hidden">
+      {/* Top Navigation & Status */}
+      <div className="flex justify-between items-center p-8 z-40 flex-shrink-0">
+        <div className="flex items-center gap-5">
+          <div className={`bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl px-8 py-3.5 rounded-3xl flex items-center gap-5 shadow-lg border border-slate-200/50 dark:border-slate-800/50 ${timeLeft < 300 ? 'bg-rose-500/10 text-rose-600' : 'text-blue-600 dark:text-blue-400'}`}>
+            <Clock size={24} /><span className="text-3xl font-black font-mono tracking-tighter">{formatTime(timeLeft)}</span>
+            <div className="flex gap-4 border-l border-slate-200 dark:border-slate-800 pl-5">
+              <button onClick={() => setIsTimerRunning(!isTimerRunning)} className="hover:scale-110 transition-transform active:scale-95 text-slate-700 dark:text-slate-300">{isTimerRunning ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" />}</button>
+              <button onClick={() => { setTimeLeft(5400); setIsTimerRunning(false); }} className="hover:scale-110 transition-transform active:scale-95 text-slate-400"><RotateCcw size={20} /></button>
             </div>
           </div>
-          {isSyncing && <div className="flex items-center gap-2 px-3 py-1.5 bg-blue-500/10 rounded-full text-blue-600 text-xs font-bold"><Loader2 size={12} className="animate-spin" /> Sync</div>}
-        </div>
-        <div className="flex gap-3">
-          <button onClick={handleExportPdf} disabled={isExporting} className="px-5 py-3 rounded-full bg-blue-600 text-white shadow-xl hover:bg-blue-700 flex items-center gap-2 font-bold text-sm">
-            {isExporting ? <Loader2 className="animate-spin" size={18} /> : <Download size={18} />} Export PDF
+          
+          <button 
+            onClick={handleExportPDF}
+            disabled={isExporting}
+            className="flex items-center gap-3 px-6 py-4 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-3xl font-black shadow-xl hover:scale-105 transition-all text-xs active:scale-95 disabled:opacity-50 disabled:grayscale"
+          >
+            {isExporting ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />}
+            {isExporting ? "GENERATING PDF..." : "EXPORT L10 REPORT"}
           </button>
-          <button onClick={() => setShowSetup(true)} className="p-3 rounded-full bg-white dark:bg-slate-800 shadow-sm border border-slate-100 dark:border-slate-700 text-slate-400 hover:text-blue-500"><Settings size={20} /></button>
+
+          {isSyncing && (
+            <div className="flex items-center gap-2 px-5 py-2.5 bg-blue-500/10 rounded-full text-blue-600 text-xs font-black animate-pulse border border-blue-500/20"><Loader2 size={14} className="animate-spin" />SYNCING...</div>
+          )}
+        </div>
+        <button onClick={() => setShowSetup(true)} className="p-4 rounded-3xl bg-white dark:bg-slate-900 shadow-lg border border-slate-200 dark:border-slate-800 text-slate-400 hover:text-blue-500 hover:rotate-90 transition-all duration-700 active:scale-90"><Settings size={24} /></button>
+      </div>
+
+      {/* Slide Canvas */}
+      <div className="flex-1 px-16 pb-12 pt-4 relative overflow-hidden min-h-0">
+        <div className="w-full h-full bg-transparent flex flex-col">
+          <AnimatePresence mode="wait">
+            <motion.div key={currentSlide} initial={{ opacity: 0, y: 20, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: -20, scale: 0.98 }} transition={{ type: "spring", stiffness: 100, damping: 20 }} className="h-full w-full">
+              {renderSlide()}
+            </motion.div>
+          </AnimatePresence>
         </div>
       </div>
 
-      {/* Main Slide Area */}
-      <div className="flex-1 px-8 pt-24 pb-8 relative overflow-hidden">
-        <AnimatePresence mode="wait">
-          <motion.div key={currentSlide} initial={{ opacity: 0, x: 50, scale: 0.98 }} animate={{ opacity: 1, x: 0, scale: 1 }} exit={{ opacity: 0, x: -50, scale: 0.98 }} transition={{ type: "spring", stiffness: 100, damping: 15 }} className="h-full w-full">
-            {renderSlideContent(currentSlide)}
-          </motion.div>
-        </AnimatePresence>
+      {/* Navigation Controls */}
+      <div className="absolute bottom-12 right-20 flex gap-4 z-40">
+        <button onClick={prevSlide} disabled={currentSlide === 0} className="w-16 h-16 rounded-3xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border border-slate-200 dark:border-slate-800 flex items-center justify-center text-slate-500 hover:text-blue-600 disabled:opacity-20 disabled:cursor-not-allowed transition-all shadow-xl active:scale-90"><ChevronLeft size={32} /></button>
+        <button onClick={nextSlide} disabled={currentSlide === totalSlides - 1} className="w-16 h-16 rounded-3xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border border-slate-200 dark:border-slate-800 flex items-center justify-center text-slate-500 hover:text-blue-600 disabled:opacity-20 disabled:cursor-not-allowed transition-all shadow-xl active:scale-90"><ChevronRight size={32} /></button>
       </div>
-
-      {/* Navigation */}
-      <div className="absolute bottom-6 right-8 flex gap-3 z-40">
-        <button onClick={prevSlide} disabled={currentSlide === 0} className="w-14 h-14 rounded-full bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 flex items-center justify-center text-slate-400 hover:text-blue-600 disabled:opacity-30 shadow-sm"><ChevronLeft size={28} /></button>
-        <button onClick={nextSlide} disabled={currentSlide === totalSlides - 1} className="w-14 h-14 rounded-full bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 flex items-center justify-center text-slate-400 hover:text-blue-600 disabled:opacity-30 shadow-sm"><ChevronRight size={28} /></button>
-      </div>
-
-      {/* --- HIDDEN PDF TEMPLATE (RENDER ALL SLIDES TO DOM) --- */}
-      {isExporting && (
-        <div ref={pdfContainerRef} className="absolute left-[-9999px] top-0 flex flex-col bg-white">
-          {Array.from({ length: totalSlides }).map((_, i) => (
-            <div key={i} className="export-slide w-[1200px] h-[800px] bg-white text-black p-0 m-0">
-              <div className="w-full h-full bg-white text-black scale-95 origin-top">
-                {renderSlideContent(i)}
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
 
       {/* Setup Modal */}
       <AnimatePresence>
         {showSetup && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/60 backdrop-blur-md">
-            <motion.div initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }} className="bg-white dark:bg-slate-900 max-w-xl w-full p-10 rounded-[2.5rem] shadow-2xl relative">
-              <button onClick={() => setShowSetup(false)} className="absolute top-6 right-6 text-slate-400 hover:text-rose-500"><X size={28} /></button>
-              <div className="space-y-8">
-                <div className="text-center"><h2 className="text-2xl font-black mb-1 text-slate-900 dark:text-white">Konfigurasi Rapat L10</h2></div>
-                <div className="space-y-5">
-                  <div>
-                    <label className="text-[10px] font-black text-slate-400 uppercase ml-2">Nama Tim</label>
-                    <input type="text" value={data.config.companyName} onChange={(e) => updateData('config.companyName', e.target.value)} className="w-full px-5 py-3 rounded-xl bg-slate-50 dark:bg-slate-800 border-none outline-none font-bold text-slate-900 dark:text-white" />
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[100] flex items-center justify-center p-8 bg-slate-950/80 backdrop-blur-xl">
+            <motion.div initial={{ scale: 0.9, y: 30 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.9, y: 30 }} className="bg-white dark:bg-slate-900 max-w-2xl w-full p-12 rounded-[3.5rem] shadow-2xl border border-white/20 dark:border-slate-800 relative max-h-[90vh] flex flex-col overflow-hidden">
+              <button onClick={() => setShowSetup(false)} className="absolute top-8 right-8 text-slate-400 hover:text-rose-500 transition-all active:scale-90"><X size={28} /></button>
+              <div className="space-y-8 flex flex-col flex-1 min-h-0">
+                <div className="text-center flex-shrink-0 space-y-1"><h2 className="text-3xl font-black text-slate-900 dark:text-white">Meeting Engine Setup</h2><p className="text-slate-500 font-bold tracking-tight">Konfigurasi struktur rapat untuk efisiensi maksimal.</p></div>
+                <div className="space-y-6 flex-1 overflow-y-auto pr-3 custom-scrollbar pb-4">
+                  <div className="space-y-2"><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Company / Organization</label>
+                    <input type="text" value={data.config.companyName} onChange={(e) => updateData('config.companyName', e.target.value)} className="w-full px-5 py-4 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-4 focus:ring-blue-500/10 font-black text-lg text-slate-900 dark:text-white outline-none transition-all" />
                   </div>
-                  <div>
-                    <label className="text-[10px] font-black text-slate-400 uppercase ml-2">Divisi (Pisahkan dengan koma)</label>
-                    <textarea value={data.config.divisions.join(', ')} onChange={(e) => updateData('config.divisions', e.target.value.split(',').map(d => d.trim()).filter(d => d))} rows={2} className="w-full px-5 py-3 rounded-xl bg-slate-50 dark:bg-slate-800 border-none outline-none font-medium text-slate-900 dark:text-white" />
+                  <div className="space-y-2"><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Divisions (Comma Separated)</label>
+                    <textarea value={data.config.divisions.join(', ')} onChange={(e) => updateData('config.divisions', e.target.value.split(',').map(d => d.trim()).filter(Boolean))} rows={3} className="w-full px-5 py-4 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-4 focus:ring-blue-500/10 font-bold text-sm text-slate-800 dark:text-slate-200 resize-none outline-none transition-all" />
                   </div>
-                  <div>
-                    <label className="text-[10px] font-black text-slate-400 uppercase ml-2">Target Strategis (Rocks)</label>
-                    <div className="space-y-2 max-h-[150px] overflow-auto">
+                  <div className="space-y-3"><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Quarterly Rocks (Priorities)</label>
+                    <div className="space-y-3 max-h-[220px] overflow-y-auto custom-scrollbar pr-1">
                       {data.config.rocks.map((rock, i) => (
-                        <div key={i} className="flex gap-2">
-                          <input type="text" value={rock} onChange={(e) => { const n = [...data.config.rocks]; n[i] = e.target.value; updateData('config.rocks', n); }} className="flex-1 px-4 py-2 rounded-lg bg-slate-50 dark:bg-slate-800 text-sm font-bold text-slate-900 dark:text-white" />
-                          <button onClick={() => updateData('config.rocks', data.config.rocks.filter((_, idx) => idx !== i))} className="text-rose-500 px-2"><Trash2 size={16}/></button>
+                        <div key={i} className="flex gap-3 group">
+                          <input type="text" value={rock} onChange={(e) => {
+                            const newRocks = [...data.config.rocks]; newRocks[i] = e.target.value; updateData('config.rocks', newRocks);
+                          }} className="flex-1 px-5 py-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-4 focus:ring-blue-500/10 text-sm font-bold text-slate-800 dark:text-slate-200 outline-none transition-all" />
+                          <button onClick={() => updateData('config.rocks', data.config.rocks.filter((_, idx) => idx !== i))} className="p-3 text-rose-500 hover:bg-rose-500/10 rounded-xl transition-all opacity-0 group-hover:opacity-100"><Trash2 size={18}/></button>
                         </div>
                       ))}
                     </div>
-                    <button onClick={() => updateData('config.rocks', [...data.config.rocks, ""])} className="w-full mt-2 py-2 border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-lg text-slate-400 text-xs font-bold">+ Tambah Rock</button>
+                    <button onClick={() => updateData('config.rocks', [...data.config.rocks, ""])} className="w-full py-4 border-2 border-dashed border-slate-300 dark:border-slate-800 rounded-2xl text-slate-400 hover:text-blue-500 hover:border-blue-500 transition-all font-black text-xs bg-slate-50/50 dark:bg-slate-900/10">+ ADD NEW ROCK</button>
                   </div>
                 </div>
-                <button onClick={() => setShowSetup(false)} className="w-full py-4 rounded-[1.5rem] bg-blue-600 text-white font-bold text-lg hover:bg-blue-700">Mulai Rapat</button>
+                <button onClick={() => setShowSetup(false)} className="w-full py-5 rounded-[2rem] bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 font-black text-lg shadow-2xl active:scale-[0.97] transition-all flex-shrink-0">LAUNCH MEETING SESSION</button>
               </div>
             </motion.div>
           </motion.div>
