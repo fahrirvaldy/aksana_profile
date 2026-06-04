@@ -294,7 +294,7 @@ const L10PDFDocument = ({ data, attendees, averageRating }: { data: L10Data; att
               <Text key={idx} style={{ paddingVertical: 4, fontSize: 9, color: "#475569" }}>• {h}</Text>
             ))
           ) : (
-            <Text style={{ fontSize: 9, color: "#94a3b8", italic: true }}>Tidak ada headline pelanggan.</Text>
+            <Text style={{ fontSize: 9, color: "#94a3b8", fontStyle: "italic" }}>Tidak ada headline pelangga...</Text>
           )}
         </View>
         <View style={[pdfStyles.section, { flex: 1 }]}>
