@@ -81,7 +81,7 @@ export interface L10Data {
     notes: string;
     solutions: string;
   };
-  ratings: Record<number, number>;
+  ratings: Record<number, number | string>;
 }
 
 interface L10MeetingProps {
@@ -333,7 +333,7 @@ const L10PDFDocument = ({ data, attendees, averageRating }: { data: L10Data; att
               <View style={pdfStyles.cellCol5}><Text style={pdfStyles.tableHeaderLabel}>Status</Text></View>
             </View>
             {kpis.length === 0 ? (
-              <Text style={{ padding: 10, color: "#94a3b8", italic: true, fontSize: 9 }}>Tidak ada data KPI untuk divisi ini.</Text>
+              <Text style={{ padding: 10, color: "#94a3b8", fontStyle: "italic", fontSize: 9 }}>Tidak ada data KPI untuk divisi ini.</Text>
             ) : (
               kpis.map((k, idx) => (
                 <View key={idx} style={pdfStyles.row}>
@@ -396,7 +396,7 @@ const L10PDFDocument = ({ data, attendees, averageRating }: { data: L10Data; att
           <View style={{ width: "25%" }}><Text style={pdfStyles.tableHeaderLabel}>Owner</Text></View>
         </View>
         {data.todoList.length === 0 ? (
-          <Text style={{ padding: 10, color: "#94a3b8", italic: true, fontSize: 9 }}>Tidak ada tugas yang terekam.</Text>
+          <Text style={{ padding: 10, color: "#94a3b8", fontStyle: "italic", fontSize: 9 }}>Tidak ada tugas yang terekam.</Text>
         ) : (
           data.todoList.map((todo) => (
             <View key={todo.id} style={pdfStyles.row}>
