@@ -9,10 +9,11 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.105.3",
+    "@react-pdf/renderer": "^4.5.1",
+    "@supabase/supabase-js": "^2.107.0",
     "chart.js": "^4.5.1",
     "dom-to-image-more": "^3.7.2",
-    "framer-motion": "^12.38.0",
+    "framer-motion": "^12.40.0",
     "html2canvas": "^1.4.1",
     "jspdf": "^4.2.1",
     "lucide-react": "^1.14.0",

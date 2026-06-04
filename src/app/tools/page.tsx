@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import dynamic from 'next/dynamic';
 import { supabase } from "@/lib/supabase/client";
 import { 
   DollarSign,
@@ -33,7 +34,8 @@ import FunnelSimulator from "@/components/tools/funnel-simulator";
 import ProductionTargetSimulator from "@/components/tools/production-target-simulator";
 import L10Meeting from "@/components/tools/l10-meeting";
 import PeopleAnalyzer from "@/components/tools/people-analyzer";
-import ToDoTracker from "@/components/tools/todo-tracker";
+
+const ToDoTracker = dynamic(() => import("@/components/tools/todo-tracker"), { ssr: false });
 
 const tools = [
   { name: "Cashflow Analysis", description: "Analisis arus kas untuk kesehatan finansial bisnis.", icon: <DollarSign size={24} />, status: "Active" },

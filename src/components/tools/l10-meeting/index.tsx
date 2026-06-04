@@ -95,8 +95,8 @@ interface L10MeetingProps {
 const DEFAULT_DATA: L10Data = {
   config: {
     companyName: "Aksana Business Lab",
-    divisions: ["Marketing", "Operations", "Finance"],
-    rocks: ["Target Sales Q2 >2M/bulan", "Riset 4 Produk Baru"]
+    divisions: ["Marketing", "Sales", "Operation", "Finance"], // Bentuk array awal baku
+    rocks: [""]
   },
   meetingDate: new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }),
   attendance: {},
@@ -463,18 +463,9 @@ const L10PDFDocument = ({ data, attendees, averageRating }: { data: L10Data; att
 // 📊 Main Component View Layer Engine
 // ============================================================================
 export default function L10Meeting({ onSave, isSyncing, initialData }: L10MeetingProps) {
-  // Move getAttendees inside component scope
-  const getAttendees = () => [
-    "Owner",
-    "Integrator",
-    "Marketing",
-    "Operations",
-    "Finance",
-    "Product",
-    "Sales",
-    "Customer Success",
-    "Human Resources"
-  ];
+  const getAttendees = () => data.config.divisions.length > 0 
+    ? ["Owner", "Integrator", ...data.config.divisions] 
+    : ["Owner", "Integrator", "Marketing", "Sales", "Operation", "Finance", "HRD", "Product", "R&D"];
 
   const [data, setData] = useState<L10Data>(initialData || DEFAULT_DATA);
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -527,27 +518,53 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
 
   const updateData = (path: string, value: any) => {
     setData(prev => {
-      const newData = { ...prev };
+      // Fungsi rekursif pembantu untuk memperbarui state secara aman (immutable)
+      const setDeep = (obj: any, pathKeys: string[], val: any): any => {
+        if (pathKeys.length === 0) return val;
+        
+        const [currentKey, ...remainingKeys] = pathKeys;
+        const isArray = Array.isArray(obj);
+        
+        // Salin struktur data saat ini (array atau objek)
+        const cloned = isArray ? [...(obj || [])] : { ...(obj || {}) };
+        
+        // Ambil indeks/key saat ini
+        const targetKey = isArray ? parseInt(currentKey, 10) : currentKey;
+        
+        // Rekursi masuk lebih dalam ke nested objek
+        cloned[targetKey] = setDeep(cloned[targetKey], remainingKeys, val);
+        return cloned;
+      };
+
       const keys = path.split('.');
-      let current: any = newData;
-      for (let i = 0; i < keys.length - 1; i++) { 
-        if (!current[keys[i]]) current[keys[i]] = {};
-        current = current[keys[i]]; 
-      }
-      current[keys[keys.length - 1]] = value;
-      return newData;
+      return setDeep(prev, keys, value);
     });
   };
 
-  const attendees = useMemo(() => getAttendees(), []);
+  const attendees = useMemo(() => getAttendees(), [data.config.divisions]);
 
   const averageRating = useMemo(() => {
-    const ratings = Object.entries(data.ratings)
-      .filter(([idx]) => data.attendance[parseInt(idx)])
-      .map(([, val]) => val);
-    if (ratings.length === 0) return "0.0";
-    return (ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(1);
-  }, [data.ratings, data.attendance]);
+    const attendees = data.config.divisions.length > 0 
+      ? ["Owner", "Integrator", ...data.config.divisions] 
+      : ["Owner", "Integrator", "Marketing", "Sales", "Operation", "Finance", "HRD", "Product", "R&D"];
+
+    let totalScore = 0;
+    let activeCount = 0;
+
+    attendees.forEach((_, idx) => {
+      if (data.attendance && data.attendance[idx] === true) {
+        const scoreRaw = data.ratings ? data.ratings[idx] : undefined;
+        const ratingValue = scoreRaw !== undefined && scoreRaw !== "" ? parseFloat(String(scoreRaw)) : 0;
+        
+        if (ratingValue > 0 && !isNaN(ratingValue)) {
+          totalScore += ratingValue;
+          activeCount++;
+        }
+      }
+    });
+
+    return activeCount > 0 ? (totalScore / activeCount).toFixed(1) : "0.0";
+  }, [data]);
 
   const pullOffTrackData = () => {
     const issuesList = data.idsSession?.issues || [];
@@ -658,7 +675,7 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
           </div>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 flex-1 min-h-0 overflow-hidden pb-4">
-          <div className="bg-white/60 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-8 flex flex-col">
+          <div className="bg-white/60 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-8 flex flex-col shadow-sm">
             <h3 className="text-xl font-bold flex items-center gap-2 mb-4 text-slate-800 dark:text-slate-200"><Users size={20} className="text-blue-500" /> Daftar Hadir</h3>
             <div className="grid grid-cols-2 gap-3 overflow-y-auto pr-1 custom-scrollbar">
               {attendees.map((role, i) => (
@@ -674,7 +691,7 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
               ))}
             </div>
           </div>
-          <div className="bg-white/60 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-8 flex flex-col">
+          <div className="bg-white/60 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-8 flex flex-col shadow-sm">
             <h3 className="text-xl font-bold flex items-center gap-2 mb-4 text-slate-800 dark:text-slate-200"><MessageSquare size={20} className="text-emerald-500" /> Good News</h3>
             <div className="space-y-4 flex-1 overflow-y-auto pr-1 custom-scrollbar">
               {['owner', 'integrator', 'team'].map((pic) => (
@@ -706,7 +723,7 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
             <h2 className="text-4xl font-bold text-slate-900 dark:text-white mb-1">Scorecard: {division}</h2>
             <p className="text-slate-500 font-medium">Review KPI Mingguan</p>
           </div>
-          <div className="bg-white/60 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-8 flex flex-col flex-1 min-h-0 overflow-hidden pb-6">
+          <div className="bg-white/60 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-8 flex flex-col flex-1 min-h-0 overflow-hidden pb-6 shadow-sm">
             <div className="overflow-y-auto flex-1 custom-scrollbar">
               <table className="w-full border-separate border-spacing-y-2">
                 <thead>
@@ -765,7 +782,8 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
       );
     }
 
-    if (currentSlide === 2 + data.config.divisions.length) {
+    const rockReviewSlideIndex = 2 + data.config.divisions.length;
+    if (currentSlide === rockReviewSlideIndex) {
       const rocks = data.config.rocks;
       return (
         <div className="space-y-6 h-full flex flex-col">
@@ -773,7 +791,7 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
             <h2 className="text-4xl font-bold text-slate-900 dark:text-white mb-1">Rock Review</h2>
             <p className="text-slate-500 font-medium">Prioritas Strategis 90 Hari</p>
           </div>
-          <div className="bg-white/60 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-8 flex flex-col flex-1 min-h-0 overflow-hidden pb-6">
+          <div className="bg-white/60 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-8 flex flex-col flex-1 min-h-0 overflow-hidden pb-6 shadow-sm">
             <div className="overflow-y-auto flex-1 custom-scrollbar">
               <table className="w-full border-separate border-spacing-y-2">
                 <thead>
@@ -820,7 +838,7 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1 min-h-0 overflow-hidden pb-4">
           {['customer', 'internal'].map(type => (
-            <div key={type} className="bg-white/60 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-8 flex flex-col space-y-4">
+            <div key={type} className="bg-white/60 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-8 flex flex-col space-y-4 shadow-sm">
               <h3 className={`text-xl font-bold flex items-center gap-2 ${type === 'customer' ? 'text-blue-500' : 'text-emerald-500'}`}><FileText size={20} /> {type === 'customer' ? 'Customer Headlines' : 'Internal Headlines'}</h3>
               <div className="flex-1 overflow-y-auto space-y-3 pr-1 custom-scrollbar">
                 {(data.headlines[type as keyof typeof data.headlines] || []).map((h, i) => (
@@ -848,7 +866,7 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
           <h2 className="text-4xl font-bold text-slate-900 dark:text-white mb-1">To-Do List</h2>
           <p className="text-slate-500 font-medium">Review Minggu Lalu & Action Plan</p>
         </div>
-        <div className="bg-white/60 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-8 flex flex-col flex-1 min-h-0 overflow-hidden pb-6">
+        <div className="bg-white/60 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-8 flex flex-col flex-1 min-h-0 overflow-hidden pb-6 shadow-sm">
           <div className="flex-1 overflow-y-auto space-y-3 pr-1 custom-scrollbar">
             {data.todoList.map((todo, i) => (
               <div key={todo.id} className="flex items-center gap-4 p-4 bg-slate-50 dark:bg-slate-900/30 rounded-xl group border border-slate-200 dark:border-slate-800 transition-all hover:bg-white dark:hover:bg-slate-800/60 shadow-sm">
@@ -928,9 +946,27 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
           {attendees.map((role, i) => data.attendance[i] ? (
             <div key={i} className="flex flex-col items-center gap-2.5 w-28">
               <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest truncate w-full text-center" title={role}>{role}</label>
-              <input type="number" min="1" max="10" step="0.5" value={data.ratings[i] || ""} onChange={(e) => {
-                let val = parseFloat(e.target.value); if (val > 10) val = 10; if (val < 1) val = 1; updateData(`ratings.${i}`, isNaN(val) ? "" : val);
-              }} placeholder="-" className="w-full h-14 rounded-2xl bg-white dark:bg-slate-900 text-center text-2xl font-black border-2 border-slate-200 dark:border-slate-800 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all shadow-inner" />
+              <input
+                type="number"
+                min="0"
+                max="10"
+                step="0.1"
+                placeholder="0"
+                value={data.ratings?.[i] !== undefined ? data.ratings[i] : ""}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  // Validasi batas nilai 0 - 10 secara reaktif
+                  if (val === "" || (parseFloat(val) >= 0 && parseFloat(val) <= 10)) {
+                    updateData(`ratings.${i}`, val);
+                  }
+                }}
+                disabled={!data.attendance?.[i]}
+                className={`w-24 px-4 py-3 rounded-xl border font-bold text-center text-lg outline-none transition-all ${
+                  data.attendance?.[i]
+                    ? "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white focus:ring-4 focus:ring-blue-500/10"
+                    : "bg-slate-100 dark:bg-slate-950 border-transparent text-slate-400 cursor-not-allowed"
+                }`}
+              />
             </div>
           ) : null)}
           {Object.values(data.attendance).filter(Boolean).length === 0 && (
@@ -1000,8 +1036,51 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
                   <div className="space-y-2"><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Company / Organization</label>
                     <input type="text" value={data.config.companyName} onChange={(e) => updateData('config.companyName', e.target.value)} className="w-full px-5 py-4 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-4 focus:ring-blue-500/10 font-black text-lg text-slate-900 dark:text-white outline-none transition-all" />
                   </div>
-                  <div className="space-y-2"><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Divisions (Comma Separated)</label>
-                    <textarea value={data.config.divisions.join(', ')} onChange={(e) => updateData('config.divisions', e.target.value.split(',').map(d => d.trim()).filter(Boolean))} rows={3} className="w-full px-5 py-4 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-4 focus:ring-blue-500/10 font-bold text-sm text-slate-800 dark:text-slate-200 resize-none outline-none transition-all" />
+                  <div>
+                    <label className="block text-xs font-black text-slate-400 dark:text-slate-500 tracking-wider mb-3">
+                      DIVISI PESERTA RAPAT
+                    </label>
+                    <div className="space-y-3 max-h-60 overflow-y-auto pr-2 mb-3">
+                      {data.config.divisions.map((division, i) => (
+                        <div key={i} className="flex items-center gap-3 group">
+                          <input
+                            type="text"
+                            value={division}
+                            placeholder={`Nama Divisi ${i + 1}`}
+                            onChange={(e) => {
+                              const newDivisions = [...data.config.divisions];
+                              newDivisions[i] = e.target.value;
+                              updateData('config.divisions', newDivisions);
+                            }}
+                            className="flex-1 px-5 py-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-4 focus:ring-blue-500/10 text-sm font-bold text-slate-800 dark:text-slate-200 outline-none transition-all"
+                          />
+                          <button
+                            onClick={() => {
+                              const newDivisions = data.config.divisions.filter((_, idx) => idx !== i);
+                              updateData('config.divisions', newDivisions);
+                              
+                              // Opsional: Bersihkan data kpi atau rating terkait indeks ini jika diperlukan
+                              if (data.ratings) {
+                                const newRatings = { ...data.ratings };
+                                delete newRatings[i + 2]; // +2 Menyesuaikan offset Owner & Integrator
+                                updateData('ratings', newRatings);
+                              }
+                            }}
+                            className="p-3 text-rose-500 hover:bg-rose-500/10 rounded-xl transition-all opacity-0 group-hover:opacity-100"
+                          >
+                            <Trash2 size={18} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                    <button
+                      onClick={() => {
+                        updateData('config.divisions', [...data.config.divisions, ""]);
+                      }}
+                      className="w-full py-3 border-2 border-dashed border-slate-300 dark:border-slate-800 rounded-2xl text-slate-400 hover:text-blue-500 hover:border-blue-500 transition-all font-black text-xs bg-slate-50/50 dark:bg-slate-900/10 flex items-center justify-center gap-2"
+                    >
+                      <Plus size={14} /> + TAMBAH DIVISI BARU
+                    </button>
                   </div>
                   <div className="space-y-3"><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Quarterly Rocks (Priorities)</label>
                     <div className="space-y-3 max-h-[220px] overflow-y-auto custom-scrollbar pr-1">
