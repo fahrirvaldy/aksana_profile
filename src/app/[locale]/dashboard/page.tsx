@@ -53,6 +53,9 @@ export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState<TabType>('finance');
 
   useEffect(() => {
+    // Redirect to tools catalog as the main dashboard is now hidden
+    router.push("/tools");
+
     const initDashboard = async () => {
       const { data: { session } } = await supabase.auth.getSession();
 

@@ -27,8 +27,8 @@ export default function LoginPage() {
 
       if (error) throw error;
 
-      // Redirect to dashboard on success
-      router.push("/dashboard");
+      // Redirect to tools on success (Dashboard is hidden)
+      router.push("/tools");
     } catch (error: any) {
       // Graceful Failure UI (Amber/Orange)
       setAuthError(error.message || "Email atau password yang Anda masukkan salah.");

@@ -2,11 +2,11 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { Link, usePathname } from "@/i18n/routing";
+import { Link, usePathname, useRouter } from "@/i18n/routing";
 import aksanaLogo from "@/assets/image/logo.png";
 import { ThemeToggle } from "./ThemeToggle";
 import { LanguageSwitcher } from "./layout/LanguageSwitcher";
-import { Menu, X, UserCircle } from "lucide-react";
+import { Menu, X, UserCircle, LogOut } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
 import { AnimatePresence, motion } from "framer-motion";
 import { useTranslations } from 'next-intl';
@@ -16,6 +16,7 @@ export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
   const t = useTranslations('Navigation');
 
   useEffect(() => {
@@ -32,6 +33,13 @@ export function Navbar() {
 
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setIsLoggedIn(false);
+    setMobileMenuOpen(false);
+    router.push("/login");
+  };
 
   const navLinks = [
     { name: t('services'), href: "/layanan" },
@@ -98,13 +106,13 @@ export function Navbar() {
               <div className="hidden md:block border-l border-black dark:border-slate-800 h-5 mx-2 shadow-sm"></div>
 
               {isLoggedIn ? (
-                <Link 
-                  href="/dashboard"
-                  className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-slate-900 dark:bg-slate-50 text-slate-50 dark:text-slate-950 text-sm font-bold uppercase tracking-widest transition-all hover:opacity-90 active:scale-95"
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-slate-900 dark:bg-slate-50 text-slate-50 dark:text-slate-950 text-sm font-bold uppercase tracking-widest transition-all hover:opacity-90 active:scale-95 cursor-pointer"
                 >
-                  <UserCircle size={18} />
-                  <span>{t('dashboard') || 'Dashboard'}</span>
-                </Link>
+                  <LogOut size={18} />
+                  <span>{t('logout') || 'Logout'}</span>
+                </button>
               ) : (
                 <Link 
                   href="/login"
@@ -157,13 +165,22 @@ export function Navbar() {
                     <LanguageSwitcher />
                     <ThemeToggle />
                   </div>
-                  <Link 
-                    href={isLoggedIn ? "/dashboard" : "/login"}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="px-8 py-3 rounded-xl bg-slate-900 dark:bg-slate-50 text-slate-50 dark:text-slate-950 text-sm font-bold uppercase tracking-widest"
-                  >
-                    {isLoggedIn ? (t('dashboard') || 'Dashboard') : t('login')}
-                  </Link>
+                  {isLoggedIn ? (
+                    <button 
+                      onClick={handleLogout}
+                      className="px-8 py-3 rounded-xl bg-slate-900 dark:bg-slate-50 text-slate-50 dark:text-slate-950 text-sm font-bold uppercase tracking-widest cursor-pointer"
+                    >
+                      {t('logout') || 'Logout'}
+                    </button>
+                  ) : (
+                    <Link 
+                      href="/login"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="px-8 py-3 rounded-xl bg-slate-900 dark:bg-slate-50 text-slate-50 dark:text-slate-950 text-sm font-bold uppercase tracking-widest"
+                    >
+                      {t('login')}
+                    </Link>
+                  )}
                 </div>
               </div>
             </motion.div>

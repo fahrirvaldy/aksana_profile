@@ -5,6 +5,7 @@
     "tools": "Alat",
     "contact": "Kontak",
     "login": "Masuk",
+    "logout": "Keluar",
     "dashboard": "Dasbor"
   },
   "HomePage": {

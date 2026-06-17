@@ -5,6 +5,7 @@
     "tools": "Tools",
     "contact": "Contact",
     "login": "Login",
+    "logout": "Logout",
     "dashboard": "Dashboard"
   },
   "HomePage": {
