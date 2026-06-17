@@ -1,20 +1,22 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { Link, usePathname } from "@/i18n/routing";
 import aksanaLogo from "@/assets/image/logo.png";
 import { ThemeToggle } from "./ThemeToggle";
+import { LanguageSwitcher } from "./layout/LanguageSwitcher";
 import { Menu, X, UserCircle } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
 import { AnimatePresence, motion } from "framer-motion";
+import { useTranslations } from 'next-intl';
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const pathname = usePathname();
+  const t = useTranslations('Navigation');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -32,17 +34,17 @@ export function Navbar() {
   }, []);
 
   const navLinks = [
-    { name: "Layanan", href: "/layanan" },
-    { name: "Tools", href: "/tools" },
-    { name: "Kontak", href: "/kontak" },
+    { name: t('services'), href: "/layanan" },
+    { name: t('tools'), href: "/tools" },
+    { name: t('contact'), href: "/kontak" },
   ];
 
   return (
     <header className="fixed top-0 w-full z-50">
       <nav className={`
         w-full h-20 transition-all duration-500
-        bg-white/90 dark:bg-slate-950/90 backdrop-blur-xl
-        ${isScrolled ? "border-b border-slate-200/50 dark:border-slate-800/50 shadow-sm" : "border-b border-transparent"}
+        bg-white dark:bg-slate-950/90 dark:backdrop-blur-md
+        ${isScrolled ? "border-b border-black dark:border-slate-800 shadow-sm" : "border-b border-transparent"}
       `}>
         <div className="max-w-7xl mx-auto px-8 w-full h-full flex justify-between items-center">
           {/* Branding Sisi Kiri */}
@@ -55,7 +57,7 @@ export function Navbar() {
               priority
               className="object-contain dark:brightness-110 group-hover:scale-105 transition-transform duration-500" 
             />
-            <span className="text-[14px] font-bold tracking-[0.4em] uppercase text-slate-900 dark:text-slate-50 hidden sm:block">
+            <span className="text-[14px] font-bold tracking-[0.4em] uppercase text-slate-950 dark:text-slate-50 hidden sm:block">
               Aksana Business Lab
             </span>
           </Link>
@@ -72,8 +74,8 @@ export function Navbar() {
                     href={link.href}
                     className={`relative py-1 text-base transition-colors ${
                       isActive 
-                        ? "text-slate-900 dark:text-slate-50 font-semibold" 
-                        : "text-slate-600 dark:text-slate-400 font-medium hover:text-slate-900 dark:hover:text-slate-50"
+                        ? "text-slate-950 dark:text-slate-50 font-semibold" 
+                        : "text-slate-700 dark:text-slate-400 font-medium hover:text-slate-950 dark:hover:text-slate-50"
                     }`}
                   >
                     {link.name}
@@ -90,30 +92,31 @@ export function Navbar() {
             </div>
 
             <div className="flex items-center gap-4">
+              <LanguageSwitcher />
               <ThemeToggle />
               
-              <div className="hidden md:block border-l border-slate-200 dark:border-slate-800 h-5 mx-2"></div>
+              <div className="hidden md:block border-l border-black dark:border-slate-800 h-5 mx-2 shadow-sm"></div>
 
               {isLoggedIn ? (
                 <Link 
                   href="/dashboard"
-                  className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-slate-900 dark:bg-slate-50 text-slate-50 dark:text-slate-900 text-sm font-bold uppercase tracking-widest transition-all hover:opacity-90 active:scale-95"
+                  className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-slate-900 dark:bg-slate-50 text-slate-50 dark:text-slate-950 text-sm font-bold uppercase tracking-widest transition-all hover:opacity-90 active:scale-95"
                 >
                   <UserCircle size={18} />
-                  <span>Dasbor</span>
+                  <span>{t('dashboard') || 'Dashboard'}</span>
                 </Link>
               ) : (
                 <Link 
                   href="/login"
-                  className="px-6 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-sm font-bold uppercase tracking-widest text-slate-900 dark:text-slate-50 hover:bg-slate-900 hover:text-white dark:hover:bg-slate-50 dark:hover:text-slate-900 transition-all"
+                  className="px-6 py-2.5 rounded-xl border border-black dark:border-slate-800 text-sm font-bold uppercase tracking-widest text-slate-950 dark:text-slate-50 hover:bg-slate-900 hover:text-white dark:hover:bg-slate-50 dark:hover:text-slate-950 transition-all shadow-none"
                 >
-                  Login
+                  {t('login')}
                 </Link>
               )}
 
               {/* Mobile Menu Toggle */}
               <button 
-                className="md:hidden p-2 text-slate-500 hover:text-slate-900 dark:hover:text-slate-50 transition-colors"
+                className="md:hidden p-2 text-slate-950 dark:text-slate-50 hover:text-slate-950 dark:hover:text-slate-50 transition-colors"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               >
                 {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -129,7 +132,7 @@ export function Navbar() {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
-              className="md:hidden w-full bg-white dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 overflow-hidden shadow-2xl"
+              className="md:hidden w-full bg-white dark:bg-slate-950 border-b border-black dark:border-slate-800 overflow-hidden aksana-glass shadow-sm"
             >
               <div className="px-8 py-10 space-y-6">
                 {navLinks.map((link) => {
@@ -141,22 +144,25 @@ export function Navbar() {
                       onClick={() => setMobileMenuOpen(false)}
                       className={`block text-base transition-colors ${
                         isActive 
-                          ? "text-slate-900 dark:text-slate-50 font-bold" 
-                          : "text-slate-600 dark:text-slate-400 font-medium"
+                          ? "text-slate-950 dark:text-slate-50 font-bold" 
+                          : "text-slate-700 dark:text-slate-400 font-medium"
                       }`}
                     >
                       {link.name}
                     </Link>
                   );
                 })}
-                <div className="pt-8 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                  <ThemeToggle />
+                <div className="pt-8 border-t border-black dark:border-slate-800 flex items-center justify-between shadow-none">
+                  <div className="flex items-center gap-4">
+                    <LanguageSwitcher />
+                    <ThemeToggle />
+                  </div>
                   <Link 
                     href={isLoggedIn ? "/dashboard" : "/login"}
                     onClick={() => setMobileMenuOpen(false)}
-                    className="px-8 py-3 rounded-xl bg-slate-900 dark:bg-slate-50 text-slate-50 dark:text-slate-900 text-sm font-bold uppercase tracking-widest"
+                    className="px-8 py-3 rounded-xl bg-slate-900 dark:bg-slate-50 text-slate-50 dark:text-slate-950 text-sm font-bold uppercase tracking-widest"
                   >
-                    {isLoggedIn ? "Dasbor" : "Login"}
+                    {isLoggedIn ? (t('dashboard') || 'Dashboard') : t('login')}
                   </Link>
                 </div>
               </div>

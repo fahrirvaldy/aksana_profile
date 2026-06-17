@@ -30,6 +30,7 @@ import {
   ChartData
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
+import { useTranslations } from 'next-intl';
 
 ChartJS.register(
   CategoryScale,
@@ -66,6 +67,8 @@ interface GrowthSimulatorProps {
 }
 
 export default function GrowthSimulator({ user, onSave, isSyncing, initialData }: GrowthSimulatorProps) {
+  const t = useTranslations("Tools.Growth");
+
   // --- State ---
   const [currency, setCurrency] = useState<'IDR' | 'USD'>('IDR');
   const [period, setPeriod] = useState<'Bulan' | 'Tahun'>('Bulan');
@@ -170,7 +173,7 @@ export default function GrowthSimulator({ user, onSave, isSyncing, initialData }
 
   // --- Chart Configs ---
   const barChartData: ChartData<'bar'> = {
-    labels: ['Saat Ini', 'Target Baru'],
+    labels: [t("fiveWays.current"), t("fiveWays.target")],
     datasets: [{
       label: 'Profit Proyeksi',
       data: [currentDerived.profit, targetDerived.profit],
@@ -183,7 +186,7 @@ export default function GrowthSimulator({ user, onSave, isSyncing, initialData }
   const waterfallData: ChartData<'bar'> = {
     labels: ['Base', '+Leads', '+Conv', '+Trans', '+Sale', 'Target'],
     datasets: [{
-      label: 'Lompatan Profit',
+      label: t("waterfall.label"),
       data: (function() {
         const base = currentDerived.profit;
         
@@ -238,20 +241,20 @@ export default function GrowthSimulator({ user, onSave, isSyncing, initialData }
       {/* LEFT COLUMN: INPUTS */}
       <div className="lg:col-span-7 space-y-8">
         {/* Global Controls */}
-        <div className="p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-xl space-y-6">
+        <div className="p-8 rounded-xl bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 space-y-6 aksana-glass shadow-sm">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="space-y-1">
-              <h3 className="text-sm font-bold uppercase tracking-widest text-slate-400 flex items-center gap-2">
-                <Zap size={16} className="text-amber-500" /> Pengaturan Global
+              <h3 className="text-sm font-bold uppercase tracking-widest text-slate-600 dark:text-slate-300 flex items-center gap-2">
+                <Zap size={16} className="text-amber-500" /> {t("global.title")}
               </h3>
-              <p className="text-xs text-slate-500">Simulasi kenaikan serentak untuk strategi 5-Ways.</p>
+              <p className="text-xs text-slate-600 dark:text-slate-300 font-normal">{t("global.subtitle")}</p>
             </div>
-            <div className="flex items-center gap-2 bg-slate-50 dark:bg-slate-800 p-1.5 rounded-2xl border border-slate-100 dark:border-slate-700">
+            <div className="flex items-center gap-2 bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 p-1.5 rounded-xl shadow-sm">
               {['IDR', 'USD'].map(cur => (
                 <button
                   key={cur}
                   onClick={() => { setCurrency(cur as 'IDR' | 'USD'); handleSave({ currency: cur as 'IDR' | 'USD' }); }}
-                  className={`px-3 py-1.5 rounded-xl text-[10px] font-black transition-all ${currency === cur ? "bg-white dark:bg-slate-900 shadow-sm" : "text-slate-400"}`}
+                  className={`px-3 py-1.5 rounded-xl text-[10px] font-black transition-all ${currency === cur ? "bg-black text-white dark:bg-slate-900 shadow-sm dark:text-white" : "text-slate-600 dark:text-slate-300"}`}
                 >
                   {cur}
                 </button>
@@ -261,29 +264,29 @@ export default function GrowthSimulator({ user, onSave, isSyncing, initialData }
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-3">
-              <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Kenaikan Serentak (%)</label>
+              <label className="text-[10px] font-bold uppercase tracking-widest text-slate-600 dark:text-slate-300 ml-1">{t("global.growth")}</label>
               <div className="relative">
-                <RefreshCcw className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                <RefreshCcw className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600 dark:text-slate-300" size={18} />
                 <input
                   type="number"
                   value={globalGrowth}
                   onChange={(e) => applyGlobalGrowth(Number(e.target.value))}
-                  className="w-full pl-12 pr-4 py-4 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-emerald-500 outline-none transition-all font-bold text-lg"
+                  className="w-full pl-12 pr-4 py-4 rounded-xl bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 focus:border-emerald-500 outline-none transition-all font-bold text-lg placeholder-slate-400 dark:placeholder-slate-500"
                 />
               </div>
             </div>
             <div className="space-y-3">
-              <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Periode Analisis</label>
+              <label className="text-[10px] font-bold uppercase tracking-widest text-slate-600 dark:text-slate-300 ml-1">{t("global.period")}</label>
               <div className="flex gap-2">
                 {(['Bulan', 'Tahun'] as const).map(p => (
                   <button
                     key={p}
                     onClick={() => { setPeriod(p); handleSave({ period: p }); }}
-                    className={`flex-1 py-4 rounded-2xl font-bold transition-all border ${
-                      period === p ? "bg-slate-900 text-white border-transparent" : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-500"
+                    className={`flex-1 py-4 rounded-xl font-bold transition-all border ${
+                      period === p ? "bg-black text-white border-transparent" : "bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700"
                     }`}
                   >
-                    Per {p}
+                    {t("global.per", { period: p })}
                   </button>
                 ))}
               </div>
@@ -292,32 +295,32 @@ export default function GrowthSimulator({ user, onSave, isSyncing, initialData }
         </div>
 
         {/* 5-Ways Simulator Table */}
-        <div className="p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-xl space-y-6">
+        <div className="p-8 rounded-xl bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 space-y-6 aksana-glass shadow-sm">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-sm font-bold uppercase tracking-widest text-slate-400 flex items-center gap-2">
-              <Target size={18} /> Strategi 5-Ways
+            <h3 className="text-sm font-bold uppercase tracking-widest text-slate-600 dark:text-slate-300 flex items-center gap-2">
+              <Target size={18} /> {t("fiveWays.title")}
             </h3>
-            <div className="flex gap-8 text-[10px] font-black uppercase tracking-widest text-slate-400 px-4">
-              <span>Saat Ini</span>
-              <span className="text-emerald-500">Target</span>
+            <div className="flex gap-8 text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-300 px-4">
+              <span>{t("fiveWays.current")}</span>
+              <span className="text-emerald-500">{t("fiveWays.target")}</span>
             </div>
           </div>
 
           <div className="space-y-4">
             {[
-              { id: 'leads', label: 'Number of Leads', icon: <Users size={18} />, key: 'leads' as keyof Metrics },
-              { id: 'conv', label: 'Conversion Rate', icon: <Percent size={18} />, key: 'conv' as keyof Metrics, isPercent: true },
-              { id: 'trans', label: 'Avg. Transactions', icon: <RefreshCcw size={18} />, key: 'trans' as keyof Metrics },
-              { id: 'sale', label: 'Avg. Sale Value', icon: <DollarSign size={18} />, key: 'sale' as keyof Metrics, isCurrency: true },
-              { id: 'margin', label: 'Profit Margin', icon: <BarChart3 size={18} />, key: 'margin' as keyof Metrics, isPercent: true },
+              { id: 'leads', label: t("fiveWays.leads"), icon: <Users size={18} />, key: 'leads' as keyof Metrics },
+              { id: 'conv', label: t("fiveWays.conv"), icon: <Percent size={18} />, key: 'conv' as keyof Metrics, isPercent: true },
+              { id: 'trans', label: t("fiveWays.trans"), icon: <RefreshCcw size={18} />, key: 'trans' as keyof Metrics },
+              { id: 'sale', label: t("fiveWays.sale"), icon: <DollarSign size={18} />, key: 'sale' as keyof Metrics, isCurrency: true },
+              { id: 'margin', label: t("fiveWays.margin"), icon: <BarChart3 size={18} />, key: 'margin' as keyof Metrics, isPercent: true },
             ].map((item, idx) => (
               <div key={item.id} className="relative">
-                <div className="flex items-center gap-4 p-4 rounded-2xl bg-slate-50/50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 hover:border-slate-200 transition-all">
-                  <div className="w-10 h-10 rounded-xl bg-white dark:bg-slate-900 flex items-center justify-center text-slate-400 shadow-sm">
+                <div className="flex items-center gap-4 p-4 rounded-xl bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 hover:border-slate-300 transition-all shadow-sm">
+                  <div className="w-10 h-10 rounded-xl bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-300 shadow-sm aksana-glass">
                     {item.icon}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs font-bold text-slate-700 dark:text-slate-300">{item.label}</p>
+                    <p className="text-xs font-bold text-slate-600 dark:text-slate-300">{item.label}</p>
                   </div>
                   <div className="flex items-center gap-3">
                     <input
@@ -328,9 +331,9 @@ export default function GrowthSimulator({ user, onSave, isSyncing, initialData }
                         setCurrent(next);
                         handleSave({ current: next });
                       }}
-                      className="w-20 md:w-28 px-3 py-2 rounded-xl bg-transparent text-right font-medium text-slate-400 outline-none focus:text-slate-900"
+                      className="w-20 md:w-28 px-3 py-2 rounded-xl bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 text-right font-medium outline-none"
                     />
-                    <ArrowRight size={14} className="text-slate-300" />
+                    <ArrowRight size={14} className="text-slate-600 dark:text-slate-300" />
                     <input
                       type="number"
                       value={target[item.key]}
@@ -339,18 +342,18 @@ export default function GrowthSimulator({ user, onSave, isSyncing, initialData }
                         setTarget(next);
                         handleSave({ target: next });
                       }}
-                      className="w-20 md:w-28 px-3 py-2 rounded-xl bg-emerald-500/10 dark:bg-emerald-500/5 text-right font-black text-emerald-600 outline-none border border-emerald-500/20 focus:border-emerald-500"
+                      className="w-20 md:w-28 px-3 py-2 rounded-xl bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 text-right font-black outline-none"
                     />
                   </div>
                 </div>
                 {idx < 4 && (
-                  <div className="absolute -bottom-3 left-8 z-10 text-slate-300 dark:text-slate-700 bg-white dark:bg-slate-900 px-1 font-black text-[10px]">
+                  <div className="absolute -bottom-3 left-8 z-10 text-black dark:text-slate-950 bg-white dark:bg-slate-900 px-1 font-black text-[10px] aksana-glass">
                     {idx === 0 ? "×" : idx === 1 ? "=" : idx === 2 ? "×" : "×"}
                   </div>
                 )}
                 {idx === 1 && (
-                  <div className="py-2 px-12 flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase italic">
-                    <Users size={12} /> {formatValue(currentDerived.customers)} Customers → <span className="text-emerald-500">{formatValue(targetDerived.customers)} Customers</span>
+                  <div className="py-2 px-12 flex items-center gap-2 text-[10px] font-bold text-black dark:text-slate-400 uppercase italic">
+                    <Users size={12} /> {formatValue(currentDerived.customers)} {t("fiveWays.customers")} → <span className="text-emerald-600 dark:text-emerald-400">{formatValue(targetDerived.customers)} {t("fiveWays.customers")}</span>
                   </div>
                 )}
               </div>
@@ -360,31 +363,31 @@ export default function GrowthSimulator({ user, onSave, isSyncing, initialData }
 
         {/* Additional Costs */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-xl space-y-4">
-            <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 flex items-center gap-2">
-              <TrendingUp size={14} className="text-blue-500" /> Biaya Pemasaran ({period})
+          <div className="p-8 rounded-xl bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 space-y-4 aksana-glass shadow-sm">
+            <label className="text-[10px] font-bold uppercase tracking-widest text-slate-600 dark:text-slate-300 flex items-center gap-2">
+              <TrendingUp size={14} className="text-blue-500" /> {t("costs.marketing", { period })}
             </label>
             <div className="relative">
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold">Rp</span>
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600 dark:text-slate-300 font-bold">Rp</span>
               <input
                 type="number"
                 value={marketingCost}
                 onChange={(e) => { setMarketingCost(Number(e.target.value)); handleSave({ marketingCost: Number(e.target.value) }); }}
-                className="w-full pl-12 pr-4 py-4 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none font-black text-xl"
+                className="w-full pl-12 pr-4 py-4 rounded-xl bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 outline-none font-black text-xl placeholder-slate-400 dark:placeholder-slate-500"
               />
             </div>
           </div>
-          <div className="p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-xl space-y-4">
-            <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 flex items-center gap-2">
-              <RefreshCcw size={14} className="text-purple-500" /> Biaya Tetap ({period})
+          <div className="p-8 rounded-xl bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 space-y-4 aksana-glass shadow-sm">
+            <label className="text-[10px] font-bold uppercase tracking-widest text-slate-600 dark:text-slate-300 flex items-center gap-2">
+              <RefreshCcw size={14} className="text-purple-500" /> {t("costs.fixed", { period })}
             </label>
             <div className="relative">
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold">Rp</span>
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600 dark:text-slate-300 font-bold">Rp</span>
               <input
                 type="number"
                 value={fixedCost}
                 onChange={(e) => { setFixedCost(Number(e.target.value)); handleSave({ fixedCost: Number(e.target.value) }); }}
-                className="w-full pl-12 pr-4 py-4 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none font-black text-xl"
+                className="w-full pl-12 pr-4 py-4 rounded-xl bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 outline-none font-black text-xl placeholder-slate-400 dark:placeholder-slate-500"
               />
             </div>
           </div>
@@ -394,29 +397,29 @@ export default function GrowthSimulator({ user, onSave, isSyncing, initialData }
       {/* RIGHT COLUMN: VISUALS */}
       <div className="lg:col-span-5 space-y-8">
         {/* Results Overview */}
-        <div className="p-10 rounded-[3rem] bg-slate-900 text-white shadow-2xl space-y-8 relative overflow-hidden">
+        <div className="p-10 rounded-[3rem] bg-black text-white space-y-8 relative overflow-hidden">
           <div className="absolute -top-12 -right-12 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl"></div>
           
           <div className="relative space-y-6">
             <div className="flex items-center justify-between">
-              <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-slate-500">Proyeksi Profit Akhir</span>
-              <div className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase tracking-tighter flex items-center gap-1.5">
-                <TrendingUp size={12} /> +{(((targetDerived.profit - currentDerived.profit) / (currentDerived.profit || 1)) * 100).toFixed(1)}% Growth
+              <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-white">{t("results.title")}</span>
+              <div className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase tracking-tighter flex items-center gap-1.5 shadow-sm">
+                <TrendingUp size={12} /> {t("results.growth", { percent: (((targetDerived.profit - currentDerived.profit) / (currentDerived.profit || 1)) * 100).toFixed(1) })}
               </div>
             </div>
             
             <div className="space-y-1">
               <h2 className="text-5xl font-black tracking-tighter">{formatValue(targetDerived.profit, true)}</h2>
-              <p className="text-slate-500 text-xs font-medium italic">Dibandingkan {formatValue(currentDerived.profit, true)} saat ini.</p>
+              <p className="text-slate-700 dark:text-slate-400 text-xs font-medium italic">{t("results.current", { val: formatValue(currentDerived.profit, true) })}</p>
             </div>
 
             <div className="grid grid-cols-2 gap-4 pt-4">
-              <div className="p-4 rounded-2xl bg-white/5 border border-white/5 space-y-1">
-                <p className="text-[9px] font-bold uppercase tracking-widest text-slate-500">Omzet Target</p>
+              <div className="p-4 rounded-2xl bg-white/5 border border-white/5 space-y-1 shadow-sm">
+                <p className="text-[9px] font-bold uppercase tracking-widest text-slate-700 dark:text-slate-400">{t("results.revenue")}</p>
                 <p className="text-sm font-black">{formatValue(targetDerived.revenue, true)}</p>
               </div>
-              <div className="p-4 rounded-2xl bg-white/5 border border-white/5 space-y-1">
-                <p className="text-[9px] font-bold uppercase tracking-widest text-slate-500">Kenaikan Profit</p>
+              <div className="p-4 rounded-2xl bg-white/5 border border-white/5 space-y-1 shadow-sm">
+                <p className="text-[9px] font-bold uppercase tracking-widest text-slate-700 dark:text-slate-400">{t("results.profitIncrease")}</p>
                 <p className="text-sm font-black text-emerald-400">+{formatValue(targetDerived.profit - currentDerived.profit, true)}</p>
               </div>
             </div>
@@ -430,18 +433,18 @@ export default function GrowthSimulator({ user, onSave, isSyncing, initialData }
             <button
               onClick={() => handleSave({})}
               disabled={isSyncing}
-              className="w-full py-5 rounded-2xl bg-white text-slate-900 font-black flex items-center justify-center gap-3 transition-all hover:scale-[1.02] active:scale-95 shadow-xl disabled:opacity-50"
+              className="w-full py-5 rounded-2xl bg-white text-black font-black flex items-center justify-center gap-3 transition-all hover:scale-[1.02] active:scale-95 shadow-xl disabled:opacity-50"
             >
-              {isSyncing ? <Loader2 className="animate-spin" size={20} /> : <><Save size={20} /> Simpan Strategi Pertumbuhan</>}
+              {isSyncing ? <Loader2 className="animate-spin" size={20} /> : <><Save size={20} /> {t("results.save")}</>}
             </button>
           )}
         </div>
 
         {/* Waterfall Chart */}
-        <div className="p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-xl space-y-6">
+        <div className="p-8 rounded-xl bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 space-y-6 aksana-glass shadow-sm">
           <div className="flex items-center justify-between">
-            <h3 className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Visualisasi Lompatan Profit</h3>
-            <Info size={14} className="text-slate-300" />
+            <h3 className="text-[10px] font-bold uppercase tracking-widest text-slate-600 dark:text-slate-300">{t("waterfall.title")}</h3>
+            <Info size={14} className="text-slate-600 dark:text-slate-300" />
           </div>
           <div className="h-56 w-full">
             <Bar data={waterfallData} options={commonOptions} />
@@ -450,39 +453,39 @@ export default function GrowthSimulator({ user, onSave, isSyncing, initialData }
 
         {/* Health & BEP Cards */}
         <div className="grid grid-cols-1 gap-6">
-          <div className="p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-xl space-y-6">
+          <div className="p-8 rounded-3xl bg-white dark:bg-slate-900 border border-black dark:border-slate-800 space-y-6 aksana-glass shadow-sm">
             <div className="flex items-center justify-between">
-              <h3 className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Efisiensi Akuisisi (CAC vs LTV)</h3>
+              <h3 className="text-[10px] font-bold uppercase tracking-widest text-black dark:text-slate-400">{t("health.efficiency")}</h3>
               {healthMetrics.ltvCacRatio > 3 ? (
-                <div className="flex items-center gap-1.5 text-emerald-500 bg-emerald-500/10 px-3 py-1 rounded-full text-[10px] font-black">
-                  <ShieldCheck size={12} /> SEHAT
+                <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full text-[10px] font-black">
+                  <ShieldCheck size={12} /> {t("health.status.healthy")}
                 </div>
               ) : healthMetrics.ltvCacRatio > 1.5 ? (
-                <div className="flex items-center gap-1.5 text-amber-500 bg-amber-500/10 px-3 py-1 rounded-full text-[10px] font-black">
-                  <Info size={12} /> WAJAR
+                <div className="flex items-center gap-1.5 text-amber-600 dark:text-amber-400 bg-amber-500/10 px-3 py-1 rounded-full text-[10px] font-black">
+                  <Info size={12} /> {t("health.status.fair")}
                 </div>
               ) : (
-                <div className="flex items-center gap-1.5 text-rose-500 bg-rose-500/10 px-3 py-1 rounded-full text-[10px] font-black">
-                  <AlertTriangle size={12} /> RUGI
+                <div className="flex items-center gap-1.5 text-rose-600 dark:text-rose-400 bg-rose-500/10 px-3 py-1 rounded-full text-[10px] font-black">
+                  <AlertTriangle size={12} /> {t("health.status.loss")}
                 </div>
               )}
             </div>
 
             <div className="grid grid-cols-2 gap-8">
               <div className="space-y-1">
-                <p className="text-[9px] font-bold uppercase text-slate-400 tracking-tighter">Cost to Acquire (CAC)</p>
-                <p className="text-lg font-black">{formatValue(healthMetrics.cac, true)}</p>
+                <p className="text-[9px] font-bold uppercase text-black dark:text-slate-400 tracking-tighter">{t("health.cac")}</p>
+                <p className="text-lg font-black text-black dark:text-white">{formatValue(healthMetrics.cac, true)}</p>
               </div>
               <div className="space-y-1">
-                <p className="text-[9px] font-bold uppercase text-slate-400 tracking-tighter">Lifetime Value (LTV)</p>
-                <p className="text-lg font-black">{formatValue(healthMetrics.ltv, true)}</p>
+                <p className="text-[9px] font-bold uppercase text-black dark:text-slate-400 tracking-tighter">{t("health.ltv")}</p>
+                <p className="text-lg font-black text-black dark:text-white">{formatValue(healthMetrics.ltv, true)}</p>
               </div>
             </div>
 
             <div className="space-y-2">
               <div className="flex justify-between text-[10px] font-black uppercase">
-                <span className="text-slate-400">LTV/CAC Ratio</span>
-                <span className={healthMetrics.ltvCacRatio > 3 ? "text-emerald-500" : "text-amber-500"}>{healthMetrics.ltvCacRatio.toFixed(1)}x</span>
+                <span className="text-black dark:text-slate-400">{t("health.ratio")}</span>
+                <span className={healthMetrics.ltvCacRatio > 3 ? "text-emerald-600 dark:text-emerald-400" : "text-amber-600 dark:text-amber-400"}>{healthMetrics.ltvCacRatio.toFixed(1)}x</span>
               </div>
               <div className="h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
                 <motion.div
@@ -494,18 +497,18 @@ export default function GrowthSimulator({ user, onSave, isSyncing, initialData }
             </div>
           </div>
 
-          <div className="p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-xl space-y-6">
-            <h3 className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Target Break-Even Point (BEP)</h3>
+          <div className="p-8 rounded-3xl bg-white dark:bg-slate-900 border border-black dark:border-slate-800 space-y-6 aksana-glass shadow-sm">
+            <h3 className="text-[10px] font-bold uppercase tracking-widest text-black dark:text-slate-400">{t("bep.title")}</h3>
             <div className="space-y-4">
               <div className="flex items-end justify-between">
                 <div className="space-y-1">
-                  <p className="text-[9px] font-bold uppercase text-slate-400">Omzet BEP</p>
-                  <p className="text-2xl font-black">{formatValue(healthMetrics.bepRevenue, true)}</p>
+                  <p className="text-[9px] font-bold uppercase text-black dark:text-slate-400">{t("bep.revenue")}</p>
+                  <p className="text-2xl font-black text-black dark:text-white">{formatValue(healthMetrics.bepRevenue, true)}</p>
                 </div>
                 <div className="text-right space-y-1">
-                  <p className="text-[9px] font-bold uppercase text-slate-400">Status Omzet</p>
-                  <p className={`text-sm font-black ${currentDerived.revenue >= healthMetrics.bepRevenue ? "text-emerald-500" : "text-amber-500"}`}>
-                    {currentDerived.revenue >= healthMetrics.bepRevenue ? "Diatas BEP" : "Dibawah BEP"}
+                  <p className="text-[9px] font-bold uppercase text-black dark:text-slate-400">{t("bep.statusLabel")}</p>
+                  <p className={`text-sm font-black ${currentDerived.revenue >= healthMetrics.bepRevenue ? "text-emerald-600 dark:text-emerald-400" : "text-amber-600 dark:text-amber-400"}`}>
+                    {currentDerived.revenue >= healthMetrics.bepRevenue ? t("bep.status.above") : t("bep.status.below")}
                   </p>
                 </div>
               </div>
@@ -515,18 +518,18 @@ export default function GrowthSimulator({ user, onSave, isSyncing, initialData }
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${Math.min(100, (currentDerived.revenue / healthMetrics.bepRevenue) * 100)}%` }}
-                    className="h-full bg-slate-900 dark:bg-white"
+                    className="h-full bg-black dark:bg-white"
                   />
                   {currentDerived.revenue < healthMetrics.bepRevenue && (
-                    <div className="absolute inset-0 flex items-center justify-center text-[8px] font-black uppercase text-slate-400 mix-blend-difference">
-                      Progress Balik Modal
+                    <div className="absolute inset-0 flex items-center justify-center text-[8px] font-black uppercase text-black mix-blend-difference">
+                      {t("bep.progress")}
                     </div>
                   )}
                 </div>
-                <p className="text-[10px] text-slate-500 italic font-medium">
+                <p className="text-[10px] text-black dark:text-slate-400 italic font-normal">
                   {currentDerived.revenue >= healthMetrics.bepRevenue 
-                    ? "Selamat! Bisnis Anda sudah melewati titik balik modal operasional."
-                    : `Butuh tambahan omzet ${formatValue(healthMetrics.bepRevenue - currentDerived.revenue, true)} untuk mencapai BEP.`}
+                    ? t("bep.success")
+                    : t("bep.needed", { val: formatValue(healthMetrics.bepRevenue - currentDerived.revenue, true) })}
                 </p>
               </div>
             </div>

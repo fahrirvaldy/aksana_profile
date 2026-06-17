@@ -274,7 +274,7 @@ export default function DashboardPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="animate-spin text-slate-400" size={40} />
+        <Loader2 className="animate-spin text-slate-700" size={40} />
       </div>
     );
   }
@@ -282,7 +282,7 @@ export default function DashboardPage() {
   return (
     <div className="max-w-7xl mx-auto px-8 py-10 min-h-screen font-[family-name:var(--font-inter)] space-y-10">
       {error && (
-        <div className="p-4 rounded-2xl bg-amber-50 dark:bg-amber-900/10 border border-amber-100 dark:border-amber-900/20 flex items-center gap-3 text-amber-600 dark:text-amber-500">
+        <div className="p-4 rounded-2xl bg-amber-50 dark:bg-amber-900/10 border border-amber-100 dark:border-amber-900/20 flex items-center gap-3 text-amber-600 dark:text-amber-500 shadow-sm">
           <AlertCircle size={20} />
           <p className="text-sm font-medium">{error}</p>
         </div>
@@ -296,9 +296,9 @@ export default function DashboardPage() {
             animate={{ opacity: 1, y: 0 }}
             className="text-3xl md:text-4xl font-bold tracking-tight font-[family-name:var(--font-plus-jakarta)]"
           >
-            Dashboard <span className="text-slate-400 dark:text-slate-500">Aksana</span>
+            Dashboard <span className="text-slate-700 dark:text-slate-700">Aksana</span>
           </motion.h1>
-          <div className="flex items-center gap-2 text-slate-500 font-medium text-sm">
+          <div className="flex items-center gap-2 text-slate-950 dark:text-slate-50 font-medium text-sm">
             <Building2 size={16} />
             <span>{userData?.companies?.name || "Aksana Executive"}</span>
             <span className="mx-2 text-slate-300">•</span>
@@ -308,7 +308,7 @@ export default function DashboardPage() {
         
         <button 
           onClick={handleLogout}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all text-xs font-bold text-slate-600 dark:text-slate-400 shadow-sm"
+          className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white dark:bg-slate-900 border border-black dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all text-xs font-bold text-slate-700 dark:text-slate-300 shadow-sm aksana-glass"
         >
           <LogOut size={16} />
           Keluar Sesi
@@ -321,30 +321,30 @@ export default function DashboardPage() {
         animate={{ opacity: 1, y: 0 }}
         className="grid grid-cols-1 md:grid-cols-3 gap-6"
       >
-        <div className="p-6 rounded-[2rem] aksana-glass border border-slate-100 dark:border-slate-800 shadow-xl flex items-center gap-5">
+        <div className="p-6 rounded-[2rem] aksana-glass border border-black dark:border-slate-800 flex items-center gap-5 shadow-sm">
           <div className="w-14 h-14 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-500">
             <DollarSign size={28} />
           </div>
           <div>
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Total Cash</p>
+            <p className="text-[10px] font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest mb-1">Total Cash</p>
             <h4 className="text-3xl font-bold font-[family-name:var(--font-plus-jakarta)]">{formatCurrency(executiveSummary.totalCash)}</h4>
           </div>
         </div>
-        <div className="p-6 rounded-[2rem] aksana-glass border border-slate-100 dark:border-slate-800 shadow-xl flex items-center gap-5">
+        <div className="p-6 rounded-[2rem] aksana-glass border border-black dark:border-slate-800 flex items-center gap-5 shadow-sm">
           <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-500">
             <TrendingUp size={28} />
           </div>
           <div>
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Total ROAS</p>
+            <p className="text-[10px] font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest mb-1">Total ROAS</p>
             <h4 className="text-3xl font-bold font-[family-name:var(--font-plus-jakarta)]">{executiveSummary.totalRoas.toFixed(2)}x</h4>
           </div>
         </div>
-        <div className="p-6 rounded-[2rem] aksana-glass border border-slate-100 dark:border-slate-800 shadow-xl flex items-center gap-5">
+        <div className="p-6 rounded-[2rem] aksana-glass border border-black dark:border-slate-800 flex items-center gap-5 shadow-sm">
           <div className="w-14 h-14 rounded-2xl bg-indigo-500/10 flex items-center justify-center text-indigo-500">
             <CheckCircle2 size={28} />
           </div>
           <div>
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Progres Tugas</p>
+            <p className="text-[10px] font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest mb-1">Progres Tugas</p>
             <h4 className="text-3xl font-bold font-[family-name:var(--font-plus-jakarta)]">{executiveSummary.taskProgress.toFixed(0)}%</h4>
           </div>
         </div>
@@ -352,7 +352,7 @@ export default function DashboardPage() {
 
       {/* 2. Struktur Tab (Grouping 9 Alat) */}
       <div className="flex justify-center">
-        <div className="p-1.5 rounded-2xl bg-slate-100/50 dark:bg-slate-900/50 aksana-glass border border-slate-200 dark:border-slate-800 flex gap-1">
+        <div className="p-1.5 rounded-2xl bg-slate-100/50 dark:bg-slate-900/50 aksana-glass border border-black dark:border-slate-800 flex gap-1 shadow-sm">
           {[
             { id: 'finance', label: 'Finance & Growth', icon: PieChart },
             { id: 'ops', label: 'Ops & Team', icon: Settings },
@@ -363,8 +363,8 @@ export default function DashboardPage() {
               onClick={() => setActiveTab(tab.id as TabType)}
               className={`flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold transition-all duration-300 ${
                 activeTab === tab.id 
-                ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-md' 
-                : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
+                ? 'bg-white dark:bg-slate-800 text-slate-950 dark:text-white shadow-md' 
+                : 'text-slate-950 hover:text-slate-950 dark:hover:text-slate-300'
               }`}
             >
               <tab.icon size={18} />
@@ -387,15 +387,15 @@ export default function DashboardPage() {
               className="grid grid-cols-1 md:grid-cols-2 gap-8"
             >
               {/* Tool 1: Cashflow Analysis */}
-              <div className="p-10 rounded-[2.5rem] bg-white dark:bg-slate-900/40 aksana-glass border border-slate-100 dark:border-slate-800 shadow-xl space-y-8 relative overflow-hidden group">
+              <div className="p-10 rounded-[2.5rem] bg-white dark:bg-slate-900/40 aksana-glass border border-black dark:border-slate-800 space-y-8 relative overflow-hidden group shadow-sm">
                 <div className="flex justify-between items-start relative z-10">
                   <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-500">
                     <DollarSign size={24} />
                   </div>
-                  <span className="text-[10px] font-black tracking-widest text-slate-400 uppercase">Cashflow Analysis</span>
+                  <span className="text-[10px] font-black tracking-widest text-slate-700 uppercase">Cashflow Analysis</span>
                 </div>
                 <div className="space-y-1 relative z-10">
-                  <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Saldo Terakhir</p>
+                  <p className="text-xs font-bold text-slate-700 uppercase tracking-widest">Saldo Terakhir</p>
                   <h3 className="text-4xl font-bold font-[family-name:var(--font-plus-jakarta)]">
                     {formatCurrency(cashflowMetrics)}
                   </h3>
@@ -406,15 +406,15 @@ export default function DashboardPage() {
               </div>
 
               {/* Tool 2: Growth Simulator */}
-              <div className="p-10 rounded-[2.5rem] bg-white dark:bg-slate-900/40 aksana-glass border border-slate-100 dark:border-slate-800 shadow-xl space-y-8 relative overflow-hidden group">
+              <div className="p-10 rounded-[2.5rem] bg-white dark:bg-slate-900/40 aksana-glass border border-black dark:border-slate-800 space-y-8 relative overflow-hidden group shadow-sm">
                 <div className="flex justify-between items-start relative z-10">
                   <div className="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-500">
                     <TrendingUp size={24} />
                   </div>
-                  <span className="text-[10px] font-black tracking-widest text-slate-400 uppercase">Growth Simulator</span>
+                  <span className="text-[10px] font-black tracking-widest text-slate-700 uppercase">Growth Simulator</span>
                 </div>
                 <div className="space-y-1 relative z-10">
-                  <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Target Profit Proyeksi</p>
+                  <p className="text-xs font-bold text-slate-700 uppercase tracking-widest">Target Profit Proyeksi</p>
                   <h3 className="text-4xl font-bold font-[family-name:var(--font-plus-jakarta)]">
                     {formatCurrency(growthMetrics.target)}
                   </h3>
@@ -425,16 +425,16 @@ export default function DashboardPage() {
               </div>
 
               {/* Tool 3: CAC vs LTV */}
-              <div className="md:col-span-2 p-10 rounded-[2.5rem] bg-white dark:bg-slate-900/40 aksana-glass border border-slate-100 dark:border-slate-800 shadow-xl space-y-8 relative overflow-hidden group">
+              <div className="md:col-span-2 p-10 rounded-[2.5rem] bg-white dark:bg-slate-900/40 aksana-glass border border-black dark:border-slate-800 space-y-8 relative overflow-hidden group shadow-sm">
                 <div className="flex justify-between items-start relative z-10">
                   <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 flex items-center justify-center text-indigo-500">
                     <BarChart3 size={24} />
                   </div>
-                  <span className="text-[10px] font-black tracking-widest text-slate-400 uppercase">CAC vs LTV</span>
+                  <span className="text-[10px] font-black tracking-widest text-slate-700 uppercase">CAC vs LTV</span>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center relative z-10">
                   <div className="space-y-1">
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">LTV : CAC Ratio</p>
+                    <p className="text-xs font-bold text-slate-700 uppercase tracking-widest">LTV : CAC Ratio</p>
                     <div className="flex items-baseline gap-4">
                       <h3 className="text-5xl font-bold font-[family-name:var(--font-plus-jakarta)]">
                         {cacLtvMetrics.ratio.toFixed(1)}x
@@ -450,11 +450,11 @@ export default function DashboardPage() {
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/50">
-                      <p className="text-[10px] font-black text-slate-400 uppercase">CAC</p>
+                      <p className="text-[10px] font-black text-slate-700 uppercase">CAC</p>
                       <p className="text-lg font-bold">{formatCurrency(cacLtvMetrics.cac)}</p>
                     </div>
                     <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/50">
-                      <p className="text-[10px] font-black text-slate-400 uppercase">LTV</p>
+                      <p className="text-[10px] font-black text-slate-700 uppercase">LTV</p>
                       <p className="text-lg font-bold">{formatCurrency(cacLtvMetrics.ltv)}</p>
                     </div>
                   </div>
@@ -473,66 +473,66 @@ export default function DashboardPage() {
               className="grid grid-cols-1 md:grid-cols-2 gap-8"
             >
               {/* Tool 4: SOP Generator */}
-              <div className="p-10 rounded-[2.5rem] bg-white dark:bg-slate-900/40 aksana-glass border border-slate-100 dark:border-slate-800 shadow-xl space-y-8 relative overflow-hidden group">
+              <div className="p-10 rounded-[2.5rem] bg-white dark:bg-slate-900/40 aksana-glass border border-black dark:border-slate-800 space-y-8 relative overflow-hidden group shadow-sm">
                 <div className="flex justify-between items-start relative z-10">
                   <div className="w-12 h-12 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500">
                     <FileSignature size={24} />
                   </div>
-                  <span className="text-[10px] font-black tracking-widest text-slate-400 uppercase">SOP Generator</span>
+                  <span className="text-[10px] font-black tracking-widest text-slate-700 uppercase">SOP Generator</span>
                 </div>
                 <div className="space-y-4 relative z-10">
                   {sopData ? (
                     <div className="flex justify-between items-end">
                       <div className="space-y-1">
-                        <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">SOP Terakhir</p>
+                        <p className="text-xs font-bold text-slate-700 uppercase tracking-widest">SOP Terakhir</p>
                         <h4 className="text-xl font-bold line-clamp-1">{Object.values(sopData?.formData || {})[0] as string || "Untitled"}</h4>
-                        <p className="text-[10px] text-slate-500 uppercase font-bold">Divisi: {sopData?.division}</p>
+                        <p className="text-[10px] text-slate-700 uppercase font-bold">Divisi: {sopData?.division}</p>
                       </div>
-                      <Link href="/tools" className="p-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-900 dark:hover:bg-slate-50 hover:text-white dark:hover:text-slate-900 transition-all">
+                      <Link href="/tools" className="p-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-400 hover:bg-slate-900 dark:hover:bg-slate-50 hover:text-white dark:hover:text-slate-950 transition-all">
                         <ArrowRight size={20} />
                       </Link>
                     </div>
                   ) : (
-                    <p className="text-sm text-slate-500 italic">Belum ada SOP yang dibuat.</p>
+                    <p className="text-sm text-slate-700 italic">Belum ada SOP yang dibuat.</p>
                   )}
                 </div>
               </div>
 
               {/* Tool 5: Template L10 Meeting */}
-              <div className="p-10 rounded-[2.5rem] bg-white dark:bg-slate-900/40 aksana-glass border border-slate-100 dark:border-slate-800 shadow-xl space-y-8 relative overflow-hidden group">
+              <div className="p-10 rounded-[2.5rem] bg-white dark:bg-slate-900/40 aksana-glass border border-black dark:border-slate-800 space-y-8 relative overflow-hidden group shadow-sm">
                 <div className="flex justify-between items-start relative z-10">
                   <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 flex items-center justify-center text-indigo-500">
                     <Users size={24} />
                   </div>
-                  <span className="text-[10px] font-black tracking-widest text-slate-400 uppercase">L10 Meeting</span>
+                  <span className="text-[10px] font-black tracking-widest text-slate-700 uppercase">L10 Meeting</span>
                 </div>
                 <div className="grid grid-cols-2 gap-4 relative z-10">
                   <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 space-y-1">
-                    <p className="text-[10px] font-black text-slate-400 uppercase">Rating Rapat</p>
+                    <p className="text-[10px] font-black text-slate-700 uppercase">Rating Rapat</p>
                     <h4 className="text-3xl font-bold text-blue-600">{l10Metrics.rating}/10</h4>
                   </div>
                   <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 space-y-1">
-                    <p className="text-[10px] font-black text-slate-400 uppercase">Isu Pending</p>
+                    <p className="text-[10px] font-black text-slate-700 uppercase">Isu Pending</p>
                     <h4 className="text-3xl font-bold text-rose-500">{l10Metrics.issues}</h4>
                   </div>
                 </div>
               </div>
 
               {/* Tool 6: People Analyzer */}
-              <div className="p-10 rounded-[2.5rem] bg-white dark:bg-slate-900/40 aksana-glass border border-slate-100 dark:border-slate-800 shadow-xl space-y-8 relative overflow-hidden group">
+              <div className="p-10 rounded-[2.5rem] bg-white dark:bg-slate-900/40 aksana-glass border border-black dark:border-slate-800 space-y-8 relative overflow-hidden group shadow-sm">
                 <div className="flex justify-between items-start relative z-10">
                   <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-500">
                     <UserCheck size={24} />
                   </div>
-                  <span className="text-[10px] font-black tracking-widest text-slate-400 uppercase">People Analyzer</span>
+                  <span className="text-[10px] font-black tracking-widest text-slate-700 uppercase">People Analyzer</span>
                 </div>
                 <div className="space-y-4 relative z-10">
                   <div className="flex justify-between items-end">
                     <div className="space-y-1">
-                      <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Kesesuaian Budaya</p>
+                      <p className="text-xs font-bold text-slate-700 uppercase tracking-widest">Kesesuaian Budaya</p>
                       <h4 className="text-3xl font-bold">{peopleMetrics.avgFit.toFixed(0)}%</h4>
                     </div>
-                    <p className="text-[10px] font-bold text-slate-500 uppercase">{peopleMetrics.count} Anggota Tim</p>
+                    <p className="text-[10px] font-bold text-slate-700 uppercase">{peopleMetrics.count} Anggota Tim</p>
                   </div>
                   <div className="w-full h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
                     <motion.div 
@@ -545,20 +545,20 @@ export default function DashboardPage() {
               </div>
 
               {/* Tool 7: Todo Tracker */}
-              <div className="p-10 rounded-[2.5rem] bg-white dark:bg-slate-900/40 aksana-glass border border-slate-100 dark:border-slate-800 shadow-xl space-y-8 relative overflow-hidden group">
+              <div className="p-10 rounded-[2.5rem] bg-white dark:bg-slate-900/40 aksana-glass border border-black dark:border-slate-800 space-y-8 relative overflow-hidden group shadow-sm">
                 <div className="flex justify-between items-start relative z-10">
                   <div className="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-500">
                     <ClipboardList size={24} />
                   </div>
-                  <span className="text-[10px] font-black tracking-widest text-slate-400 uppercase">Todo Tracker</span>
+                  <span className="text-[10px] font-black tracking-widest text-slate-700 uppercase">Todo Tracker</span>
                 </div>
                 <div className="grid grid-cols-2 gap-4 relative z-10">
                   <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 space-y-1">
-                    <p className="text-[10px] font-black text-slate-400 uppercase">Selesai</p>
+                    <p className="text-[10px] font-black text-slate-700 uppercase">Selesai</p>
                     <h4 className="text-3xl font-bold text-emerald-500">{todoMetrics.completed}/{todoMetrics.total}</h4>
                   </div>
                   <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 space-y-1">
-                    <p className="text-[10px] font-black text-slate-400 uppercase">Progres</p>
+                    <p className="text-[10px] font-black text-slate-700 uppercase">Progres</p>
                     <h4 className="text-3xl font-bold text-indigo-500">{todoMetrics.progress.toFixed(0)}%</h4>
                   </div>
                 </div>
@@ -576,7 +576,7 @@ export default function DashboardPage() {
               className="space-y-8"
             >
               {/* Tool 8: Funnel Simulator */}
-              <div className="p-10 rounded-[2.5rem] bg-white dark:bg-slate-900/40 aksana-glass border border-slate-100 dark:border-slate-800 shadow-xl space-y-10 relative overflow-hidden group">
+              <div className="p-10 rounded-[2.5rem] bg-white dark:bg-slate-900/40 aksana-glass border border-black dark:border-slate-800 space-y-10 relative overflow-hidden group shadow-sm">
                 <div className="flex justify-between items-center relative z-10">
                   <div className="flex items-center gap-5">
                     <div className="w-14 h-14 rounded-2xl bg-indigo-500/10 flex items-center justify-center text-indigo-500">
@@ -584,10 +584,10 @@ export default function DashboardPage() {
                     </div>
                     <div>
                       <h3 className="text-2xl font-bold font-[family-name:var(--font-plus-jakarta)]">Funnel Simulator</h3>
-                      <p className="text-[10px] font-black tracking-widest text-slate-400 uppercase">Arsitektur Konversi</p>
+                      <p className="text-[10px] font-black tracking-widest text-slate-700 uppercase">Arsitektur Konversi</p>
                     </div>
                   </div>
-                  <div className="px-5 py-2.5 rounded-full border bg-emerald-500/10 border-emerald-500/20 text-emerald-500 text-sm font-black tracking-widest">
+                  <div className="px-5 py-2.5 rounded-full border bg-emerald-500/10 border-emerald-500/20 text-emerald-500 text-sm font-black tracking-widest shadow-sm">
                     {funnelMetrics.roas.toFixed(2)}x ROAS
                   </div>
                 </div>
@@ -599,8 +599,8 @@ export default function DashboardPage() {
                     { label: 'ATC', val: funnelMetrics.atcs },
                     { label: 'Sales', val: funnelMetrics.purchases },
                   ].map((step, idx) => (
-                    <div key={idx} className="p-5 rounded-2xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-100/50 dark:border-slate-700/50 space-y-1">
-                      <p className="text-[10px] font-black text-slate-400 uppercase">{step.label}</p>
+                    <div key={idx} className="p-5 rounded-2xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-200/50 dark:border-slate-700/50 space-y-1 shadow-sm">
+                      <p className="text-[10px] font-black text-slate-700 uppercase">{step.label}</p>
                       <h4 className="text-xl font-bold font-mono">{formatNumber(step.val)}</h4>
                     </div>
                   ))}
@@ -608,30 +608,30 @@ export default function DashboardPage() {
               </div>
 
               {/* Tool 9: Production Target Simulator */}
-              <div className="p-10 rounded-[2.5rem] bg-white dark:bg-slate-900/40 aksana-glass border border-slate-100 dark:border-slate-800 shadow-xl space-y-8 relative overflow-hidden group">
+              <div className="p-10 rounded-[2.5rem] bg-white dark:bg-slate-900/40 aksana-glass border border-black dark:border-slate-800 space-y-8 relative overflow-hidden group shadow-sm">
                 <div className="flex justify-between items-start relative z-10">
                   <div className="w-12 h-12 rounded-2xl bg-rose-500/10 flex items-center justify-center text-rose-500">
                     <Package size={24} />
                   </div>
-                  <span className="text-[10px] font-black tracking-widest text-slate-400 uppercase">Production Simulator</span>
+                  <span className="text-[10px] font-black tracking-widest text-slate-700 uppercase">Production Simulator</span>
                 </div>
                 {productionMetrics ? (
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10">
                     <div className="p-6 rounded-3xl bg-slate-50 dark:bg-slate-800/50 space-y-1">
-                      <p className="text-[10px] font-black text-slate-400 uppercase">Target Produksi</p>
+                      <p className="text-[10px] font-black text-slate-700 uppercase">Target Produksi</p>
                       <h4 className="text-2xl font-bold">{formatNumber(productionMetrics.targetProduction)} Unit</h4>
                     </div>
                     <div className="p-6 rounded-3xl bg-slate-50 dark:bg-slate-800/50 space-y-1">
-                      <p className="text-[10px] font-black text-slate-400 uppercase">Re-order Point</p>
+                      <p className="text-[10px] font-black text-slate-700 uppercase">Re-order Point</p>
                       <h4 className="text-2xl font-bold">{formatNumber(productionMetrics.rop)} Unit</h4>
                     </div>
                     <div className="p-6 rounded-3xl bg-slate-50 dark:bg-slate-800/50 space-y-1">
-                      <p className="text-[10px] font-black text-slate-400 uppercase">Safety Stock</p>
+                      <p className="text-[10px] font-black text-slate-700 uppercase">Safety Stock</p>
                       <h4 className="text-2xl font-bold">{formatNumber(productionMetrics.safetyStock)} Unit</h4>
                     </div>
                   </div>
                 ) : (
-                  <p className="text-sm text-slate-500 italic relative z-10">Belum ada data produksi.</p>
+                  <p className="text-sm text-slate-700 italic relative z-10">Belum ada data produksi.</p>
                 )}
               </div>
             </motion.div>
@@ -643,15 +643,15 @@ export default function DashboardPage() {
       <motion.div 
         initial={{ opacity: 0, scale: 0.98 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="p-10 rounded-[2.5rem] bg-slate-100 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-800 flex flex-col md:flex-row items-center justify-between gap-8"
+        className="p-10 rounded-[2.5rem] bg-slate-100 dark:bg-slate-800/30 border border-black dark:border-slate-800 flex flex-col md:flex-row items-center justify-between gap-8 shadow-sm"
       >
         <div className="space-y-1 text-center md:text-left">
           <h3 className="text-xl font-bold font-[family-name:var(--font-plus-jakarta)]">Ruang Strategi & Simulasi</h3>
-          <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">Semua data disinkronkan otomatis dari sesi simulasi Anda.</p>
+          <p className="text-sm text-slate-700 dark:text-slate-400 font-medium">Semua data disinkronkan otomatis dari sesi simulasi Anda.</p>
         </div>
         <Link 
           href="/tools"
-          className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-slate-900 dark:bg-slate-50 text-white dark:text-slate-900 font-bold transition-all hover:opacity-90 active:scale-95 shadow-lg group"
+          className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-slate-900 dark:bg-slate-50 text-white dark:text-slate-950 font-bold transition-all hover:opacity-90 active:scale-95 group"
         >
           Buka Alat Simulasi <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
         </Link>

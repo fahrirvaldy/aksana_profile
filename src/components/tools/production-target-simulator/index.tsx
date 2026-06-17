@@ -25,6 +25,7 @@ import {
   Filler
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
+import { useTranslations } from "next-intl";
 
 ChartJS.register(
   CategoryScale,
@@ -78,6 +79,7 @@ export default function ProductionTargetSimulator({
   isSyncing, 
   initialData 
 }: ProductionTargetSimulatorProps) {
+  const t = useTranslations("Tools.Production");
   // --- States ---
   const [sku, setSku] = useState<string>(initialData?.sku || "");
   const [category, setCategory] = useState<'magnet' | 'profit'>(initialData?.category || 'profit');
@@ -179,7 +181,7 @@ export default function ProductionTargetSimulator({
       labels,
       datasets: [
         {
-          label: 'Proyeksi Stok',
+          label: t('analysis.projection'),
           data: stockProjection,
           borderColor: '#3B82F6',
           backgroundColor: 'rgba(59, 130, 246, 0.1)',
@@ -187,7 +189,7 @@ export default function ProductionTargetSimulator({
           tension: 0.4,
         },
         {
-          label: 'Alarm Produksi (ROP)',
+          label: t('analysis.ropLegend'),
           data: ropLine,
           borderColor: '#EF4444',
           borderDash: [5, 5],
@@ -195,7 +197,7 @@ export default function ProductionTargetSimulator({
           fill: false,
         },
         {
-          label: 'Safety Stock',
+          label: t('analysis.safetyStockLegend'),
           data: safetyStockLine,
           borderColor: '#F59E0B',
           borderDash: [5, 5],
@@ -248,7 +250,7 @@ export default function ProductionTargetSimulator({
     const btn = document.getElementById('btn-download');
     if (!btn) return;
     const originalHTML = btn.innerHTML;
-    btn.innerHTML = '<span>⏳</span> <span class="hidden sm:inline">Memproses...</span>';
+    btn.innerHTML = `<span>⏳</span> <span class="hidden sm:inline">${t('analysis.processing')}</span>`;
 
     try {
         // Dynamic import: library hanya dimuat di browser saat tombol ditekan
@@ -262,13 +264,13 @@ export default function ProductionTargetSimulator({
         });
 
         const link = document.createElement('a');
-        const cleanSkuName = sku.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase() || 'produk-tanpa-nama';
-        link.download = `Laporan-Target-Produksi-${cleanSkuName}.png`;
+        const cleanSkuName = sku.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase() || t('analysis.untitled').replace(/\s+/g, '-').toLowerCase();
+        link.download = `${t('analysis.reportFilename')}${cleanSkuName}.png`;
         link.href = dataUrl;
         link.click();
     } catch (err) {
-        console.error("Gagal membuat gambar PNG: ", err);
-        alert("Terjadi kesalahan saat memproses gambar.");
+        console.error(t('analysis.errorTitle'), err);
+        alert(t('analysis.errorAlert'));
     } finally {
         btn.innerHTML = originalHTML;
     }
@@ -282,60 +284,56 @@ export default function ProductionTargetSimulator({
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="aksana-glass p-6 rounded-[2rem] shadow-sm"
+          className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-6 shadow-sm"
         >
           <div className="flex items-center gap-3 mb-6">
             <div className="p-2 bg-blue-500/10 rounded-lg text-blue-600">
               <Package size={20} />
             </div>
-            <h3 className="font-semibold text-lg">Identitas Produk</h3>
+            <h3 className="font-semibold text-lg">{t('identity.title')}</h3>
           </div>
 
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium mb-1.5 ml-1">Nama / SKU Produk</label>
+              <label className="block text-sm font-bold mb-1.5 ml-1 text-slate-600 dark:text-slate-300">{t('identity.sku')}</label>
               <input 
                 type="text"
                 value={sku}
                 onChange={(e) => setSku(e.target.value)}
-                placeholder="Contoh: Hijab Voal Ultra"
-                className="w-full px-4 py-3 rounded-xl border bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-blue-500 transition-all outline-none"
+                placeholder={t('identity.placeholderSku')}
+                className="w-full px-4 py-3 rounded-xl bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 focus:ring-2 focus:ring-blue-500 transition-all outline-none placeholder-slate-400 dark:placeholder-slate-500 font-semibold"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-1.5 ml-1 flex items-center gap-1.5">
-                Kategori Strategis
+              <label className="block text-sm font-bold mb-1.5 ml-1 flex items-center gap-1.5 text-slate-600 dark:text-slate-300">
+                {t('identity.category')}
               </label>
               <div className="grid grid-cols-2 gap-3">
                 <button
                   onClick={() => setCategory('magnet')}
-                  className={`py-3 rounded-xl border-2 transition-all text-sm font-medium ${
+                  className={`py-3 rounded-xl border transition-all text-sm font-bold ${
                     category === 'magnet' 
-                      ? 'border-blue-500 bg-blue-50 text-blue-700' 
-                      : 'border-slate-100 hover:border-slate-200'
+                      ? 'bg-slate-900 border-slate-900 text-white dark:bg-slate-50 dark:text-slate-950' 
+                      : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1E1E1E] text-slate-600 dark:text-slate-300'
                   }`}
                 >
-                  Produk Magnet 🔥
+                  {t('identity.magnet')}
                 </button>
                 <button
                   onClick={() => setCategory('profit')}
-                  className={`py-3 rounded-xl border-2 transition-all text-sm font-medium ${
+                  className={`py-3 rounded-xl border transition-all text-sm font-bold ${
                     category === 'profit' 
-                      ? 'border-blue-500 bg-blue-50 text-blue-700' 
-                      : 'border-slate-100 hover:border-slate-200'
+                      ? 'bg-slate-900 border-slate-900 text-white dark:bg-slate-50 dark:text-slate-950' 
+                      : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1E1E1E] text-slate-600 dark:text-slate-300'
                   }`}
                 >
-                  Produk Profit 💰
+                  {t('identity.profit')}
                 </button>
               </div>
-              <div className="mt-3 p-3 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-100 dark:border-slate-800">
-                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                  {category === 'magnet' ? (
-                    <><strong>Produk Magnet:</strong> Harus selalu tersedia (Service Level 98%). Umumnya digunakan sebagai penarik pengunjung toko Anda.</>
-                  ) : (
-                    <><strong>Produk Profit:</strong> Fokus pada perputaran modal (Service Level 90%). Dapat ditoleransi jika sesekali habis demi efisiensi modal.</>
-                  )}
+              <div className="mt-3 p-3 bg-white dark:bg-[#1E1E1E] rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                <p className="text-xs text-slate-600 dark:text-slate-300 font-normal leading-relaxed">
+                  {category === 'magnet' ? t('identity.magnetDesc') : t('identity.profitDesc')}
                 </p>
               </div>
             </div>
@@ -347,33 +345,33 @@ export default function ProductionTargetSimulator({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="aksana-glass p-6 rounded-[2rem] shadow-sm"
+          className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-6 shadow-sm"
         >
           <div className="flex items-center gap-3 mb-6">
-            <div className="p-2 bg-emerald-500/10 rounded-lg text-emerald-600">
+            <div className="p-2 bg-black text-white rounded-lg">
               <TrendingDown size={20} />
             </div>
-            <h3 className="font-semibold text-lg">Data Lapangan</h3>
+            <h3 className="font-bold text-lg text-black dark:text-white">{t('data.title')}</h3>
           </div>
 
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium mb-1.5 ml-1">Historis Penjualan Bulanan</label>
+              <label className="block text-sm font-bold mb-1.5 ml-1 text-slate-600 dark:text-slate-300">{t('data.sales')}</label>
               <textarea 
                 value={salesInput}
                 onChange={(e) => setSalesInput(e.target.value)}
-                placeholder="Contoh: 150, 180, 140, 210, 190, 250"
+                placeholder={t('data.placeholderSales')}
                 rows={3}
-                className="w-full px-4 py-3 rounded-xl border bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-emerald-500 transition-all outline-none resize-none font-mono text-sm"
+                className="w-full px-4 py-3 rounded-xl bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 focus:ring-2 focus:ring-black transition-all outline-none placeholder-slate-400 dark:placeholder-slate-500 resize-none font-mono text-sm font-semibold"
               />
-              <p className="text-[10px] text-slate-400 mt-1 ml-1">* Pisahkan dengan koma. Bisa menggunakan titik sebagai pemisah ribuan.</p>
+              <p className="text-[10px] text-slate-600 dark:text-slate-300 font-normal mt-1 ml-1">{t('data.salesNote')}</p>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium mb-1.5 ml-1">Lead Time (Hari)</label>
+                <label className="block text-sm font-bold mb-1.5 ml-1 text-slate-600 dark:text-slate-300">{t('data.leadTime')}</label>
                 <div className="relative">
-                  <Clock className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+                  <Clock className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" size={16} />
                   <input 
                     type="text"
                     value={leadTime ? leadTime.toLocaleString('id-ID') : ""}
@@ -383,15 +381,15 @@ export default function ProductionTargetSimulator({
                         setLeadTime(val === "" ? 0 : parseInt(val));
                       }
                     }}
-                    placeholder="7"
-                    className="w-full pl-10 pr-4 py-3 rounded-xl border bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-emerald-500 transition-all outline-none"
+                    placeholder={t('data.placeholderLeadTime')}
+                    className="w-full pl-10 pr-4 py-3 rounded-xl bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 focus:ring-2 focus:ring-black transition-all outline-none placeholder-slate-400 dark:placeholder-slate-500 font-semibold"
                   />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1.5 ml-1">Sisa Stok (Pcs)</label>
+                <label className="block text-sm font-bold mb-1.5 ml-1 text-slate-600 dark:text-slate-300">{t('data.stock')}</label>
                 <div className="relative">
-                  <Box className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+                  <Box className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" size={16} />
                   <input 
                     type="text"
                     value={stock ? stock.toLocaleString('id-ID') : ""}
@@ -401,8 +399,8 @@ export default function ProductionTargetSimulator({
                         setStock(val === "" ? 0 : parseInt(val));
                       }
                     }}
-                    placeholder="50"
-                    className="w-full pl-10 pr-4 py-3 rounded-xl border bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-emerald-500 transition-all outline-none"
+                    placeholder={t('data.placeholderStock')}
+                    className="w-full pl-10 pr-4 py-3 rounded-xl bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 focus:ring-2 focus:ring-black transition-all outline-none placeholder-slate-400 dark:placeholder-slate-500 font-semibold"
                   />
                 </div>
               </div>
@@ -416,20 +414,20 @@ export default function ProductionTargetSimulator({
         <motion.div 
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="aksana-glass h-full rounded-[2.5rem] overflow-hidden flex flex-col shadow-lg border-white/40"
+          className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl h-full overflow-hidden flex flex-col shadow-sm"
         >
           {/* Header Laporan */}
-          <div className="p-8 pb-4 border-b border-white/20">
+          <div className="p-8 pb-4 border-b border-slate-200 dark:border-slate-700 shadow-sm">
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-sm font-medium text-slate-500 uppercase tracking-wider mb-1">Simulasi Target Produksi</p>
-                <h2 className="text-3xl font-bold">{sku || "Untitled SKU"}</h2>
+                <p className="text-sm font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider mb-1">{t('analysis.subtitle')}</p>
+                <h2 className="text-3xl font-bold">{sku || t('analysis.untitled')}</h2>
               </div>
               <div className="flex items-center gap-3">
                 {isSyncing && (
                   <div className="flex items-center gap-2 px-3 py-1.5 bg-blue-500/10 rounded-full text-blue-600 text-xs font-medium">
                     <Loader2 size={12} className="animate-spin" />
-                    Sync...
+                    {t('analysis.sync')}
                   </div>
                 )}
                 <button 
@@ -439,7 +437,7 @@ export default function ProductionTargetSimulator({
                   className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white rounded-full text-sm font-medium transition-colors shadow-sm"
                 >
                   <Download size={16} />
-                  <span>Unduh PNG</span>
+                  <span>{t('analysis.export')}</span>
                 </button>
               </div>
             </div>
@@ -448,54 +446,54 @@ export default function ProductionTargetSimulator({
           {!results ? (
             <div className="flex-1 flex flex-col items-center justify-center p-12 text-center opacity-50">
               <Package size={64} className="mb-4 text-slate-300" />
-              <h3 className="text-xl font-medium">Menunggu Data Valid</h3>
-              <p className="max-w-xs text-sm mt-2">Masukkan setidaknya 2 data historis penjualan untuk memulai analisis.</p>
+              <h3 className="text-xl font-medium">{t('analysis.waiting')}</h3>
+              <p className="max-w-xs text-sm mt-2">{t('analysis.waitingDesc')}</p>
             </div>
           ) : (
-            <div id="report-area" ref={reportRef} className="p-8 space-y-8 overflow-y-auto flex-1 custom-scrollbar bg-white dark:bg-slate-900">
+            <div id="report-area" ref={reportRef} className="p-8 space-y-8 overflow-y-auto flex-1 custom-scrollbar bg-white dark:bg-[#1E1E1E]">
               {/* Action Banner */}
-              <div className={`p-6 rounded-3xl flex flex-col md:flex-row items-center justify-between gap-6 transition-colors duration-300 ${
+              <div className={`p-6 rounded-xl flex flex-col md:flex-row items-center justify-between gap-6 transition-colors duration-300 border border-slate-200 dark:border-slate-800 ${
                 results.isAlert 
-                  ? 'bg-rose-50 dark:bg-rose-900/20 border-l-8 border-rose-500' 
-                  : 'bg-emerald-50 dark:bg-emerald-900/20 border-l-8 border-emerald-500'
+                  ? 'bg-rose-50 dark:bg-rose-900/20 border-l-8 border-l-rose-500' 
+                  : 'bg-emerald-50 dark:bg-emerald-900/20 border-l-8 border-l-emerald-500'
               }`}>
                 <div className="flex items-center gap-4 text-center md:text-left">
-                  <div className={`p-4 rounded-2xl ${results.isAlert ? 'bg-rose-500 text-white' : 'bg-emerald-500 text-white'}`}>
+                  <div className={`p-4 rounded-xl ${results.isAlert ? 'bg-rose-500 text-white' : 'bg-emerald-500 text-white'}`}>
                     {results.isAlert ? <AlertTriangle size={32} /> : <CheckCircle2 size={32} />}
                   </div>
                   <div>
                     <h4 className={`text-xl font-bold ${results.isAlert ? 'text-rose-700 dark:text-rose-400' : 'text-emerald-700 dark:text-emerald-400'}`}>
-                      {results.isAlert ? "🚨 Waktunya Memproduksi!" : "✅ Stok Masih Aman"}
+                      {results.isAlert ? t('analysis.alert') : t('analysis.safe')}
                     </h4>
                     <p className={`text-sm ${results.isAlert ? 'text-rose-600 dark:text-rose-500' : 'text-emerald-600 dark:text-emerald-500'}`}>
                       {results.isAlert 
-                        ? `Sisa stok (${stock}) sudah di bawah Alarm Produksi (${Math.ceil(results.rop)}).` 
-                        : "Jumlah stok masih mencukupi kebutuhan operasional."}
+                        ? t('analysis.alertDesc', { stock, rop: Math.ceil(results.rop) }) 
+                        : t('analysis.safeDesc')}
                     </p>
                   </div>
                 </div>
-                <div className="text-center md:text-right border-t md:border-t-0 md:border-l border-current/10 pt-4 md:pt-0 md:pl-8">
-                  <p className="text-xs uppercase font-semibold opacity-70 mb-1">Target Produksi Sekarang</p>
-                  <p className="text-4xl font-black">{formatThousand(results.targetProduction)} <span className="text-lg font-medium opacity-70">Pcs</span></p>
+                <div className="text-center md:text-right border-t md:border-t-0 md:border-l border-slate-200 dark:border-slate-800 pt-4 md:pt-0 md:pl-8 shadow-sm">
+                  <p className="text-xs uppercase font-semibold text-slate-600 dark:text-slate-300 opacity-70 mb-1">{t('analysis.targetLabel')}</p>
+                  <p className="text-4xl font-black text-black dark:text-white">{formatThousand(results.targetProduction)} <span className="text-lg font-medium opacity-70">{t('analysis.pcs')}</span></p>
                 </div>
               </div>
 
               {/* KPI Grid */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="p-6 bg-white dark:bg-slate-800 rounded-[2rem] border border-slate-100 dark:border-slate-700 shadow-sm">
-                  <p className="text-xs font-semibold text-slate-500 uppercase mb-2">Avg Sales / Hari</p>
-                  <p className="text-2xl font-bold dark:text-white">{results.avgDailySales.toFixed(2)}</p>
-                  <p className="text-[10px] text-slate-400 mt-1">Pcs per hari</p>
+                <div className="p-6 bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm">
+                  <p className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase mb-2">{t('analysis.avgSales')}</p>
+                  <p className="text-2xl font-bold text-black dark:text-white">{results.avgDailySales.toFixed(2)}</p>
+                  <p className="text-[10px] text-slate-600 dark:text-slate-300 mt-1">{t('analysis.avgSalesUnit')}</p>
                 </div>
-                <div className="p-6 bg-white dark:bg-slate-800 rounded-[2rem] border border-slate-100 dark:border-slate-700 shadow-sm">
-                  <p className="text-xs font-semibold text-slate-500 uppercase mb-2">Stok Jaga-jaga 🛡️</p>
+                <div className="p-6 bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm">
+                  <p className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase mb-2">{t('analysis.safetyStock')}</p>
                   <p className="text-2xl font-bold text-amber-600">{formatThousand(results.safetyStock)}</p>
-                  <p className="text-[10px] text-slate-400 mt-1">Batas aman sebelum stok habis</p>
+                  <p className="text-[10px] text-slate-600 dark:text-slate-300 mt-1">{t('analysis.safetyStockDesc')}</p>
                 </div>
-                <div className="p-6 bg-white dark:bg-slate-800 rounded-[2rem] border border-slate-100 dark:border-slate-700 shadow-sm">
-                  <p className="text-xs font-semibold text-slate-500 uppercase mb-2">Alarm Produksi 🔔</p>
+                <div className="p-6 bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm">
+                  <p className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase mb-2">{t('analysis.rop')}</p>
                   <p className="text-2xl font-bold text-rose-600">{formatThousand(results.rop)}</p>
-                  <p className="text-[10px] text-slate-400 mt-1">Mulai produksi jika stok mencapai angka ini</p>
+                  <p className="text-[10px] text-slate-600 dark:text-slate-300 mt-1">{t('analysis.ropDesc')}</p>
                 </div>
               </div>
 
@@ -503,37 +501,54 @@ export default function ProductionTargetSimulator({
               <div className="space-y-4">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div>
-                    <h4 className="font-bold text-lg dark:text-white">Simulasi Pergerakan Stok</h4>
-                    <p className="text-xs text-slate-500">Proyeksi sisa stok jika tidak memproduksi hari ini.</p>
+                    <h4 className="font-bold text-lg text-black dark:text-white">{t('analysis.chartTitle')}</h4>
+                    <p className="text-xs text-slate-600 dark:text-slate-300">{t('analysis.chartDesc')}</p>
                   </div>
                   <div className="flex flex-wrap gap-4 text-[10px] font-medium">
-                    <span className="flex items-center gap-1 dark:text-slate-300"><div className="w-2 h-2 rounded-full bg-blue-500"/> Proyeksi</span>
-                    <span className="flex items-center gap-1 dark:text-slate-300"><div className="w-2 h-0.5 bg-rose-500 border-dashed"/> Alarm (ROP)</span>
-                    <span className="flex items-center gap-1 dark:text-slate-300"><div className="w-2 h-0.5 bg-amber-500 border-dashed"/> Safety Stock</span>
+                    <span className="flex items-center gap-1 text-slate-600 dark:text-slate-300"><div className="w-2 h-2 rounded-full bg-blue-500"/> {t('analysis.projection')}</span>
+                    <span className="flex items-center gap-1 text-slate-600 dark:text-slate-300"><div className="w-2 h-0.5 bg-rose-500 border-dashed shadow-sm"/> {t('analysis.ropLegend')}</span>
+                    <span className="flex items-center gap-1 text-slate-600 dark:text-slate-300"><div className="w-2 h-0.5 bg-amber-500 border-dashed shadow-sm"/> {t('analysis.safetyStockLegend')}</span>
                   </div>
                 </div>
-                <div className="h-[350px] w-full bg-slate-50 dark:bg-slate-800/50 p-6 rounded-3xl border border-slate-100 dark:border-slate-700">
+                <div className="h-[350px] w-full bg-white dark:bg-[#1E1E1E] p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
                   {chartData && <Line data={chartData} options={chartOptions} />}
                 </div>
                 
                 {/* Logic Logs (Penjelasan Perhitungan) */}
-                <div className="bg-slate-50 dark:bg-slate-900 rounded-2xl p-6 border border-slate-100 dark:border-slate-800 text-sm">
-                  <h4 className="font-semibold text-slate-800 dark:text-slate-200 mb-3 flex items-center gap-2">
+                <div className="bg-white dark:bg-[#1E1E1E] rounded-xl p-6 border border-slate-200 dark:border-slate-800 text-sm shadow-sm">
+                  <h4 className="font-semibold text-slate-600 dark:text-slate-300 mb-3 flex items-center gap-2">
                     <Info size={16} />
-                    💡 Penjelasan Perhitungan:
+                    {t('analysis.explanation')}
                   </h4>
-                  <ul className="space-y-2 text-slate-600 dark:text-slate-400 font-mono text-[11px] break-all">
+                  <ul className="space-y-2 text-slate-600 dark:text-slate-300 font-mono text-[11px] break-all">
                     <li>
-                      <span className="font-semibold text-slate-700 dark:text-slate-300">Fluktuasi Bulanan (StdDev):</span> {results.stdDevMonthly.toFixed(2)}
+                      {t.rich('analysis.explanationList.stdDevMonthly', {
+                        val: results.stdDevMonthly.toFixed(2),
+                        bold: (chunks) => <span className="font-semibold text-black dark:text-slate-100">{chunks}</span>
+                      })}
                     </li>
                     <li>
-                      <span className="font-semibold text-slate-700 dark:text-slate-300">Normalisasi Harian:</span> {results.stdDevMonthly.toFixed(2)} / √30 = {results.stdDevDaily.toFixed(2)}
+                      {t.rich('analysis.explanationList.stdDevDaily', {
+                        val1: results.stdDevMonthly.toFixed(2),
+                        val2: results.stdDevDaily.toFixed(2),
+                        bold: (chunks) => <span className="font-semibold text-black dark:text-slate-100">{chunks}</span>
+                      })}
                     </li>
                     <li>
-                      <span className="font-semibold text-slate-700 dark:text-slate-300">Stok Jaga-jaga:</span> Z-Score({results.zScore}) × Fluktuasi Harian × √LeadTime({results.leadTime}) = <strong className="text-slate-800 dark:text-slate-200">{formatThousand(results.safetyStock)}</strong>
+                      {t.rich('analysis.explanationList.safetyStock', {
+                        z: results.zScore,
+                        lt: results.leadTime,
+                        res: formatThousand(results.safetyStock),
+                        bold: (chunks) => <span className="font-semibold text-black dark:text-slate-100">{chunks}</span>,
+                        highlight: (chunks) => <strong className="text-black dark:text-slate-100">{chunks}</strong>
+                      })}
                     </li>
                     <li>
-                      <span className="font-semibold text-slate-700 dark:text-slate-300">Alarm Produksi:</span> (Rata Harian × Lead Time) + Stok Jaga-jaga = <strong className="text-slate-800 dark:text-slate-200">{formatThousand(results.rop)}</strong>
+                      {t.rich('analysis.explanationList.rop', {
+                        res: formatThousand(results.rop),
+                        bold: (chunks) => <span className="font-semibold text-black dark:text-slate-100">{chunks}</span>,
+                        highlight: (chunks) => <strong className="text-black dark:text-slate-100">{chunks}</strong>
+                      })}
                     </li>
                   </ul>
                 </div>

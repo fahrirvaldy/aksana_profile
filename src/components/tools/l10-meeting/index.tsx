@@ -459,13 +459,19 @@ const L10PDFDocument = ({ data, attendees, averageRating }: { data: L10Data; att
   </Document>
 );
 
+import { useTranslations } from 'next-intl';
+
+// ... (keep the rest of imports and pdf styles)
+
 // ============================================================================
 // 📊 Main Component View Layer Engine
 // ============================================================================
 export default function L10Meeting({ onSave, isSyncing, initialData }: L10MeetingProps) {
+  const t = useTranslations("Tools.L10");
+
   const getAttendees = () => data.config.divisions.length > 0 
-    ? ["Owner", "Integrator", ...data.config.divisions] 
-    : ["Owner", "Integrator", "Marketing", "Sales", "Operation", "Finance", "HRD", "Product", "R&D"];
+    ? [t("slides.start.owner"), t("slides.start.integrator"), ...data.config.divisions] 
+    : [t("slides.start.owner"), t("slides.start.integrator"), "Marketing", "Sales", "Operation", "Finance", "HRD", "Product", "R&D"];
 
   const [data, setData] = useState<L10Data>(initialData || DEFAULT_DATA);
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -647,20 +653,20 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
     if (currentSlide === 0) return (
       <div className="flex flex-col items-center justify-center h-full text-center space-y-8">
         <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="space-y-4">
-          <div className="mx-auto w-24 h-24 rounded-3xl bg-blue-500/10 flex items-center justify-center text-blue-600 mb-6 border border-blue-500/20">
+          <div className="mx-auto w-24 h-24 rounded-3xl bg-blue-500/10 flex items-center justify-center text-blue-600 mb-6 border border-blue-500/20 shadow-sm">
             <Trophy size={48} />
           </div>
-          <h1 className="text-6xl font-black tracking-tight text-slate-900 dark:text-white">LEVEL 10 MEETING</h1>
+          <h1 className="text-6xl font-black tracking-tight text-black dark:text-white">LEVEL 10 MEETING</h1>
           <p className="text-3xl text-blue-500 font-bold uppercase tracking-widest">{data.config.companyName}</p>
         </motion.div>
         
-        <div className="bg-white/70 dark:bg-slate-900/50 backdrop-blur-md p-8 rounded-[2.5rem] border border-white/40 dark:border-slate-800 shadow-xl max-w-md w-full">
-          <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Tanggal Rapat Efektif</p>
+        <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 max-w-md w-full shadow-sm">
+          <p className="text-[10px] font-bold text-slate-600 dark:text-slate-300 uppercase tracking-widest mb-2">Tanggal Rapat Efektif</p>
           <input 
             type="text" 
             value={data.meetingDate}
             onChange={(e) => updateData('meetingDate', e.target.value)}
-            className="text-2xl font-bold bg-transparent border-none text-center focus:ring-0 outline-none w-full text-slate-800 dark:text-slate-100"
+            className="text-2xl font-bold bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 text-center focus:ring-0 outline-none w-full"
           />
         </div>
       </div>
@@ -670,38 +676,38 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
       <div className="space-y-6 h-full flex flex-col">
         <div className="flex justify-between items-end">
           <div>
-            <h2 className="text-4xl font-bold text-slate-900 dark:text-white mb-1">Segmen Awal</h2>
-            <p className="text-slate-500 font-medium">Kehadiran & Kabar Baik (5 Menit)</p>
+            <h2 className="text-4xl font-bold text-black dark:text-white mb-1">Segmen Awal</h2>
+            <p className="text-black font-normal">Kehadiran & Kabar Baik (5 Menit)</p>
           </div>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 flex-1 min-h-0 overflow-hidden pb-4">
-          <div className="bg-white/60 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-8 flex flex-col shadow-sm">
-            <h3 className="text-xl font-bold flex items-center gap-2 mb-4 text-slate-800 dark:text-slate-200"><Users size={20} className="text-blue-500" /> Daftar Hadir</h3>
+          <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col shadow-sm">
+            <h3 className="text-xl font-bold flex items-center gap-2 mb-4 text-black dark:text-slate-200"><Users size={20} className="text-blue-500" /> Daftar Hadir</h3>
             <div className="grid grid-cols-2 gap-3 overflow-y-auto pr-1 custom-scrollbar">
               {attendees.map((role, i) => (
-                <label key={i} className={`cursor-pointer transition-all rounded-xl p-4 flex items-center gap-3 border ${data.attendance[i] ? 'bg-blue-500/10 border-blue-500/30' : 'bg-white/50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-800 hover:bg-white dark:hover:bg-slate-800/80'}`}>
+                <label key={i} className={`cursor-pointer transition-all rounded-xl p-4 flex items-center gap-3 border ${data.attendance[i] ? 'bg-blue-500/10 border-blue-500/30' : 'bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/80'}`}>
                   <input 
                     type="checkbox" 
                     checked={data.attendance[i] || false}
                     onChange={(e) => updateData(`attendance.${i}`, e.target.checked)}
-                    className="w-5 h-5 rounded-lg border-slate-300 text-blue-600 focus:ring-blue-500"
+                    className="w-5 h-5 rounded-lg bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 text-blue-600 focus:ring-blue-500"
                   />
-                  <span className={`font-bold text-sm truncate ${data.attendance[i] ? 'text-blue-700 dark:text-blue-300' : 'text-slate-700 dark:text-slate-200'}`}>{role}</span>
+                  <span className={`font-bold text-sm truncate ${data.attendance[i] ? 'text-blue-700 dark:text-blue-300' : 'text-black dark:text-[#EEEEEE]'}`}>{role}</span>
                 </label>
               ))}
             </div>
           </div>
-          <div className="bg-white/60 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-8 flex flex-col shadow-sm">
-            <h3 className="text-xl font-bold flex items-center gap-2 mb-4 text-slate-800 dark:text-slate-200"><MessageSquare size={20} className="text-emerald-500" /> Good News</h3>
+          <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col shadow-sm">
+            <h3 className="text-xl font-bold flex items-center gap-2 mb-4 text-black dark:text-slate-200"><MessageSquare size={20} className="text-emerald-500" /> Good News</h3>
             <div className="space-y-4 flex-1 overflow-y-auto pr-1 custom-scrollbar">
               {['owner', 'integrator', 'team'].map((pic) => (
                 <div key={pic} className="space-y-1">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1">{pic}</label>
+                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-300 px-1">{pic}</label>
                   <textarea 
                     value={data.goodNews[pic as keyof typeof data.goodNews]}
                     onChange={(e) => updateData(`goodNews.${pic}`, e.target.value)}
                     placeholder={`Kabar baik dari ${pic}...`}
-                    className="w-full p-4 rounded-xl bg-white/40 dark:bg-slate-900/30 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-emerald-500 outline-none h-20 resize-none font-medium text-sm text-slate-800 dark:text-slate-200 transition-shadow"
+                    className="w-full p-4 rounded-xl bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 focus:ring-2 focus:ring-emerald-500 outline-none h-20 resize-none font-medium text-sm transition-shadow placeholder-slate-400 dark:placeholder-slate-500"
                   />
                 </div>
               ))}
@@ -720,14 +726,14 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
       return (
         <div className="space-y-6 h-full flex flex-col">
           <div>
-            <h2 className="text-4xl font-bold text-slate-900 dark:text-white mb-1">Scorecard: {division}</h2>
-            <p className="text-slate-500 font-medium">Review KPI Mingguan</p>
+            <h2 className="text-4xl font-bold text-black dark:text-white mb-1">Scorecard: {division}</h2>
+            <p className="text-black font-normal">Review KPI Mingguan</p>
           </div>
-          <div className="bg-white/60 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-8 flex flex-col flex-1 min-h-0 overflow-hidden pb-6 shadow-sm">
+          <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col flex-1 min-h-0 overflow-hidden pb-6 shadow-sm">
             <div className="overflow-y-auto flex-1 custom-scrollbar">
-              <table className="w-full border-separate border-spacing-y-2">
+              <table className="w-full border-separate border-spacing-y-2 shadow-sm">
                 <thead>
-                  <tr className="text-left text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+                  <tr className="text-left text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 dark:text-slate-300">
                     <th className="px-4 pb-2">KPI Metric</th>
                     <th className="px-4 pb-2">Target</th>
                     <th className="px-4 pb-2">Realisasi</th>
@@ -738,16 +744,16 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
                 </thead>
                 <tbody>
                   {kpis.map((k, i) => (
-                    <tr key={i} className="bg-white/50 dark:bg-slate-900/30 border border-slate-200 dark:border-slate-800 rounded-xl group overflow-hidden">
+                    <tr key={i} className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl group overflow-hidden shadow-sm">
                       <td className="p-3"><input type="text" value={k.kpi} onChange={(e) => {
                         const newKpis = [...kpis]; newKpis[i].kpi = e.target.value; updateData(`scorecards.${divId}`, newKpis);
-                      }} className="bg-transparent border-none focus:ring-0 w-full font-bold text-sm text-slate-800 dark:text-slate-200" /></td>
+                      }} className="bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 focus:ring-0 w-full font-bold text-sm" /></td>
                       <td className="p-3"><input type="text" value={k.target} onChange={(e) => {
                         const newKpis = [...kpis]; newKpis[i].target = e.target.value; updateData(`scorecards.${divId}`, newKpis);
-                      }} className="bg-transparent border-none focus:ring-0 w-full font-medium text-sm text-slate-600 dark:text-slate-400" /></td>
+                      }} className="bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 focus:ring-0 w-full font-medium text-sm" /></td>
                       <td className="p-3"><input type="text" value={k.realisasi} onChange={(e) => {
                         const newKpis = [...kpis]; newKpis[i].realisasi = e.target.value; updateData(`scorecards.${divId}`, newKpis);
-                      }} className="bg-transparent border-none focus:ring-0 w-full font-mono text-sm text-blue-600 dark:text-blue-400" /></td>
+                      }} className="bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 focus:ring-0 w-full font-mono text-sm text-blue-600 dark:text-blue-400" /></td>
                       <td className="p-3 text-center">
                         <button onClick={() => {
                           const newKpis = [...kpis]; newKpis[i].jenis = k.jenis === 'output' ? 'outcome' : 'output'; updateData(`scorecards.${divId}`, newKpis);
@@ -768,12 +774,12 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
                 </tbody>
               </table>
               {kpis.length === 0 && (
-                <div className="text-center py-12 text-slate-400 font-medium">Belum ada metrik untuk divisi ini.</div>
+                <div className="text-center py-12 text-black font-medium">Belum ada metrik untuk divisi ini.</div>
               )}
             </div>
             <button 
               onClick={() => updateData(`scorecards.${divId}`, [...kpis, { kpi: "Metric Baru", target: "0", realisasi: "-", jenis: 'output', status: 'on' }])}
-              className="mt-4 flex items-center justify-center gap-2 p-4 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl text-slate-400 hover:text-blue-500 hover:border-blue-500 transition-all font-bold text-sm bg-slate-50/50 dark:bg-slate-900/20"
+              className="mt-4 flex items-center justify-center gap-2 p-4 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl text-slate-600 dark:text-slate-300 hover:text-blue-500 hover:border-blue-500 transition-all font-bold text-sm bg-white dark:bg-[#1E1E1E] shadow-sm"
             >
               <Plus size={16} /> Tambah Metrik KPI
             </button>
@@ -788,14 +794,14 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
       return (
         <div className="space-y-6 h-full flex flex-col">
           <div>
-            <h2 className="text-4xl font-bold text-slate-900 dark:text-white mb-1">Rock Review</h2>
-            <p className="text-slate-500 font-medium">Prioritas Strategis 90 Hari</p>
+            <h2 className="text-4xl font-bold text-black dark:text-white mb-1">Rock Review</h2>
+            <p className="text-black font-normal">Prioritas Strategis 90 Hari</p>
           </div>
-          <div className="bg-white/60 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-8 flex flex-col flex-1 min-h-0 overflow-hidden pb-6 shadow-sm">
+          <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col flex-1 min-h-0 overflow-hidden pb-6 shadow-sm">
             <div className="overflow-y-auto flex-1 custom-scrollbar">
-              <table className="w-full border-separate border-spacing-y-2">
+              <table className="w-full border-separate border-spacing-y-2 shadow-sm">
                 <thead>
-                  <tr className="text-left text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+                  <tr className="text-left text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 dark:text-slate-300">
                     <th className="px-4 pb-2 w-[20%]">PIC / Tim</th>
                     <th className="px-4 pb-2 w-[40%]">Target (Rock)</th>
                     <th className="px-4 pb-2 text-center">Status</th>
@@ -804,12 +810,12 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
                 </thead>
                 <tbody>
                   {rocks.map((rock, i) => (
-                    <tr key={i} className="bg-white/50 dark:bg-slate-900/30 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden group">
+                    <tr key={i} className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden group shadow-sm">
                       <td className="p-3"><input type="text" value={data.rocksStatus[i]?.pic || ""} onChange={(e) => {
                         const newStatus = [...data.rocksStatus]; if(!newStatus[i]) newStatus[i] = {pic: "", status: "on", notes: ""};
                         newStatus[i].pic = e.target.value; updateData('rocksStatus', newStatus);
-                      }} placeholder="Nama PIC" className="bg-transparent border-none focus:ring-0 w-full font-bold text-sm text-slate-800 dark:text-slate-200" /></td>
-                      <td className="p-3 font-bold text-sm text-slate-600 dark:text-slate-300 max-w-xs truncate">{rock}</td>
+                      }} placeholder="Nama PIC" className="bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 focus:ring-0 w-full font-bold text-sm placeholder-slate-400 dark:placeholder-slate-500" /></td>
+                      <td className="p-3 font-bold text-sm text-black dark:text-[#EEEEEE] max-w-xs truncate">{rock}</td>
                       <td className="p-3 text-center">
                         <button onClick={() => {
                           const newStatus = [...data.rocksStatus]; if(!newStatus[i]) newStatus[i] = {pic: "", status: "on", notes: ""};
@@ -819,7 +825,7 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
                       <td className="p-3"><input type="text" value={data.rocksStatus[i]?.notes || ""} onChange={(e) => {
                         const newStatus = [...data.rocksStatus]; if(!newStatus[i]) newStatus[i] = {pic: "", status: "on", notes: ""};
                         newStatus[i].notes = e.target.value; updateData('rocksStatus', newStatus);
-                      }} placeholder="Update status..." className="bg-transparent border-none focus:ring-0 w-full italic text-sm text-slate-600 dark:text-slate-400" /></td>
+                      }} placeholder="Update status..." className="bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 focus:ring-0 w-full italic text-sm placeholder-slate-400 dark:placeholder-slate-500" /></td>
                     </tr>
                   ))}
                 </tbody>
@@ -833,26 +839,26 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
     if (currentSlide === 3 + data.config.divisions.length) return (
       <div className="space-y-6 h-full flex flex-col">
         <div>
-          <h2 className="text-4xl font-bold text-slate-900 dark:text-white mb-1">Headlines</h2>
-          <p className="text-slate-500 font-medium">Berita Penting Rapat</p>
+          <h2 className="text-4xl font-bold text-black dark:text-white mb-1">Headlines</h2>
+          <p className="text-black font-normal">Berita Penting Rapat</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1 min-h-0 overflow-hidden pb-4">
           {['customer', 'internal'].map(type => (
-            <div key={type} className="bg-white/60 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-8 flex flex-col space-y-4 shadow-sm">
+            <div key={type} className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col space-y-4 shadow-sm">
               <h3 className={`text-xl font-bold flex items-center gap-2 ${type === 'customer' ? 'text-blue-500' : 'text-emerald-500'}`}><FileText size={20} /> {type === 'customer' ? 'Customer Headlines' : 'Internal Headlines'}</h3>
               <div className="flex-1 overflow-y-auto space-y-3 pr-1 custom-scrollbar">
                 {(data.headlines[type as keyof typeof data.headlines] || []).map((h, i) => (
-                  <div key={i} className="flex gap-3 items-center group bg-slate-50 dark:bg-slate-900/30 p-3 rounded-xl border border-slate-200 dark:border-slate-800 focus-within:ring-2 focus-within:ring-blue-500/20">
-                    <span className="text-sm font-black text-slate-300 w-4">{i + 1}.</span>
+                  <div key={i} className="flex gap-3 items-center group bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 p-3 rounded-xl focus-within:ring-2 focus-within:ring-blue-500/20 shadow-sm">
+                    <span className="text-sm font-black text-slate-600 dark:text-slate-300 w-4">{i + 1}.</span>
                     <input type="text" value={h} onChange={(e) => {
                       const newH = [...data.headlines[type as keyof typeof data.headlines]]; newH[i] = e.target.value; updateData(`headlines.${type}`, newH);
-                    }} placeholder="Masukkan berita..." className="flex-1 bg-transparent border-none focus:ring-0 p-0 text-sm font-semibold text-slate-800 dark:text-slate-200" />
+                    }} placeholder="Masukkan berita..." className="flex-1 bg-transparent border-none focus:ring-0 p-0 text-sm font-semibold text-black dark:text-[#EEEEEE] placeholder-slate-400 dark:placeholder-slate-500" />
                     <button onClick={() => {
                       const newH = data.headlines[type as keyof typeof data.headlines].filter((_, idx) => idx !== i); updateData(`headlines.${type}`, newH);
                     }} className="opacity-0 group-hover:opacity-100 text-rose-500 p-1.5 hover:bg-rose-500/10 rounded-md transition-all"><Trash2 size={16}/></button>
                   </div>
                 ))}
-                <button onClick={() => updateData(`headlines.${type}`, [...data.headlines[type as keyof typeof data.headlines], ""])} className="w-full py-3 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl text-slate-400 hover:text-blue-500 transition-all font-bold text-xs bg-slate-50/50 dark:bg-slate-900/20">+ Tambah Headline Baru</button>
+                <button onClick={() => updateData(`headlines.${type}`, [...data.headlines[type as keyof typeof data.headlines], ""])} className="w-full py-3 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl text-slate-600 dark:text-slate-300 hover:text-blue-500 transition-all font-bold text-xs bg-white dark:bg-[#1E1E1E] shadow-sm">+ Tambah Headline Baru</button>
               </div>
             </div>
           ))}
@@ -863,21 +869,21 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
     if (currentSlide === 4 + data.config.divisions.length) return (
       <div className="space-y-6 h-full flex flex-col">
         <div>
-          <h2 className="text-4xl font-bold text-slate-900 dark:text-white mb-1">To-Do List</h2>
-          <p className="text-slate-500 font-medium">Review Minggu Lalu & Action Plan</p>
+          <h2 className="text-4xl font-bold text-black dark:text-white mb-1">To-Do List</h2>
+          <p className="text-black font-normal">Review Minggu Lalu & Action Plan</p>
         </div>
-        <div className="bg-white/60 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-8 flex flex-col flex-1 min-h-0 overflow-hidden pb-6 shadow-sm">
+        <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col flex-1 min-h-0 overflow-hidden pb-6 shadow-sm">
           <div className="flex-1 overflow-y-auto space-y-3 pr-1 custom-scrollbar">
             {data.todoList.map((todo, i) => (
-              <div key={todo.id} className="flex items-center gap-4 p-4 bg-slate-50 dark:bg-slate-900/30 rounded-xl group border border-slate-200 dark:border-slate-800 transition-all hover:bg-white dark:hover:bg-slate-800/60 shadow-sm">
+              <div key={todo.id} className="flex items-center gap-4 p-4 bg-white dark:bg-[#1E1E1E] rounded-xl group border border-slate-200 dark:border-slate-800 transition-all hover:bg-slate-50 dark:hover:bg-slate-800/60 shadow-sm">
                 <button onClick={() => {
                   const newList = [...data.todoList]; newList[i].isDone = !todo.isDone; updateData('todoList', newList);
-                }} className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 transition-colors ${todo.isDone ? 'bg-emerald-500 text-white' : 'bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700'}`}>{todo.isDone && <CheckCircle2 size={18} />}</button>
+                }} className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 transition-colors ${todo.isDone ? 'bg-emerald-500 text-white' : 'bg-white dark:bg-[#1E1E1E] border-2 border-slate-200 dark:border-slate-800'}`}>{todo.isDone && <CheckCircle2 size={18} />}</button>
                 <div className="flex-1 min-w-0 space-y-0.5">
                   <input type="text" value={todo.text} onChange={(e) => {
                     const newList = [...data.todoList]; newList[i].text = e.target.value; updateData('todoList', newList);
-                  }} placeholder="Apa tugasnya?" className={`bg-transparent border-none focus:ring-0 w-full font-bold text-base p-0 text-slate-800 dark:text-slate-200 ${todo.isDone ? 'line-through opacity-40' : ''}`} />
-                  <div className="flex items-center gap-1.5"><span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Owner:</span>
+                  }} placeholder="Apa tugasnya?" className={`bg-transparent border-none focus:ring-0 w-full font-bold text-base p-0 text-black dark:text-[#EEEEEE] placeholder-slate-400 dark:placeholder-slate-500 ${todo.isDone ? 'line-through opacity-40' : ''}`} />
+                  <div className="flex items-center gap-1.5"><span className="text-[9px] font-black text-slate-600 dark:text-slate-300 uppercase tracking-widest">Owner:</span>
                     <input type="text" value={todo.owner} onChange={(e) => {
                       const newList = [...data.todoList]; newList[i].owner = e.target.value; updateData('todoList', newList);
                     }} className="bg-transparent border-none focus:ring-0 text-xs font-bold text-blue-500 p-0 h-auto w-40" />
@@ -889,9 +895,9 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
               </div>
             ))}
             {data.todoList.length === 0 && (
-              <div className="text-center py-12 text-slate-400 font-medium">Belum ada tugas untuk minggu ini.</div>
+              <div className="text-center py-12 text-black font-medium">Belum ada tugas untuk minggu ini.</div>
             )}
-            <button onClick={() => updateData('todoList', [...data.todoList, { id: Date.now(), text: "", owner: "PIC", isDone: false }])} className="w-full p-4 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl text-slate-400 hover:text-blue-500 hover:border-blue-500 transition-all font-bold text-sm bg-slate-50/50 dark:bg-slate-900/20">+ Tambah To-Do List Baru</button>
+            <button onClick={() => updateData('todoList', [...data.todoList, { id: Date.now(), text: "", owner: "PIC", isDone: false }])} className="w-full p-4 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl text-slate-600 dark:text-slate-300 hover:text-blue-500 hover:border-blue-500 transition-all font-bold text-sm bg-white dark:bg-[#1E1E1E] shadow-sm">+ Tambah To-Do List Baru</button>
           </div>
         </div>
       </div>
@@ -900,36 +906,36 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
     if (currentSlide === 5 + data.config.divisions.length) return (
       <div className="space-y-6 h-full flex flex-col">
         <div className="flex justify-between items-center flex-shrink-0">
-          <div><h2 className="text-4xl font-bold text-slate-900 dark:text-white mb-1">IDS Session</h2><p className="text-slate-500 font-medium">Identify, Discuss, Solve (60 Menit)</p></div>
-          <button onClick={pullOffTrackData} className="flex items-center gap-2 px-6 py-3 bg-rose-500 hover:bg-rose-600 text-white rounded-2xl font-bold transition-all shadow-lg active:scale-95 text-sm"><RefreshCw size={18} /> Tarik Data Off-Track</button>
+          <div><h2 className="text-4xl font-bold text-black dark:text-white mb-1">IDS Session</h2><p className="text-black font-normal">Identify, Discuss, Solve (60 Menit)</p></div>
+          <button onClick={pullOffTrackData} className="flex items-center gap-2 px-6 py-3 bg-rose-500 hover:bg-rose-600 text-white rounded-2xl font-bold transition-all active:scale-95 text-sm shadow-sm"><RefreshCw size={18} /> Tarik Data Off-Track</button>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1 min-h-0 overflow-hidden pb-4">
-          <div className="bg-white/60 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-8 flex flex-col overflow-hidden shadow-sm">
-            <h3 className="text-base font-black border-b border-slate-200 dark:border-slate-800 pb-4 text-blue-500 uppercase tracking-wider flex-shrink-0">1. Identify (Issues)</h3>
+          <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col overflow-hidden shadow-sm">
+            <h3 className="text-base font-black border-b border-slate-200 dark:border-slate-800 pb-4 text-blue-500 uppercase tracking-wider flex-shrink-0 shadow-sm">1. Identify (Issues)</h3>
             <div className="flex-1 overflow-y-auto space-y-3 mt-5 pr-1 custom-scrollbar">
               {(data.idsSession?.issues || []).map((issue, i) => (
-                <div key={issue.id} className={`flex items-start gap-3 p-4 rounded-2xl group border transition-all ${issue.isResolved ? 'bg-slate-100/50 dark:bg-slate-800/20 border-slate-200 dark:border-slate-800 opacity-50' : 'bg-white dark:bg-slate-900/50 border-slate-200 dark:border-slate-800 shadow-sm'}`}>
+                <div key={issue.id} className={`flex items-start gap-3 p-4 rounded-2xl group border transition-all ${issue.isResolved ? 'bg-slate-50 dark:bg-slate-800/20 border-slate-200 dark:border-slate-800 opacity-50' : 'bg-white dark:bg-[#1E1E1E] border-slate-200 dark:border-slate-800 shadow-sm'}`}>
                   <input type="checkbox" checked={issue.isResolved} onChange={(e) => handleIssueCheck(i, e.target.checked)} className="mt-1.5 w-5 h-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer" />
-                  <div className="flex-1 min-w-0 space-y-1"><span className="inline-block px-2.5 py-1 rounded-lg text-[10px] bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-extrabold uppercase tracking-widest">{issue.source}</span>
+                  <div className="flex-1 min-w-0 space-y-1"><span className="inline-block px-2.5 py-1 rounded-lg text-[10px] bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 font-extrabold uppercase tracking-widest shadow-sm">{issue.source}</span>
                     <input type="text" value={issue.text} onChange={(e) => {
                       const newI = [...(data.idsSession?.issues || [])]; newI[i].text = e.target.value; updateData('idsSession.issues', newI);
-                    }} className={`bg-transparent border-none focus:ring-0 w-full p-0 text-sm font-bold text-slate-800 dark:text-slate-200 transition-all ${issue.isResolved ? 'line-through font-medium text-slate-400' : ''}`} />
+                    }} className={`bg-transparent border-none focus:ring-0 w-full p-0 text-sm font-bold text-black dark:text-[#EEEEEE] transition-all ${issue.isResolved ? 'line-through font-medium' : ''}`} />
                   </div>
                   <button onClick={() => {
                     const newI = (data.idsSession?.issues || []).filter((_, idx) => idx !== i); updateData('idsSession.issues', newI);
                   }} className="opacity-0 group-hover:opacity-100 text-rose-500 p-1.5 hover:bg-rose-500/10 rounded-lg transition-all flex-shrink-0"><Trash2 size={16}/></button>
                 </div>
               ))}
-              <button onClick={() => updateData('idsSession.issues', [...(data.idsSession?.issues || []), { id: `manual-${Date.now()}`, source: 'Manual', text: 'Masalah baru...', isResolved: false }])} className="w-full py-3.5 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-2xl text-slate-400 hover:text-blue-500 transition-all font-bold text-xs bg-slate-50/50 dark:bg-slate-900/20">+ Input Masalah Baru</button>
+              <button onClick={() => updateData('idsSession.issues', [...(data.idsSession?.issues || []), { id: `manual-${Date.now()}`, source: 'Manual', text: 'Masalah baru...', isResolved: false }])} className="w-full py-3.5 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-2xl text-slate-600 dark:text-slate-300 hover:text-blue-500 transition-all font-bold text-xs bg-white dark:bg-[#1E1E1E] shadow-sm">+ Input Masalah Baru</button>
             </div>
           </div>
-          <div className="bg-white/60 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-8 flex flex-col shadow-sm">
-            <h3 className="text-base font-black border-b border-slate-200 dark:border-slate-800 pb-4 text-emerald-500 uppercase tracking-wider flex-shrink-0">2. Discuss (Notes)</h3>
-            <textarea value={data.idsSession.notes} onChange={(e) => updateData('idsSession.notes', e.target.value)} placeholder="Tulis catatan diskusi penting di sini..." className="flex-1 bg-transparent border-none focus:ring-0 text-base font-medium leading-relaxed resize-none custom-scrollbar text-slate-800 dark:text-slate-200 mt-5 outline-none" />
+          <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col shadow-sm">
+            <h3 className="text-base font-black border-b border-slate-200 dark:border-slate-800 pb-4 text-emerald-500 uppercase tracking-wider flex-shrink-0 shadow-sm">2. Discuss (Notes)</h3>
+            <textarea value={data.idsSession.notes} onChange={(e) => updateData('idsSession.notes', e.target.value)} placeholder="Tulis catatan diskusi penting di sini..." className="flex-1 bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 p-4 rounded-xl mt-5 focus:ring-2 focus:ring-emerald-500 outline-none text-base font-medium leading-relaxed resize-none custom-scrollbar placeholder-slate-400 dark:placeholder-slate-500" />
           </div>
-          <div className="bg-white/60 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-8 flex flex-col shadow-sm">
-            <h3 className="text-base font-black border-b border-slate-200 dark:border-slate-800 pb-4 text-purple-500 uppercase tracking-wider flex-shrink-0">3. Solve (Action Items)</h3>
-            <textarea value={data.idsSession.solutions} onChange={(e) => updateData('idsSession.solutions', e.target.value)} placeholder="Apa solusi finalnya? Masukkan ke To-Do List jika perlu..." className="flex-1 bg-transparent border-none focus:ring-0 text-base font-bold leading-relaxed resize-none custom-scrollbar text-purple-700 dark:text-purple-400 mt-5 outline-none" />
+          <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col shadow-sm">
+            <h3 className="text-base font-black border-b border-slate-200 dark:border-slate-800 pb-4 text-purple-500 uppercase tracking-wider flex-shrink-0 shadow-sm">3. Solve (Action Items)</h3>
+            <textarea value={data.idsSession.solutions} onChange={(e) => updateData('idsSession.solutions', e.target.value)} placeholder="Apa solusi finalnya? Masukkan ke To-Do List jika perlu..." className="flex-1 bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 p-4 rounded-xl mt-5 focus:ring-2 focus:ring-purple-500 outline-none text-base font-bold leading-relaxed resize-none custom-scrollbar placeholder-slate-400 dark:placeholder-slate-500" />
           </div>
         </div>
       </div>
@@ -937,15 +943,15 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
 
     if (currentSlide === 6 + data.config.divisions.length) return (
       <div className="flex flex-col items-center justify-center h-full text-center space-y-10 overflow-hidden">
-        <div className="space-y-2 flex-shrink-0"><h2 className="text-5xl font-black text-slate-900 dark:text-white">Conclude</h2><p className="text-slate-500 font-bold italic tracking-wide">"Seberapa efektif rapat ini bagi pencapaian visi?" (1 - 10)</p></div>
+        <div className="space-y-2 flex-shrink-0"><h2 className="text-5xl font-black text-black dark:text-white">Conclude</h2><p className="text-black font-bold italic tracking-wide">"Seberapa efektif rapat ini bagi pencapaian visi?" (1 - 10)</p></div>
         <div className="space-y-1 flex-shrink-0 relative">
           <motion.div initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="text-[12rem] font-black leading-none tracking-tighter text-blue-600 drop-shadow-2xl">{averageRating}</motion.div>
-          <p className="text-sm font-black text-slate-400 uppercase tracking-[0.4em]">Composite Quality Score</p>
+          <p className="text-sm font-bold text-black uppercase tracking-[0.4em]">Composite Quality Score</p>
         </div>
-        <div className="bg-white/50 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 p-10 rounded-[3rem] max-w-5xl w-full flex flex-wrap justify-center gap-6 overflow-y-auto max-h-[250px] custom-scrollbar shadow-xl backdrop-blur-sm">
+        <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 p-10 rounded-xl max-w-5xl w-full flex flex-wrap justify-center gap-6 overflow-y-auto max-h-[250px] custom-scrollbar backdrop-blur-sm shadow-sm">
           {attendees.map((role, i) => data.attendance[i] ? (
             <div key={i} className="flex flex-col items-center gap-2.5 w-28">
-              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest truncate w-full text-center" title={role}>{role}</label>
+              <label className="text-[10px] font-black text-slate-600 dark:text-slate-300 uppercase tracking-widest truncate w-full text-center" title={role}>{role}</label>
               <input
                 type="number"
                 min="0"
@@ -963,14 +969,14 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
                 disabled={!data.attendance?.[i]}
                 className={`w-24 px-4 py-3 rounded-xl border font-bold text-center text-lg outline-none transition-all ${
                   data.attendance?.[i]
-                    ? "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white focus:ring-4 focus:ring-blue-500/10"
-                    : "bg-slate-100 dark:bg-slate-950 border-transparent text-slate-400 cursor-not-allowed"
+                    ? "bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 focus:ring-4 focus:ring-blue-500/10"
+                    : "bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-800 text-slate-400 cursor-not-allowed"
                 }`}
               />
             </div>
           ) : null)}
           {Object.values(data.attendance).filter(Boolean).length === 0 && (
-            <p className="text-base font-bold text-slate-400 py-6">Pilih peserta yang hadir untuk memberikan rating.</p>
+            <p className="text-base font-bold text-black py-6">Pilih peserta yang hadir untuk memberikan rating.</p>
           )}
         </div>
       </div>
@@ -979,34 +985,33 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
   };
 
   return (
-    <div className="relative h-full w-full flex flex-col bg-slate-50 dark:bg-slate-950 p-1 select-none overflow-hidden">
+    <div className="relative h-full w-full flex flex-col bg-white dark:bg-slate-950 p-1 select-none overflow-hidden">
       {/* Top Navigation & Status */}
       <div className="flex justify-between items-center p-8 z-40 flex-shrink-0">
         <div className="flex items-center gap-5">
-          <div className={`bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl px-8 py-3.5 rounded-3xl flex items-center gap-5 shadow-lg border border-slate-200/50 dark:border-slate-800/50 ${timeLeft < 300 ? 'bg-rose-500/10 text-rose-600' : 'text-blue-600 dark:text-blue-400'}`}>
+          <div className={`bg-white dark:bg-slate-900/80 backdrop-blur-xl px-8 py-3.5 rounded-3xl flex items-center gap-5 shadow-lg border border-black dark:border-slate-800/50 dark:border-slate-800/50 ${timeLeft < 300 ? 'bg-rose-500/10 text-rose-600' : 'text-blue-600 dark:text-blue-400'}`}>
             <Clock size={24} /><span className="text-3xl font-black font-mono tracking-tighter">{formatTime(timeLeft)}</span>
-            <div className="flex gap-4 border-l border-slate-200 dark:border-slate-800 pl-5">
-              <button onClick={() => setIsTimerRunning(!isTimerRunning)} className="hover:scale-110 transition-transform active:scale-95 text-slate-700 dark:text-slate-300">{isTimerRunning ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" />}</button>
-              <button onClick={() => { setTimeLeft(5400); setIsTimerRunning(false); }} className="hover:scale-110 transition-transform active:scale-95 text-slate-400"><RotateCcw size={20} /></button>
-            </div>
-          </div>
-          
-          <button 
-            onClick={handleExportPDF}
-            disabled={isExporting}
-            className="flex items-center gap-3 px-6 py-4 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-3xl font-black shadow-xl hover:scale-105 transition-all text-xs active:scale-95 disabled:opacity-50 disabled:grayscale"
-          >
-            {isExporting ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />}
-            {isExporting ? "GENERATING PDF..." : "EXPORT L10 REPORT"}
-          </button>
+            <div className="flex gap-4 border-l border-black dark:border-slate-800 pl-5 shadow-sm">
+              <button onClick={() => setIsTimerRunning(!isTimerRunning)} className="hover:scale-110 transition-transform active:scale-95 text-black dark:text-slate-300">{isTimerRunning ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" />}</button>
+              <button onClick={() => { setTimeLeft(5400); setIsTimerRunning(false); }} className="hover:scale-110 transition-transform active:scale-95 text-black dark:text-slate-300"><RotateCcw size={20} /></button>
+              </div>
+              </div>
 
-          {isSyncing && (
-            <div className="flex items-center gap-2 px-5 py-2.5 bg-blue-500/10 rounded-full text-blue-600 text-xs font-black animate-pulse border border-blue-500/20"><Loader2 size={14} className="animate-spin" />SYNCING...</div>
-          )}
-        </div>
-        <button onClick={() => setShowSetup(true)} className="p-4 rounded-3xl bg-white dark:bg-slate-900 shadow-lg border border-slate-200 dark:border-slate-800 text-slate-400 hover:text-blue-500 hover:rotate-90 transition-all duration-700 active:scale-90"><Settings size={24} /></button>
-      </div>
+              <button 
+              onClick={handleExportPDF}
+              disabled={isExporting}
+              className="flex items-center gap-3 px-6 py-4 bg-slate-900 dark:bg-white text-white dark:text-slate-950 rounded-3xl font-black hover:scale-105 transition-all text-xs active:scale-95 disabled:opacity-50 disabled:grayscale shadow-md"
+              >
+              {isExporting ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />}
+              {isExporting ? "GENERATING PDF..." : "EXPORT L10 REPORT"}
+              </button>
 
+              {isSyncing && (
+              <div className="flex items-center gap-2 px-5 py-2.5 bg-blue-500/10 rounded-full text-blue-600 text-xs font-black animate-pulse border border-blue-500/20 shadow-sm"><Loader2 size={14} className="animate-spin" />SYNCING...</div>
+              )}
+              </div>
+              <button onClick={() => setShowSetup(true)} className="p-4 rounded-3xl bg-white dark:bg-slate-900 shadow-lg border border-slate-200 dark:border-slate-800 text-black dark:text-slate-100 hover:text-blue-500 hover:rotate-90 transition-all duration-700 active:scale-90"><Settings size={24} /></button>
+              </div>
       {/* Slide Canvas */}
       <div className="flex-1 px-16 pb-12 pt-4 relative overflow-hidden min-h-0">
         <div className="w-full h-full bg-transparent flex flex-col">
@@ -1020,24 +1025,24 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
 
       {/* Navigation Controls */}
       <div className="absolute bottom-12 right-20 flex gap-4 z-40">
-        <button onClick={prevSlide} disabled={currentSlide === 0} className="w-16 h-16 rounded-3xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border border-slate-200 dark:border-slate-800 flex items-center justify-center text-slate-500 hover:text-blue-600 disabled:opacity-20 disabled:cursor-not-allowed transition-all shadow-xl active:scale-90"><ChevronLeft size={32} /></button>
-        <button onClick={nextSlide} disabled={currentSlide === totalSlides - 1} className="w-16 h-16 rounded-3xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border border-slate-200 dark:border-slate-800 flex items-center justify-center text-slate-500 hover:text-blue-600 disabled:opacity-20 disabled:cursor-not-allowed transition-all shadow-xl active:scale-90"><ChevronRight size={32} /></button>
+        <button onClick={prevSlide} disabled={currentSlide === 0} className="w-16 h-16 rounded-3xl bg-white dark:bg-slate-900/90 backdrop-blur-md border border-slate-200 dark:border-slate-800 flex items-center justify-center text-black dark:text-slate-100 hover:text-blue-600 disabled:opacity-20 disabled:cursor-not-allowed transition-all active:scale-90 shadow-sm"><ChevronLeft size={32} /></button>
+        <button onClick={nextSlide} disabled={currentSlide === totalSlides - 1} className="w-16 h-16 rounded-3xl bg-white dark:bg-slate-900/90 backdrop-blur-md border border-slate-200 dark:border-slate-800 flex items-center justify-center text-black dark:text-slate-100 hover:text-blue-600 disabled:opacity-20 disabled:cursor-not-allowed transition-all active:scale-90 shadow-sm"><ChevronRight size={32} /></button>
       </div>
 
       {/* Setup Modal */}
       <AnimatePresence>
         {showSetup && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[100] flex items-center justify-center p-8 bg-slate-950/80 backdrop-blur-xl">
-            <motion.div initial={{ scale: 0.9, y: 30 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.9, y: 30 }} className="bg-white dark:bg-slate-900 max-w-2xl w-full p-12 rounded-[3.5rem] shadow-2xl border border-white/20 dark:border-slate-800 relative max-h-[90vh] flex flex-col overflow-hidden">
-              <button onClick={() => setShowSetup(false)} className="absolute top-8 right-8 text-slate-400 hover:text-rose-500 transition-all active:scale-90"><X size={28} /></button>
+            <motion.div initial={{ scale: 0.9, y: 30 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.9, y: 30 }} className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 max-w-2xl w-full p-12 rounded-xl relative max-h-[90vh] flex flex-col overflow-hidden aksana-glass shadow-2xl">
+              <button onClick={() => setShowSetup(false)} className="absolute top-8 right-8 text-black dark:text-slate-100 hover:text-rose-500 transition-all active:scale-90"><X size={28} /></button>
               <div className="space-y-8 flex flex-col flex-1 min-h-0">
-                <div className="text-center flex-shrink-0 space-y-1"><h2 className="text-3xl font-black text-slate-900 dark:text-white">Meeting Engine Setup</h2><p className="text-slate-500 font-bold tracking-tight">Konfigurasi struktur rapat untuk efisiensi maksimal.</p></div>
+                <div className="text-center flex-shrink-0 space-y-1"><h2 className="text-3xl font-black text-black dark:text-white">Meeting Engine Setup</h2><p className="text-black font-bold tracking-tight">Konfigurasi struktur rapat untuk efisiensi maksimal.</p></div>
                 <div className="space-y-6 flex-1 overflow-y-auto pr-3 custom-scrollbar pb-4">
-                  <div className="space-y-2"><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Company / Organization</label>
-                    <input type="text" value={data.config.companyName} onChange={(e) => updateData('config.companyName', e.target.value)} className="w-full px-5 py-4 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-4 focus:ring-blue-500/10 font-black text-lg text-slate-900 dark:text-white outline-none transition-all" />
+                  <div className="space-y-2"><label className="text-[10px] font-black text-slate-600 dark:text-slate-300 uppercase tracking-widest ml-1">Company / Organization</label>
+                    <input type="text" value={data.config.companyName} onChange={(e) => updateData('config.companyName', e.target.value)} className="w-full px-5 py-4 rounded-2xl bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 focus:ring-4 focus:ring-black/5 font-black text-lg outline-none transition-all placeholder-slate-400 dark:placeholder-slate-500" />
                   </div>
                   <div>
-                    <label className="block text-xs font-black text-slate-400 dark:text-slate-500 tracking-wider mb-3">
+                    <label className="block text-xs font-black text-slate-600 dark:text-slate-300 tracking-wider mb-3 uppercase">
                       DIVISI PESERTA RAPAT
                     </label>
                     <div className="space-y-3 max-h-60 overflow-y-auto pr-2 mb-3">
@@ -1052,7 +1057,8 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
                               newDivisions[i] = e.target.value;
                               updateData('config.divisions', newDivisions);
                             }}
-                            className="flex-1 px-5 py-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-4 focus:ring-blue-500/10 text-sm font-bold text-slate-800 dark:text-slate-200 outline-none transition-all"
+                            className="flex-1 px-5 py-3 rounded-xl bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 focus:ring-4 focus:ring-black/5 text-sm font-bold outline-none transition-all placeholder-slate-400 dark:placeholder-slate-500"
+
                           />
                           <button
                             onClick={() => {
@@ -1077,26 +1083,26 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
                       onClick={() => {
                         updateData('config.divisions', [...data.config.divisions, ""]);
                       }}
-                      className="w-full py-3 border-2 border-dashed border-slate-300 dark:border-slate-800 rounded-2xl text-slate-400 hover:text-blue-500 hover:border-blue-500 transition-all font-black text-xs bg-slate-50/50 dark:bg-slate-900/10 flex items-center justify-center gap-2"
+                      className="w-full py-3 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl text-slate-600 dark:text-slate-300 hover:text-blue-500 hover:border-blue-500 transition-all font-black text-xs bg-white dark:bg-[#1E1E1E] flex items-center justify-center gap-2 shadow-sm"
                     >
                       <Plus size={14} /> + TAMBAH DIVISI BARU
                     </button>
                   </div>
-                  <div className="space-y-3"><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Quarterly Rocks (Priorities)</label>
+                  <div className="space-y-3"><label className="text-[10px] font-black text-slate-600 dark:text-slate-300 uppercase tracking-widest ml-1">Quarterly Rocks (Priorities)</label>
                     <div className="space-y-3 max-h-[220px] overflow-y-auto custom-scrollbar pr-1">
                       {data.config.rocks.map((rock, i) => (
                         <div key={i} className="flex gap-3 group">
                           <input type="text" value={rock} onChange={(e) => {
                             const newRocks = [...data.config.rocks]; newRocks[i] = e.target.value; updateData('config.rocks', newRocks);
-                          }} className="flex-1 px-5 py-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:ring-4 focus:ring-blue-500/10 text-sm font-bold text-slate-800 dark:text-slate-200 outline-none transition-all" />
+                          }} className="flex-1 px-5 py-3 rounded-xl bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 focus:ring-4 focus:ring-blue-500/10 text-sm font-bold outline-none transition-all placeholder-slate-400 dark:placeholder-slate-500" />
                           <button onClick={() => updateData('config.rocks', data.config.rocks.filter((_, idx) => idx !== i))} className="p-3 text-rose-500 hover:bg-rose-500/10 rounded-xl transition-all opacity-0 group-hover:opacity-100"><Trash2 size={18}/></button>
                         </div>
                       ))}
                     </div>
-                    <button onClick={() => updateData('config.rocks', [...data.config.rocks, ""])} className="w-full py-4 border-2 border-dashed border-slate-300 dark:border-slate-800 rounded-2xl text-slate-400 hover:text-blue-500 hover:border-blue-500 transition-all font-black text-xs bg-slate-50/50 dark:bg-slate-900/10">+ ADD NEW ROCK</button>
+                    <button onClick={() => updateData('config.rocks', [...data.config.rocks, ""])} className="w-full py-4 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl text-slate-600 dark:text-slate-300 hover:text-blue-500 hover:border-blue-500 transition-all font-black text-xs bg-white dark:bg-[#1E1E1E] shadow-sm">+ ADD NEW ROCK</button>
                   </div>
                 </div>
-                <button onClick={() => setShowSetup(false)} className="w-full py-5 rounded-[2rem] bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 font-black text-lg shadow-2xl active:scale-[0.97] transition-all flex-shrink-0">LAUNCH MEETING SESSION</button>
+                <button onClick={() => setShowSetup(false)} className="w-full py-5 rounded-[2rem] bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-950 font-black text-lg shadow-2xl active:scale-[0.97] transition-all flex-shrink-0">LAUNCH MEETING SESSION</button>
               </div>
             </motion.div>
           </motion.div>

@@ -21,6 +21,7 @@ import {
   UserPlus
 } from 'lucide-react';
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslations } from 'next-intl';
 
 // --- TYPES ---
 
@@ -59,78 +60,26 @@ type ViewType = 'setup' | 'dashboard' | 'assessment';
 
 // --- CONSTANTS ---
 
-const PSYCHO_QUESTIONS = [
-  {
-    id: 1,
-    question: "Saat terjadi krisis mendadak di mana klien besar komplain terkait hasil kerja tim Anda, apa insting pertama Anda?",
-    options: [
-      { text: "Mengumpulkan tim untuk segera membagi tugas penanganan darurat.", trait: 'leadership' as const },
-      { text: "Menganalisis log data dan laporan sebelumnya untuk mencari letak kesalahan pasti.", trait: 'detail' as const },
-      { text: "Memikirkan kompensasi kreatif atau layanan tambahan untuk menenangkan klien.", trait: 'creativity' as const },
-      { text: "Langsung menelepon klien dan menyelesaikan masalah teknisnya saat itu juga.", trait: 'execution' as const }
-    ]
-  },
-  {
-    id: 2,
-    question: "Jika Anda diminta untuk memimpin proyek peluncuran produk baru, bagian mana yang paling Anda nikmati?",
-    options: [
-      { text: "Merancang konsep produk dan strategi branding yang belum pernah ada.", trait: 'creativity' as const },
-      { text: "Memastikan timeline berjalan cepat dan target mingguan tercapai tanpa alasan.", trait: 'execution' as const },
-      { text: "Menyusun SOP rinci dan mengecek QA (Quality Assurance) sebelum rilis.", trait: 'detail' as const },
-      { text: "Memotivasi anggota tim lintas divisi agar visi produk sejalan.", trait: 'leadership' as const }
-    ]
-  },
-  {
-    id: 3,
-    question: "Kolega Anda sedang cuti dan Anda harus mem-backup pekerjaannya yang berisi ratusan baris data spreadsheet. Reaksi Anda?",
-    options: [
-      { text: "Bagus. Saya suka merapikan dan memastikan angka-angkanya akurat.", trait: 'detail' as const },
-      { text: "Saya akan mendelegasikan beberapa bagian ke staf lain agar lebih efisien.", trait: 'leadership' as const },
-      { text: "Saya kerjakan secepat mungkin agar target hari ini tetap selesai.", trait: 'execution' as const },
-      { text: "Saya akan mencoba membuat rumus/makro baru agar formatnya lebih menarik dan mudah dibaca.", trait: 'creativity' as const }
-    ]
-  },
-  {
-    id: 4,
-    question: "Dalam rapat evaluasi tahunan, gaya komunikasi Anda biasanya...",
-    options: [
-      { text: "Fokus pada poin-poin aksi (action items) untuk segera dieksekusi besok.", trait: 'execution' as const },
-      { text: "Memberikan ide-ide liar tentang arah perusahaan ke depan.", trait: 'creativity' as const },
-      { text: "Mengarahkan diskusi agar semua anggota tim mendapat kesempatan bicara.", trait: 'leadership' as const },
-      { text: "Membawa catatan lengkap tentang metrik dan KPI yang tercapai/gagal.", trait: 'detail' as const }
-    ]
-  },
-  {
-    id: 5,
-    question: "Apa kelemahan terbesar yang sering Anda (atau orang lain) sadari dalam diri Anda?",
-    options: [
-      { text: "Sering mengabaikan aturan kecil demi mencapai tujuan dengan cepat.", trait: 'execution' as const },
-      { text: "Terlalu perfeksionis pada hal kecil sehingga kadang lambat.", trait: 'detail' as const },
-      { text: "Sering melompat dari satu ide ke ide lain sebelum ide pertama selesai.", trait: 'creativity' as const },
-      { text: "Terlalu mengambil alih pekerjaan karena kurang sabar melihat tim yang lambat.", trait: 'leadership' as const }
-    ]
-  }
-];
-
 // --- COMPONENTS ---
 
 const Card = ({ children, className = "" }: { children: React.ReactNode, className?: string }) => (
-  <div className={`aksana-glass border border-white/40 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-3xl overflow-hidden transition-all duration-300 ${className}`}>
+  <div className={`bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden transition-all duration-300 shadow-sm ${className}`}>
     {children}
   </div>
 );
 
 const ProgressBar = ({ label, actual, required, colorClass = "bg-blue-500" }: { label: string, actual: number, required: number, colorClass?: string }) => {
+  const t = useTranslations("Tools.People");
   const isWarning = actual < required - 15;
   const barColor = isWarning ? "bg-amber-500" : colorClass;
   
   return (
     <div className="mb-6">
       <div className="flex justify-between text-xs mb-2">
-        <span className="font-semibold text-slate-700 dark:text-slate-300">{label}</span>
-        <span className="text-slate-500 font-mono">Aktual: {actual} / Standar: {required}</span>
+        <span className="font-bold text-slate-600 dark:text-slate-300">{label}</span>
+        <span className="text-slate-600 dark:text-slate-300 font-black">{t("dashboardView.actualLabel", { actual, required })}</span>
       </div>
-      <div className="relative h-3 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+      <div className="relative h-3 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden border border-slate-200 dark:border-slate-700">
         {/* Standard Marker (Dashed Line) */}
         <div 
           className="absolute top-0 bottom-0 border-r-2 border-dashed border-slate-400 dark:border-slate-500 z-10 transition-all duration-500" 
@@ -151,6 +100,7 @@ const ProgressBar = ({ label, actual, required, colorClass = "bg-blue-500" }: { 
 // --- MAIN COMPONENT ---
 
 export default function PeopleAnalyzer({ onSave, isSyncing, initialData }: PeopleAnalyzerProps) {
+  const t = useTranslations("Tools.People");
   const [view, setView] = useState<ViewType>('setup');
   const [companyName, setCompanyName] = useState("");
   const [seats, setSeats] = useState<Record<string, Seat>>({});
@@ -192,7 +142,7 @@ export default function PeopleAnalyzer({ onSave, isSyncing, initialData }: Peopl
   };
 
   const handleDeleteEmployee = (id: number) => {
-    if (confirm("Apakah Anda yakin ingin menghapus data karyawan ini?")) {
+    if (confirm(t("confirmDelete"))) {
       const updatedEmployees = employees.filter(emp => emp.id !== id);
       setEmployees(updatedEmployees);
       triggerSave({ companyName, seats, employees: updatedEmployees });
@@ -200,7 +150,7 @@ export default function PeopleAnalyzer({ onSave, isSyncing, initialData }: Peopl
   };
 
   const handleReset = () => {
-    if (confirm("Perhatian: Memulai ulang profil perusahaan akan menghapus semua data divisi dan karyawan. Lanjutkan?")) {
+    if (confirm(t("confirmReset"))) {
       setSeats({});
       setEmployees([]);
       setCompanyName("");
@@ -214,36 +164,36 @@ export default function PeopleAnalyzer({ onSave, isSyncing, initialData }: Peopl
       {/* Header Tool */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-indigo-500 text-white flex items-center justify-center shadow-lg shadow-indigo-500/20">
+          <div className="w-12 h-12 rounded-2xl bg-black dark:bg-indigo-500 text-white flex items-center justify-center shadow-lg">
             <Users size={24} />
           </div>
           <div>
-            <h2 className="text-2xl font-bold font-[family-name:var(--font-plus-jakarta)]">People Analyzer</h2>
-            <p className="text-slate-500 text-sm font-medium">{companyName || 'Manajemen Talenta & Psikometrik'}</p>
+            <h2 className="text-2xl font-black font-[family-name:var(--font-plus-jakarta)] text-black dark:text-white">{t("title")}</h2>
+            <p className="text-slate-700 dark:text-slate-400 text-sm font-normal">{companyName || t("subtitle")}</p>
           </div>
         </div>
 
         {view !== 'setup' && (
           <div className="flex items-center gap-3">
             {isSyncing && (
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 text-xs font-bold animate-pulse">
-                <RefreshCcw size={12} className="animate-spin" /> SYNCING
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-black text-white dark:bg-slate-800 text-xs font-bold animate-pulse">
+                <RefreshCcw size={12} className="animate-spin" /> {t("syncing")}
               </div>
             )}
             <button 
               onClick={() => setView(view === 'dashboard' ? 'assessment' : 'dashboard')}
-              className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-xl text-sm font-bold hover:bg-indigo-700 transition-all shadow-md shadow-indigo-200"
+              className="flex items-center gap-2 px-4 py-2 bg-black dark:bg-indigo-600 text-white rounded-xl text-sm font-black hover:opacity-90 transition-all shadow-md"
             >
               {view === 'dashboard' ? (
-                <><Plus size={16} /> Tambah Karyawan</>
+                <><Plus size={16} /> {t("addEmployee")}</>
               ) : (
-                <><LayoutDashboard size={16} /> Dashboard</>
+                <><LayoutDashboard size={16} /> {t("dashboard")}</>
               )}
             </button>
             <button 
               onClick={handleReset}
-              className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
-              title="Reset Profil"
+              className="p-2 text-black dark:text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
+              title={t("alerts.resetTitle")}
             >
               <Settings size={20} />
             </button>
@@ -295,6 +245,7 @@ export default function PeopleAnalyzer({ onSave, isSyncing, initialData }: Peopl
 // --- SUB-COMPONENTS ---
 
 function CompanySetup({ onComplete }: { onComplete: (seats: Record<string, Seat>, name: string) => void }) {
+  const t = useTranslations("Tools.People");
   const [compName, setCompName] = useState("");
   const [newDivision, setNewDivision] = useState("");
   const [divisions, setDivisions] = useState<string[]>([]);
@@ -314,8 +265,8 @@ function CompanySetup({ onComplete }: { onComplete: (seats: Record<string, Seat>
   };
 
   const handleGenerate = async () => {
-    if (!compName) { setError("Nama perusahaan wajib diisi."); return; }
-    if (divisions.length === 0) { setError("Masukkan minimal 1 divisi/peran."); return; }
+    if (!compName) { setError(t("setup.errorName")); return; }
+    if (divisions.length === 0) { setError(t("setup.errorDiv")); return; }
     
     setError("");
     setIsGenerating(true);
@@ -345,30 +296,30 @@ function CompanySetup({ onComplete }: { onComplete: (seats: Record<string, Seat>
 
       onComplete(standardizedSeats, compName);
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Terjadi kesalahan saat memproses data.");
+      setError(err instanceof Error ? err.message : "Error");
     } finally {
       setIsGenerating(false);
     }
   };
 
   return (
-    <Card className="p-10 bg-white/50 backdrop-blur-xl border border-white/20">
+    <Card className="p-10 bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 shadow-sm">
       <div className="max-w-3xl mx-auto">
         <div className="text-center mb-10">
-          <div className="w-20 h-20 bg-indigo-50 text-indigo-600 rounded-[2rem] flex items-center justify-center mx-auto mb-6 shadow-inner">
+          <div className="w-20 h-20 bg-black dark:bg-slate-800 text-white rounded-xl flex items-center justify-center mx-auto mb-6 shadow-inner">
             <Building2 size={40} />
           </div>
-          <h3 className="text-3xl font-bold text-slate-900 font-[family-name:var(--font-plus-jakarta)]">Konfigurasi Organisasi</h3>
-          <p className="text-slate-500 mt-3 font-medium">Definisikan struktur tim Anda. AI kami akan memetakan standar psikometrik ideal untuk setiap posisi.</p>
+          <h3 className="text-3xl font-black text-black dark:text-white font-[family-name:var(--font-plus-jakarta)]">{t("setup.title")}</h3>
+          <p className="text-slate-600 dark:text-slate-300 mt-3 font-normal">{t("setup.description")}</p>
         </div>
 
         <div className="space-y-8">
           <div className="space-y-2">
-            <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 ml-1">Nama Perusahaan</label>
+            <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 dark:text-slate-300 ml-1">{t("setup.companyName")}</label>
             <input 
               type="text" 
-              className="w-full p-4 bg-white/50 border border-slate-200 rounded-2xl outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-medium"
-              placeholder="PT Maju Bersama..."
+              className="w-full p-4 rounded-xl bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-semibold placeholder-slate-400 dark:placeholder-slate-500"
+              placeholder={t("setup.placeholderCompany")}
               value={compName}
               onChange={(e) => setCompName(e.target.value)}
               disabled={isGenerating}
@@ -376,12 +327,12 @@ function CompanySetup({ onComplete }: { onComplete: (seats: Record<string, Seat>
           </div>
 
           <div className="space-y-4">
-            <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 ml-1">Divisi / Kursi (Seats)</label>
+            <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 dark:text-slate-300 ml-1">{t("setup.seats")}</label>
             <form onSubmit={handleAddDivision} className="flex gap-3">
               <input 
                 type="text" 
-                className="flex-1 p-4 bg-white/50 border border-slate-200 rounded-2xl outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-medium"
-                placeholder="Contoh: Marketing, Frontend Dev, HR..."
+                className="flex-1 p-4 rounded-xl bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-semibold placeholder-slate-400 dark:placeholder-slate-500"
+                placeholder={t("setup.placeholderSeat")}
                 value={newDivision}
                 onChange={(e) => setNewDivision(e.target.value)}
                 disabled={isGenerating}
@@ -389,23 +340,23 @@ function CompanySetup({ onComplete }: { onComplete: (seats: Record<string, Seat>
               <button 
                 type="submit"
                 disabled={!newDivision.trim() || isGenerating}
-                className="px-6 py-4 bg-white border border-slate-200 text-indigo-600 font-bold rounded-2xl hover:bg-slate-50 disabled:opacity-50 transition-all flex items-center gap-2"
+                className="px-6 py-4 bg-slate-900 dark:bg-slate-50 text-white dark:text-slate-950 font-black rounded-xl hover:opacity-90 disabled:opacity-50 transition-all flex items-center gap-2 shadow-sm"
               >
-                <Plus size={18} /> Tambah
+                <Plus size={18} /> {t("setup.add")}
               </button>
             </form>
 
-            <div className="flex flex-wrap gap-2.5 p-5 border border-slate-100 rounded-[2rem] bg-slate-50/50 min-h-[80px]">
-              {divisions.length === 0 && <span className="text-sm text-slate-400 italic m-auto font-medium">Belum ada divisi terdaftar.</span>}
+            <div className="flex flex-wrap gap-2.5 p-5 border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-[#1E1E1E] min-h-[80px] shadow-sm">
+              {divisions.length === 0 && <span className="text-sm text-slate-400 italic m-auto font-normal">{t("setup.empty")}</span>}
               {divisions.map((div, idx) => (
                 <motion.div 
                   initial={{ scale: 0.8, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   key={idx} 
-                  className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl shadow-sm text-sm font-bold text-slate-700"
+                  className="flex items-center gap-2 px-4 py-2 bg-slate-900 text-white dark:bg-slate-50 dark:text-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm text-sm font-black"
                 >
                   {div}
-                  <button type="button" onClick={() => handleRemoveDivision(div)} disabled={isGenerating} className="text-slate-300 hover:text-red-500 transition-colors">
+                  <button type="button" onClick={() => handleRemoveDivision(div)} disabled={isGenerating} className="text-slate-400 hover:text-red-500 transition-colors">
                     <Trash2 size={14} />
                   </button>
                 </motion.div>
@@ -413,21 +364,21 @@ function CompanySetup({ onComplete }: { onComplete: (seats: Record<string, Seat>
             </div>
           </div>
 
-          {error && <div className="p-4 bg-red-50 text-red-600 text-sm font-bold rounded-2xl border border-red-100 text-center">{error}</div>}
+          {error && <div className="p-4 bg-red-50 text-red-600 text-sm font-bold rounded-2xl border border-red-100 text-center shadow-sm">{error}</div>}
 
           <button 
             onClick={handleGenerate}
             disabled={isGenerating || divisions.length === 0 || !compName}
-            className="w-full py-5 bg-slate-900 text-white font-bold rounded-2xl hover:opacity-90 disabled:bg-slate-300 transition-all shadow-xl shadow-slate-200 flex justify-center items-center gap-3 text-lg"
+            className="w-full py-5 bg-black dark:bg-slate-900 text-white font-black rounded-2xl hover:opacity-90 disabled:bg-neutral-300 transition-all shadow-xl flex justify-center items-center gap-3 text-lg"
           >
             {isGenerating ? (
               <>
                 <Loader2 className="animate-spin" size={24} />
-                AI sedang menganalisis standar...
+                {t("setup.generating")}
               </>
             ) : (
               <>
-                Terapkan & Analisis Struktur <ArrowRight size={20} />
+                {t("setup.generate")} <ArrowRight size={20} />
               </>
             )}
           </button>
@@ -438,31 +389,32 @@ function CompanySetup({ onComplete }: { onComplete: (seats: Record<string, Seat>
 }
 
 function Dashboard({ employees, seats, onDelete }: { employees: Employee[], seats: Record<string, Seat>, onDelete: (id: number) => void }) {
+  const t = useTranslations("Tools.People");
   const [selectedId, setSelectedId] = useState<number | null>(employees.length > 0 ? employees[0].id : null);
 
   const activeEmp = employees.find(e => e.id === (selectedId ?? employees[0]?.id)) || employees[0];
 
   if (employees.length === 0) {
     return (
-      <Card className="p-20 text-center bg-white/50 backdrop-blur-xl border border-white/20">
+      <Card className="p-20 text-center bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 shadow-sm">
         <div className="max-w-md mx-auto">
-          <div className="w-20 h-20 bg-slate-50 text-slate-300 rounded-[2rem] flex items-center justify-center mx-auto mb-8">
+          <div className="w-20 h-20 bg-slate-900 text-white dark:bg-slate-800 dark:text-white rounded-xl flex items-center justify-center mx-auto mb-8">
             <UserPlus size={40} />
           </div>
-          <h3 className="text-2xl font-bold text-slate-900 font-[family-name:var(--font-plus-jakarta)] mb-4">Mulai Database Tim</h3>
-          <p className="text-slate-500 font-medium mb-10 leading-relaxed">Anda telah menetapkan {Object.keys(seats).length} divisi. Sekarang, jalankan asesmen untuk karyawan Anda untuk melihat kecocokan kapasitas mereka.</p>
+          <h3 className="text-2xl font-black text-black dark:text-white font-[family-name:var(--font-plus-jakarta)] mb-4">{t("dashboardView.empty.title")}</h3>
+          <p className="text-slate-600 dark:text-slate-300 font-normal mb-10 leading-relaxed">{t("dashboardView.empty.description", { n: Object.keys(seats).length })}</p>
           
-          <div className="p-6 bg-indigo-50/50 rounded-3xl border border-indigo-100 text-left">
-            <h4 className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest mb-4">Struktur Tersimpan:</h4>
+          <div className="p-6 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 text-left shadow-sm">
+            <h4 className="text-[10px] font-black text-slate-600 dark:text-slate-300 uppercase tracking-widest mb-4">{t("dashboardView.empty.structure")}</h4>
             <div className="space-y-3">
               {Object.entries(seats).map(([name], i) => (
-                <div key={i} className="flex justify-between items-center bg-white/60 p-3 rounded-xl border border-indigo-50">
-                  <span className="font-bold text-indigo-900 text-sm">{name}</span>
+                <div key={i} className="flex justify-between items-center bg-white dark:bg-[#1E1E1E] p-3 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                  <span className="font-black text-black dark:text-[#EEEEEE] text-sm">{name}</span>
                   <div className="flex gap-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-blue-400" title="Creativity"></div>
-                    <div className="w-1.5 h-1.5 rounded-full bg-purple-400" title="Leadership"></div>
-                    <div className="w-1.5 h-1.5 rounded-full bg-amber-400" title="Detail"></div>
-                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" title="Execution"></div>
+                    <div className="w-1.5 h-1.5 rounded-full bg-blue-600" title={t("dashboardView.traits.creativity")}></div>
+                    <div className="w-1.5 h-1.5 rounded-full bg-purple-600" title={t("dashboardView.traits.leadership")}></div>
+                    <div className="w-1.5 h-1.5 rounded-full bg-amber-600" title={t("dashboardView.traits.detail")}></div>
+                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-600" title={t("dashboardView.traits.execution")}></div>
                   </div>
                 </div>
               ))}
@@ -478,10 +430,10 @@ function Dashboard({ employees, seats, onDelete }: { employees: Employee[], seat
 
   // Anomaly Detection
   const anomalies = [];
-  if (empPsycho.creativity < seatReq.creativity - 15) anomalies.push({ trait: 'Kreativitas', val: empPsycho.creativity, req: seatReq.creativity });
-  if (empPsycho.leadership < seatReq.leadership - 15) anomalies.push({ trait: 'Kepemimpinan', val: empPsycho.leadership, req: seatReq.leadership });
-  if (empPsycho.detail < seatReq.detail - 15) anomalies.push({ trait: 'Ketelitian', val: empPsycho.detail, req: seatReq.detail });
-  if (empPsycho.execution < seatReq.execution - 15) anomalies.push({ trait: 'Eksekusi', val: empPsycho.execution, req: seatReq.execution });
+  if (empPsycho.creativity < seatReq.creativity - 15) anomalies.push({ trait: 'creativity', val: empPsycho.creativity, req: seatReq.creativity });
+  if (empPsycho.leadership < seatReq.leadership - 15) anomalies.push({ trait: 'leadership', val: empPsycho.leadership, req: seatReq.leadership });
+  if (empPsycho.detail < seatReq.detail - 15) anomalies.push({ trait: 'detail', val: empPsycho.detail, req: seatReq.detail });
+  if (empPsycho.execution < seatReq.execution - 15) anomalies.push({ trait: 'execution', val: empPsycho.execution, req: seatReq.execution });
 
   // Re-assignment Suggestion
   let bestFit: string | null = null;
@@ -505,28 +457,28 @@ function Dashboard({ employees, seats, onDelete }: { employees: Employee[], seat
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
       {/* List Karyawan (Left Col) */}
       <div className="lg:col-span-4 space-y-6">
-        <Card className="p-6 bg-white/50 backdrop-blur-xl border border-white/20">
-          <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-6 px-2">Database Talenta</h4>
+        <Card className="p-6 bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 shadow-sm">
+          <h4 className="text-[10px] font-black text-slate-600 dark:text-slate-300 uppercase tracking-widest mb-6 px-2">{t("dashboardView.sidebar")}</h4>
           <div className="space-y-3 max-h-[650px] overflow-y-auto custom-scrollbar pr-2">
             {employees.map(emp => (
               <motion.div
                 layout
                 key={emp.id}
                 onClick={() => setSelectedId(emp.id)}
-                className={`group p-5 rounded-2xl border transition-all cursor-pointer flex items-center justify-between ${activeEmp.id === emp.id ? 'bg-indigo-600 border-indigo-600 shadow-lg shadow-indigo-100' : 'bg-white border-slate-100 hover:border-indigo-200'}`}
+                className={`group p-5 rounded-xl border transition-all cursor-pointer flex items-center justify-between ${activeEmp.id === emp.id ? 'bg-slate-900 border-slate-900 shadow-lg' : 'bg-white border-slate-200 hover:bg-slate-50 dark:bg-[#1E1E1E] dark:border-slate-700'}`}
               >
                 <div>
-                  <p className={`font-bold transition-colors ${activeEmp.id === emp.id ? 'text-white' : 'text-slate-900'}`}>{emp.name}</p>
-                  <p className={`text-xs font-medium mt-1 ${activeEmp.id === emp.id ? 'text-indigo-100' : 'text-slate-500'}`}>{emp.role}</p>
+                  <p className={`font-black transition-colors ${activeEmp.id === emp.id ? 'text-white' : 'text-black dark:text-[#EEEEEE]'}`}>{emp.name}</p>
+                  <p className={`text-xs font-normal mt-1 ${activeEmp.id === emp.id ? 'text-slate-300' : 'text-slate-600 dark:text-slate-400'}`}>{emp.role}</p>
                 </div>
                 <div className="flex items-center gap-3">
                    <button 
                     onClick={(e) => { e.stopPropagation(); onDelete(emp.id); }} 
-                    className={`p-2 rounded-lg transition-all ${activeEmp.id === emp.id ? 'text-indigo-300 hover:text-white hover:bg-white/10' : 'text-slate-300 hover:text-red-500 hover:bg-red-50'}`}
+                    className={`p-2 rounded-lg transition-all ${activeEmp.id === emp.id ? 'text-white/60 hover:text-white hover:bg-white/10' : 'text-slate-400 hover:text-red-500 hover:bg-red-50'}`}
                   >
                     <Trash2 size={16} />
                   </button>
-                  <ChevronRight size={18} className={activeEmp.id === emp.id ? 'text-white' : 'text-slate-300'} />
+                  <ChevronRight size={18} className={activeEmp.id === emp.id ?'text-white' : 'text-slate-400'} />
                 </div>
               </motion.div>
             ))}
@@ -536,26 +488,26 @@ function Dashboard({ employees, seats, onDelete }: { employees: Employee[], seat
 
       {/* Analysis Details (Right Col) */}
       <div className="lg:col-span-8 space-y-6">
-        <Card className="p-10 bg-white/70 backdrop-blur-xl border border-white/20 h-full">
-          <div className="flex flex-col md:flex-row justify-between items-start gap-6 mb-12 pb-10 border-b border-slate-100">
+        <Card className="p-10 bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 h-full shadow-sm">
+          <div className="flex flex-col md:flex-row justify-between items-start gap-6 mb-12 pb-10 border-b border-slate-200 dark:border-slate-700 shadow-sm">
             <div className="space-y-3">
-              <h2 className="text-3xl font-black text-slate-900 font-[family-name:var(--font-plus-jakarta)]">{activeEmp.name}</h2>
+              <h2 className="text-3xl font-black text-black dark:text-white font-[family-name:var(--font-plus-jakarta)]">{activeEmp.name}</h2>
               <div className="flex items-center gap-2">
-                <div className="px-4 py-1.5 bg-slate-900 text-white rounded-xl text-xs font-bold tracking-wide flex items-center gap-2 shadow-sm">
+                <div className="px-4 py-1.5 bg-slate-900 dark:bg-slate-50 text-white dark:text-slate-950 rounded-xl text-xs font-black tracking-wide flex items-center gap-2 shadow-sm">
                   <Briefcase size={12} /> {activeEmp.role}
                 </div>
               </div>
             </div>
             
             <div className="text-left md:text-right">
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-3">Status Kecocokan</span>
+              <span className="text-[10px] font-black text-slate-600 dark:text-slate-300 uppercase tracking-widest block mb-3">{t("dashboardView.fitStatus")}</span>
               {anomalies.length > 0 ? (
-                <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-amber-50 text-amber-700 border border-amber-100 rounded-2xl text-sm font-bold shadow-sm">
-                  <AlertCircle size={16} /> Perlu Penyesuaian
+                <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-amber-700 border-2 border-amber-600 rounded-xl text-sm font-black shadow-sm">
+                  <AlertCircle size={16} /> {t("dashboardView.needAdjustment")}
                 </div>
               ) : (
-                <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-50 text-emerald-700 border border-emerald-100 rounded-2xl text-sm font-bold shadow-sm">
-                  <CheckCircle size={16} /> Optimal (Right Seat)
+                <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-emerald-700 border-2 border-emerald-600 rounded-xl text-sm font-black shadow-sm">
+                  <CheckCircle size={16} /> {t("dashboardView.optimal")}
                 </div>
               )}
             </div>
@@ -563,54 +515,57 @@ function Dashboard({ employees, seats, onDelete }: { employees: Employee[], seat
 
           <div className="space-y-10 mb-12">
             <div>
-              <h4 className="text-xs font-bold text-slate-900 uppercase tracking-widest mb-8 flex items-center gap-2">
-                <Target size={16} className="text-indigo-500" /> Visualisasi Kapasitas vs Standar
+              <h4 className="text-xs font-black text-slate-600 dark:text-slate-300 uppercase tracking-widest mb-8 flex items-center gap-2">
+                <Target size={16} className="text-indigo-600" /> {t("dashboardView.visualization")}
               </h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4">
-                <ProgressBar label="Kreativitas & Inovasi" actual={empPsycho.creativity} required={seatReq.creativity} colorClass="bg-blue-500" />
-                <ProgressBar label="Kepemimpinan" actual={empPsycho.leadership} required={seatReq.leadership} colorClass="bg-purple-500" />
-                <ProgressBar label="Ketelitian (Detail)" actual={empPsycho.detail} required={seatReq.detail} colorClass="bg-amber-500" />
-                <ProgressBar label="Eksekusi & Logika" actual={empPsycho.execution} required={seatReq.execution} colorClass="bg-emerald-500" />
+                <ProgressBar label={t("dashboardView.traits.creativity")} actual={empPsycho.creativity} required={seatReq.creativity} colorClass="bg-blue-600" />
+                <ProgressBar label={t("dashboardView.traits.leadership")} actual={empPsycho.leadership} required={seatReq.leadership} colorClass="bg-purple-600" />
+                <ProgressBar label={t("dashboardView.traits.detail")} actual={empPsycho.detail} required={seatReq.detail} colorClass="bg-amber-600" />
+                <ProgressBar label={t("dashboardView.traits.execution")} actual={empPsycho.execution} required={seatReq.execution} colorClass="bg-emerald-600" />
               </div>
-              <div className="flex justify-start items-center gap-8 mt-4 pt-4 border-t border-slate-50">
-                <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400">
-                  <div className="w-6 h-2 bg-indigo-500 rounded-full"></div> KAPASITAS AKTUAL
+              <div className="flex justify-start items-center gap-8 mt-4 pt-4 border-t border-slate-200 dark:border-slate-700 shadow-sm">
+                <div className="flex items-center gap-2 text-[10px] font-black text-slate-600 dark:text-slate-300">
+                  <div className="w-6 h-2 bg-indigo-600 rounded-full"></div> {t("dashboardView.actual")}
                 </div>
-                <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400">
-                  <div className="w-6 h-0.5 border-t-2 border-dashed border-slate-400"></div> STANDAR AI KURSI
+                <div className="flex items-center gap-2 text-[10px] font-black text-slate-600 dark:text-slate-300">
+                  <div className="w-6 h-0.5 border-t-2 border-dashed border-slate-400 dark:border-slate-500 shadow-sm"></div> {t("dashboardView.standard")}
                 </div>
               </div>
             </div>
           </div>
 
           {/* Recommendations Card */}
-          <div className="bg-gradient-to-br from-slate-900 to-indigo-900 rounded-[2.5rem] p-8 text-white shadow-2xl relative overflow-hidden group">
+          <div className="bg-slate-900 dark:bg-indigo-950 border border-slate-800 rounded-xl p-8 text-white relative overflow-hidden group shadow-lg">
             <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-32 -mt-32 blur-3xl group-hover:bg-white/10 transition-all duration-700"></div>
             
-            <h4 className="text-xs font-bold text-indigo-300 uppercase tracking-[0.2em] mb-6 flex items-center gap-2 relative z-10">
-              <BrainCircuit size={18} /> Rekomendasi Sistem Aksana
+            <h4 className="text-xs font-black text-white dark:text-indigo-300 uppercase tracking-[0.2em] mb-6 flex items-center gap-2 relative z-10">
+              <BrainCircuit size={18} /> {t("dashboardView.recommendation")}
             </h4>
             
             <div className="space-y-6 relative z-10">
               {anomalies.length > 0 ? (
                 <>
-                  <p className="text-sm text-indigo-100/80 leading-relaxed font-medium">
-                    Karyawan menunjukkan gap kompetensi pada aspek <span className="text-white font-bold">{anomalies.map(a => a.trait).join(", ")}</span>. Posisi <span className="text-white font-bold">{activeEmp.role}</span> membutuhkan standar yang lebih tinggi.
+                  <p className="text-sm text-white/90 leading-relaxed font-semibold">
+                    {t("dashboardView.gapDesc", { 
+                      traits: anomalies.map(a => t(`dashboardView.anomalies.${a.trait}`)).join(", "),
+                      role: activeEmp.role 
+                    })}
                   </p>
                   
                   {bestFit && (
                     <motion.div 
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="p-5 bg-white/10 backdrop-blur-md rounded-3xl border border-white/10 flex items-start gap-4"
+                      className="p-5 bg-white/10 backdrop-blur-xl rounded-xl border border-white/20 flex items-start gap-4 shadow-sm"
                     >
-                      <div className="p-3 bg-white text-indigo-900 rounded-2xl shadow-lg shrink-0">
+                      <div className="p-3 bg-white text-slate-900 rounded-xl shrink-0 border border-slate-200 aksana-glass">
                         <Map size={20} />
                       </div>
                       <div>
-                        <p className="text-sm font-bold text-white mb-1">Potensi Re-assignment</p>
-                        <p className="text-xs text-indigo-200 leading-relaxed">
-                          Pola karakter {activeEmp.name} memiliki kecocokan <span className="text-white font-bold">94%</span> dengan standar posisi <span className="text-indigo-400 font-bold">{bestFit}</span>. Pertimbangkan rotasi untuk optimasi performa.
+                        <p className="text-sm font-black text-white mb-1">{t("dashboardView.reassignment")}</p>
+                        <p className="text-xs text-neutral-300 leading-relaxed font-medium">
+                          {t("dashboardView.reassignmentDesc", { name: activeEmp.name, percent: 94, role: bestFit })}
                         </p>
                       </div>
                     </motion.div>
@@ -618,13 +573,13 @@ function Dashboard({ employees, seats, onDelete }: { employees: Employee[], seat
                 </>
               ) : (
                 <div className="flex gap-4 items-start">
-                  <div className="p-3 bg-emerald-500/20 text-emerald-400 rounded-2xl border border-emerald-500/20 shrink-0 shadow-lg">
+                  <div className="p-3 bg-emerald-500/20 text-emerald-400 rounded-xl border border-emerald-500/20 shrink-0 shadow-sm">
                     <CheckCircle size={24} />
                   </div>
                   <div>
-                    <p className="text-sm font-bold text-white mb-1">Penempatan Sempurna</p>
-                    <p className="text-xs text-indigo-200 leading-relaxed">
-                      Kapasitas {activeEmp.name} sangat selaras dengan kebutuhan strategis posisi <span className="text-indigo-400 font-bold">{activeEmp.role}</span>. Fokus pada delegasi dan pengembangan lanjut di jalur ini.
+                    <p className="text-sm font-black text-white mb-1">{t("dashboardView.perfectFit")}</p>
+                    <p className="text-xs text-neutral-300 leading-relaxed font-medium">
+                      {t("dashboardView.perfectFitDesc", { name: activeEmp.name, role: activeEmp.role })}
                     </p>
                   </div>
                 </div>
@@ -638,6 +593,61 @@ function Dashboard({ employees, seats, onDelete }: { employees: Employee[], seat
 }
 
 function AssessmentForm({ seats, onComplete }: { seats: Record<string, Seat>, onComplete: (emp: Employee) => void }) {
+  const t = useTranslations("Tools.People");
+
+  const PSYCHO_QUESTIONS = [
+    {
+      id: 1,
+      question: t("questions.q1.text"),
+      options: [
+        { text: t("questions.q1.options.leadership"), trait: 'leadership' as const },
+        { text: t("questions.q1.options.detail"), trait: 'detail' as const },
+        { text: t("questions.q1.options.creativity"), trait: 'creativity' as const },
+        { text: t("questions.q1.options.execution"), trait: 'execution' as const }
+      ]
+    },
+    {
+      id: 2,
+      question: t("questions.q2.text"),
+      options: [
+        { text: t("questions.q2.options.creativity"), trait: 'creativity' as const },
+        { text: t("questions.q2.options.execution"), trait: 'execution' as const },
+        { text: t("questions.q2.options.detail"), trait: 'detail' as const },
+        { text: t("questions.q2.options.leadership"), trait: 'leadership' as const }
+      ]
+    },
+    {
+      id: 3,
+      question: t("questions.q3.text"),
+      options: [
+        { text: t("questions.q3.options.detail"), trait: 'detail' as const },
+        { text: t("questions.q3.options.leadership"), trait: 'leadership' as const },
+        { text: t("questions.q3.options.execution"), trait: 'execution' as const },
+        { text: t("questions.q3.options.creativity"), trait: 'creativity' as const }
+      ]
+    },
+    {
+      id: 4,
+      question: t("questions.q4.text"),
+      options: [
+        { text: t("questions.q4.options.execution"), trait: 'execution' as const },
+        { text: t("questions.q4.options.creativity"), trait: 'creativity' as const },
+        { text: t("questions.q4.options.leadership"), trait: 'leadership' as const },
+        { text: t("questions.q4.options.detail"), trait: 'detail' as const }
+      ]
+    },
+    {
+      id: 5,
+      question: t("questions.q5.text"),
+      options: [
+        { text: t("questions.q5.options.execution"), trait: 'execution' as const },
+        { text: t("questions.q5.options.detail"), trait: 'detail' as const },
+        { text: t("questions.q5.options.creativity"), trait: 'creativity' as const },
+        { text: t("questions.q5.options.leadership"), trait: 'leadership' as const }
+      ]
+    }
+  ];
+
   const [step, setStep] = useState(0); 
   const [formData, setFormData] = useState({ name: '', role: Object.keys(seats)[0] || '' });
   const [answers, setAnswers] = useState<Record<number, string>>({});
@@ -682,32 +692,32 @@ function AssessmentForm({ seats, onComplete }: { seats: Record<string, Seat>, on
 
   if (step === 0) {
     return (
-      <Card className="max-w-xl mx-auto p-12 bg-white/50 backdrop-blur-xl border border-white/20">
+      <Card className="max-w-xl mx-auto p-12 bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 shadow-sm">
         <div className="text-center mb-10">
-          <div className="w-16 h-16 bg-indigo-50 text-indigo-600 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-inner">
+          <div className="w-16 h-16 bg-slate-900 text-white dark:bg-slate-800 dark:text-white rounded-xl flex items-center justify-center mx-auto mb-6 shadow-inner">
             <BrainCircuit size={32} />
           </div>
-          <h2 className="text-2xl font-bold text-slate-900 font-[family-name:var(--font-plus-jakarta)] mb-2">Asesmen Talenta</h2>
-          <p className="text-slate-500 font-medium text-sm">Pemetaan psikologis berbasis skenario untuk menentukan penempatan terbaik.</p>
+          <h2 className="text-2xl font-black text-black dark:text-white font-[family-name:var(--font-plus-jakarta)] mb-2">{t("assessment.title")}</h2>
+          <p className="text-slate-600 dark:text-slate-300 font-normal text-sm">{t("assessment.description")}</p>
         </div>
 
         <form onSubmit={handleStart} className="space-y-6">
           <div className="space-y-2">
-            <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 ml-1">Nama Lengkap</label>
+            <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 dark:text-slate-300 ml-1">{t("assessment.name")}</label>
             <input 
               required
               type="text" 
-              className="w-full p-4 bg-white/50 border border-slate-200 rounded-2xl outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-medium"
-              placeholder="Masukkan nama kandidat..."
+              className="w-full p-4 rounded-xl bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-semibold placeholder-slate-400 dark:placeholder-slate-500"
+              placeholder={t("assessment.placeholderName")}
               value={formData.name}
               onChange={e => setFormData({...formData, name: e.target.value})}
             />
           </div>
 
           <div className="space-y-2">
-             <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 ml-1">Posisi Target</label>
+             <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 dark:text-slate-300 ml-1">{t("assessment.role")}</label>
             <select 
-              className="w-full p-4 bg-white/50 border border-slate-200 rounded-2xl outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-700 appearance-none"
+              className="w-full p-4 rounded-xl bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-black appearance-none"
               value={formData.role}
               onChange={e => setFormData({...formData, role: e.target.value})}
               required
@@ -720,9 +730,9 @@ function AssessmentForm({ seats, onComplete }: { seats: Record<string, Seat>, on
 
           <button 
             type="submit"
-            className="w-full py-4 mt-6 bg-slate-900 text-white font-bold rounded-2xl hover:opacity-90 transition-all shadow-xl shadow-slate-100 flex justify-center items-center gap-2"
+            className="w-full py-4 mt-6 bg-slate-900 dark:bg-slate-50 text-white dark:text-slate-950 font-black rounded-xl hover:opacity-90 transition-all shadow-xl flex justify-center items-center gap-2"
           >
-            Mulai Tes Psikometrik <ArrowRight size={18} />
+            {t("assessment.start")} <ArrowRight size={18} />
           </button>
         </form>
       </Card>
@@ -735,13 +745,13 @@ function AssessmentForm({ seats, onComplete }: { seats: Record<string, Seat>, on
   return (
     <div className="max-w-2xl mx-auto mt-6">
       <div className="mb-10">
-        <div className="flex justify-between text-[10px] font-bold text-slate-400 mb-3 uppercase tracking-widest">
-          <span>Progres: {step} / {PSYCHO_QUESTIONS.length}</span>
-          <span>{Math.round(progress)}% SELESAI</span>
+        <div className="flex justify-between text-[10px] font-black text-slate-600 dark:text-slate-300 mb-3 uppercase tracking-widest">
+          <span>{t("assessment.progress", { step: step, total: PSYCHO_QUESTIONS.length })}</span>
+          <span>{t("assessment.finished", { percent: Math.round(progress) })}</span>
         </div>
-        <div className="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden p-0.5">
+        <div className="w-full h-2.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden p-0.5 border border-slate-200 dark:border-slate-700 shadow-sm">
           <motion.div 
-            className="h-full bg-indigo-600 rounded-full" 
+            className="h-full bg-slate-900 dark:bg-indigo-600 rounded-full" 
             initial={{ width: 0 }}
             animate={{ width: `${progress}%` }}
             transition={{ duration: 0.5 }}
@@ -756,8 +766,8 @@ function AssessmentForm({ seats, onComplete }: { seats: Record<string, Seat>, on
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -20 }}
         >
-          <Card className="p-10 bg-white/50 backdrop-blur-xl border border-white/20">
-            <h3 className="text-xl md:text-2xl font-bold text-slate-900 mb-10 leading-relaxed font-[family-name:var(--font-plus-jakarta)]">
+          <Card className="p-10 bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 shadow-sm">
+            <h3 className="text-xl md:text-2xl font-black text-black dark:text-white mb-10 leading-relaxed font-[family-name:var(--font-plus-jakarta)]">
               {currentQ.question}
             </h3>
             
@@ -768,17 +778,17 @@ function AssessmentForm({ seats, onComplete }: { seats: Record<string, Seat>, on
                   <button
                     key={idx}
                     onClick={() => handleAnswer(currentQ.id, opt.trait)}
-                    className={`w-full text-left p-6 rounded-3xl border-2 transition-all duration-300 group ${
+                    className={`w-full text-left p-6 rounded-xl border-2 transition-all duration-300 group ${
                       isSelected 
-                        ? 'bg-indigo-600 border-indigo-600 text-white shadow-xl shadow-indigo-100 scale-[1.02]' 
-                        : 'bg-white border-slate-50 hover:border-indigo-100 hover:bg-slate-50/50 text-slate-700'
+                        ? 'bg-slate-900 border-slate-900 text-white shadow-xl scale-[1.02]' 
+                        : 'bg-white border-slate-200 hover:bg-slate-50 dark:bg-[#1E1E1E] dark:border-slate-800 text-black dark:text-[#EEEEEE]'
                     }`}
                   >
                     <div className="flex items-center gap-5">
-                      <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${isSelected ? 'border-white/40 bg-white/20' : 'border-slate-200 group-hover:border-indigo-300'}`}>
-                        {isSelected && <div className="w-3 h-3 bg-white rounded-full" />}
+                      <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${isSelected ? 'border-white/40 bg-white/20' : 'border-slate-300 dark:border-slate-700 group-hover:border-indigo-300'}`}>
+                        {isSelected && <div className="w-3 h-3 bg-white rounded-full border border-slate-400 aksana-glass" />}
                       </div>
-                      <span className="text-sm md:text-base font-bold leading-relaxed">{opt.text}</span>
+                      <span className="text-sm md:text-base font-black leading-relaxed">{opt.text}</span>
                     </div>
                   </button>
                 );

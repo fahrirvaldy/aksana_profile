@@ -227,7 +227,7 @@ export default function ToolsPage() {
   if (isLoadingAuth) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="animate-spin text-slate-400" size={40} />
+        <Loader2 className="animate-spin text-slate-700" size={40} />
       </div>
     );
   }
@@ -235,8 +235,8 @@ export default function ToolsPage() {
   return (
     <div className="max-w-7xl mx-auto px-8 py-20 min-h-screen font-[family-name:var(--font-inter)]">
       <div className={`mb-16 space-y-4 relative transition-all duration-500 ${activeTool ? 'opacity-0 h-0 overflow-hidden mb-0' : 'opacity-100'}`}>
-        <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-center font-[family-name:var(--font-plus-jakarta)]">Tools Katalog</h1>
-        <p className="text-slate-500 dark:text-slate-400 text-center max-w-2xl mx-auto text-lg">
+        <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-center font-[family-name:var(--font-plus-jakarta)] text-slate-950 dark:text-slate-50">Tools Katalog</h1>
+        <p className="text-slate-700 dark:text-slate-400 text-center max-w-2xl mx-auto text-lg font-normal">
           Koleksi instrumen digital kami yang dirancang untuk mempercepat pertumbuhan bisnis Anda.
         </p>
         
@@ -246,7 +246,7 @@ export default function ToolsPage() {
               <motion.div 
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-50 font-mono text-sm font-bold border border-slate-200 dark:border-slate-700"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-950 dark:text-slate-50 font-mono text-sm font-bold border border-slate-200 dark:border-slate-700 shadow-sm"
               >
                 {isSyncing ? (
                   <RefreshCcw size={16} className="text-blue-500 animate-spin" />
@@ -256,8 +256,8 @@ export default function ToolsPage() {
                 Cloud Sync Active
               </motion.div>
             ) : (
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-50 font-mono text-sm font-bold border border-slate-200 dark:border-slate-700">
-                <Clock size={16} className="text-slate-400" />
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-950 dark:text-slate-50 font-mono text-sm font-bold border border-slate-200 dark:border-slate-700 shadow-sm">
+                <Clock size={16} className="text-slate-700" />
                 Sisa Waktu Akses: {formatTime(timeLeft)}
               </div>
             )}
@@ -277,8 +277,8 @@ export default function ToolsPage() {
                 setActiveTool(null);
                 setSavedToolData(null);
               }}
-              className="inline-flex items-center gap-2 text-slate-500 hover:text-slate-900 dark:hover:text-slate-50 font-bold transition-colors group px-4 py-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800"
-            >
+              className="inline-flex items-center gap-2 text-slate-950 dark:text-[#EEEEEE] hover:text-slate-950 dark:hover:text-slate-50 font-bold transition-colors group px-4 py-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800"
+              >
               <ChevronLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
               Kembali ke Katalog
             </button>
@@ -374,7 +374,7 @@ export default function ToolsPage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
-                  className="max-w-2xl mx-auto text-center p-12 rounded-[2.5rem] bg-amber-50 dark:bg-amber-900/10 border border-amber-100 dark:border-amber-900/20 space-y-6"
+                  className="max-w-2xl mx-auto text-center p-12 rounded-[2.5rem] bg-amber-50 dark:bg-amber-900/10 border border-amber-100 dark:border-amber-900/20 space-y-6 shadow-sm"
                 >
                   <div className="w-16 h-16 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center mx-auto text-amber-600 dark:text-amber-500">
                     <Clock size={32} />
@@ -385,7 +385,7 @@ export default function ToolsPage() {
                   </p>
                   <Link 
                     href="/kontak" 
-                    className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl bg-slate-900 dark:bg-slate-50 text-white dark:text-slate-900 font-bold transition-all hover:opacity-90 active:scale-95"
+                    className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl bg-slate-900 dark:bg-slate-50 text-white dark:text-slate-950 font-bold transition-all hover:opacity-90 active:scale-95"
                   >
                     Hubungi Tim Aksana <ArrowRight size={18} />
                   </Link>
@@ -399,19 +399,19 @@ export default function ToolsPage() {
                   animate="visible"
                   exit="hidden"
                   variants={containerVariants}
-                  className="max-w-xl mx-auto mb-20 p-10 md:p-14 rounded-[2.5rem] bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-2xl relative z-10"
+                  className="max-w-xl mx-auto mb-20 p-10 md:p-14 rounded-[2.5rem] bg-white/95 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 relative z-10 shadow-sm"
                 >
                   <motion.div variants={itemVariants} className="text-center mb-12 space-y-3">
-                    <div className="w-14 h-14 rounded-2xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center mx-auto mb-4 text-slate-900 dark:text-slate-50">
+                    <div className="w-14 h-14 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center mx-auto mb-4 text-slate-950 dark:text-slate-50 shadow-sm">
                       <Lock size={24} />
                     </div>
-                    <h2 className="text-3xl font-bold font-[family-name:var(--font-plus-jakarta)]">Buka Akses Tools</h2>
-                    <p className="text-slate-500 dark:text-slate-400 font-medium">Isi data singkat untuk mendapatkan akses uji coba eksklusif.</p>
+                    <h2 className="text-3xl font-bold font-[family-name:var(--font-plus-jakarta)] text-slate-950 dark:text-slate-50">Buka Akses Tools</h2>
+                    <p className="text-slate-700 dark:text-slate-400 font-normal">Isi data singkat untuk mendapatkan akses uji coba eksklusif.</p>
                   </motion.div>
 
                   <form onSubmit={handleSubmit} className="space-y-8">
                     <motion.div variants={itemVariants} className="space-y-2">
-                      <label htmlFor="nama" className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 ml-1">Nama Lengkap</label>
+                      <label htmlFor="nama" className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-700 ml-1">Nama Lengkap</label>
                       <input
                         id="nama"
                         type="text"
@@ -424,7 +424,7 @@ export default function ToolsPage() {
                     </motion.div>
                     
                     <motion.div variants={itemVariants} className="space-y-2">
-                      <label htmlFor="namaBisnis" className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 ml-1">Nama Bisnis</label>
+                      <label htmlFor="namaBisnis" className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-700 ml-1">Nama Bisnis</label>
                       <input
                         id="namaBisnis"
                         type="text"
@@ -437,7 +437,7 @@ export default function ToolsPage() {
                     </motion.div>
 
                     <motion.div variants={itemVariants} className="space-y-2">
-                      <label htmlFor="sektor" className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 ml-1">Sektor Bisnis</label>
+                      <label htmlFor="sektor" className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-700 ml-1">Sektor Bisnis</label>
                       <input
                         id="sektor"
                         type="text"
@@ -450,7 +450,7 @@ export default function ToolsPage() {
                     </motion.div>
 
                     <motion.div variants={itemVariants} className="space-y-2">
-                      <label htmlFor="whatsapp" className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 ml-1">Nomor WhatsApp</label>
+                      <label htmlFor="whatsapp" className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-700 ml-1">Nomor WhatsApp</label>
                       <input
                         id="whatsapp"
                         type="tel"
@@ -463,7 +463,7 @@ export default function ToolsPage() {
                     </motion.div>
 
                     <motion.div variants={itemVariants} className="space-y-2">
-                      <label htmlFor="tantangan" className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 ml-1">Tantangan Terbesar</label>
+                      <label htmlFor="tantangan" className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-700 ml-1">Tantangan Terbesar</label>
                       <textarea
                         id="tantangan"
                         value={formData.tantangan}
@@ -476,7 +476,7 @@ export default function ToolsPage() {
                     </motion.div>
 
                     {formError && (
-                      <motion.div variants={itemVariants} className="p-4 rounded-2xl bg-amber-50 dark:bg-amber-900/10 border border-amber-100 dark:border-amber-900/20 text-amber-600 dark:text-amber-500 text-sm font-medium">
+                      <motion.div variants={itemVariants} className="p-4 rounded-2xl bg-amber-50 dark:bg-amber-900/10 border border-amber-100 dark:border-amber-900/20 text-amber-600 dark:text-amber-500 text-sm font-medium shadow-sm">
                         {formError}
                       </motion.div>
                     )}
@@ -485,7 +485,7 @@ export default function ToolsPage() {
                       <button
                         type="submit"
                         disabled={isSubmitting}
-                        className="w-full py-5 rounded-2xl bg-slate-900 dark:bg-slate-50 text-slate-50 dark:text-slate-900 font-bold transition-all hover:opacity-90 active:scale-[0.98] flex items-center justify-center gap-2 text-lg"
+                        className="w-full py-5 rounded-2xl bg-slate-900 dark:bg-slate-50 text-slate-50 dark:text-slate-950 font-bold transition-all hover:opacity-90 active:scale-[0.98] flex items-center justify-center gap-2 text-lg"
                       >
                         {isSubmitting ? (
                           <>
@@ -496,7 +496,7 @@ export default function ToolsPage() {
                           <>Mulai Analisa Bisnis <ArrowRight size={20} /></>
                         )}
                       </button>
-                      <p className="text-[11px] text-slate-400 text-center font-medium leading-relaxed px-4">
+                      <p className="text-[11px] text-slate-700 text-center font-medium leading-relaxed px-4">
                         Dengan menekan tombol, Anda akan mendapatkan akses ke simulasi eksklusif Aksana.
                       </p>
                     </motion.div>
@@ -517,26 +517,26 @@ export default function ToolsPage() {
                     <div 
                       key={index} 
                       onClick={() => handleToolClick(tool.name, tool.status)}
-                      className={`p-10 rounded-[2rem] bg-white dark:bg-slate-900/40 aksana-glass border border-slate-100 dark:border-slate-800 transition-all hover:shadow-2xl group relative cursor-pointer ${tool.status === 'Pro' ? 'grayscale-[0.5]' : ''}`}
+                      className={`p-10 rounded-[2rem] bg-white/90 dark:bg-slate-900/40 aksana-glass border border-slate-200 dark:border-slate-800 transition-all hover:shadow-2xl group relative cursor-pointer ${tool.status === 'Pro' ? 'grayscale-[0.5]' : ''}`}
                     >
                       {tool.status === 'Pro' && (
-                        <div className="absolute top-8 right-8 px-3 py-1 rounded-full bg-slate-900/5 dark:bg-slate-50/10 border border-slate-200 dark:border-slate-700">
-                          <p className="text-[10px] font-black tracking-widest text-slate-400 uppercase flex items-center gap-1.5">
+                        <div className="absolute top-8 right-8 px-3 py-1 rounded-full bg-slate-100/50 dark:bg-slate-50/10 border border-slate-200 dark:border-slate-700 shadow-sm">
+                          <p className="text-[10px] font-black tracking-widest text-slate-700 uppercase flex items-center gap-1.5">
                             <ShieldCheck size={10} /> PRO
                           </p>
                         </div>
                       )}
                       
                       <div className="flex items-center gap-5 mb-8">
-                        <div className="w-14 h-14 rounded-2xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-900 dark:text-slate-50 group-hover:bg-slate-900 group-hover:text-slate-50 dark:group-hover:bg-slate-50 dark:group-hover:text-slate-900 transition-all duration-500">
+                        <div className="w-14 h-14 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-950 dark:text-slate-50 group-hover:bg-slate-900 group-hover:text-slate-50 dark:group-hover:bg-slate-50 dark:group-hover:text-slate-950 transition-all duration-500 shadow-sm">
                           {tool.icon}
                         </div>
-                        <h3 className="font-bold text-xl font-[family-name:var(--font-plus-jakarta)]">{tool.name}</h3>
+                        <h3 className="font-bold text-xl font-[family-name:var(--font-plus-jakarta)] text-slate-950 dark:text-slate-50">{tool.name}</h3>
                       </div>
-                      <p className="text-slate-500 dark:text-slate-400 leading-relaxed mb-8 font-medium">
+                      <p className="text-slate-700 dark:text-slate-400 leading-relaxed mb-8 font-normal">
                         {tool.description}
                       </p>
-                      <button className="w-full py-4 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-bold uppercase tracking-widest group-hover:bg-slate-900 group-hover:text-white dark:group-hover:bg-slate-50 dark:group-hover:text-slate-900 transition-all">
+                      <button className="w-full py-4 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-bold uppercase tracking-widest text-slate-950 dark:text-slate-50 group-hover:bg-slate-900 group-hover:text-white dark:group-hover:bg-slate-50 dark:group-hover:text-slate-950 transition-all shadow-sm">
                         {tool.status === 'Pro' ? 'Buka Akses Pro' : 'Gunakan Tool'}
                       </button>
                     </div>

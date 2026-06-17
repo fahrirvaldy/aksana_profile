@@ -17,6 +17,7 @@ import {
   ArrowRight
 } from 'lucide-react';
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslations, useLocale } from 'next-intl';
 
 interface Todo {
   id: string;
@@ -39,11 +40,13 @@ interface ToDoTrackerProps {
 }
 
 export default function ToDoTracker({ user, onSave, isSyncing, initialData }: ToDoTrackerProps) {
+  const t = useTranslations("Tools.Todo");
+  const locale = useLocale();
   const [todos, setTodos] = useState<Todo[]>([]);
   const [newTask, setNewTask] = useState("");
   const [newOwner, setNewOwner] = useState("");
   const [newDueDate, setNewDueDate] = useState(new Date().toISOString().split('T')[0]);
-  const [filterOwner, setFilterOwner] = useState("Semua");
+  const [filterOwner, setFilterOwner] = useState("all");
   const [isExporting, setIsExporting] = useState(false);
   const captureRef = useRef<HTMLDivElement>(null);
 
@@ -81,7 +84,7 @@ export default function ToDoTracker({ user, onSave, isSyncing, initialData }: To
   }, [todos]);
 
   const filteredTodos = useMemo(() => {
-    if (filterOwner === "Semua") return todos;
+    if (filterOwner === "all") return todos;
     return todos.filter(t => t.owner === filterOwner);
   }, [todos, filterOwner]);
 
@@ -138,17 +141,17 @@ export default function ToDoTracker({ user, onSave, isSyncing, initialData }: To
 
   return (
     <div className="max-w-5xl mx-auto space-y-8 animate-in fade-in duration-700">
-      <div ref={captureRef} className={`${isExporting ? 'p-12 bg-slate-50 dark:bg-slate-900 rounded-[3rem]' : ''}`}>
+      <div ref={captureRef} className={`${isExporting ? 'p-12 bg-white dark:bg-[#1E1E1E] rounded-xl border border-slate-200 dark:border-slate-800' : ''}`}>
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-12">
           <div className="space-y-2">
             <h1 className="text-3xl md:text-4xl font-black tracking-tight flex items-center gap-3 font-[family-name:var(--font-plus-jakarta)]">
-              <div className="p-3 bg-slate-900 dark:bg-slate-50 text-slate-50 dark:text-slate-900 rounded-2xl">
+              <div className="p-3 bg-black dark:bg-slate-50 text-white dark:text-black rounded-2xl">
                 <Layout size={28} />
               </div>
-              Pelacak Tugas
+              {t('title')}
             </h1>
-            <p className="text-slate-500 dark:text-slate-400 font-medium">Pantau eksekusi tugas strategis tim secara real-time.</p>
+            <p className="text-slate-600 dark:text-slate-300 font-normal">{t('subtitle')}</p>
           </div>
 
           <div className="flex items-center gap-6">
@@ -156,16 +159,16 @@ export default function ToDoTracker({ user, onSave, isSyncing, initialData }: To
               <button 
                 data-export-ignore="true"
                 onClick={handleDownloadImage}
-                className="p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all text-slate-600 dark:text-slate-400"
-                title="Unduh Gambar"
+                className="p-4 bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all text-slate-600 dark:text-slate-300 aksana-glass"
+                title={t('export')}
               >
                 <Download size={20} />
               </button>
             )}
 
-            <div className="aksana-glass p-6 rounded-3xl border border-white/20 flex items-center gap-6 shadow-xl">
+            <div className="p-6 bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl flex items-center gap-6 shadow-sm aksana-glass">
               <div className="text-right">
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Progres Tim</p>
+                <p className="text-[10px] font-bold text-slate-600 dark:text-slate-300 uppercase tracking-widest mb-1">{t('progress')}</p>
                 <p className={`text-2xl font-black ${stats.percentage >= 90 ? 'text-emerald-500' : 'text-blue-500'}`}>
                   {stats.percentage}%
                 </p>
@@ -175,7 +178,7 @@ export default function ToDoTracker({ user, onSave, isSyncing, initialData }: To
                   <circle 
                     cx="50" cy="50" r="40" 
                     stroke="currentColor" strokeWidth="8" fill="transparent" 
-                    className="text-slate-100 dark:text-slate-800" 
+                    className="text-black/5 dark:text-slate-950" 
                   />
                   <circle 
                     cx="50" cy="50" r="40" 
@@ -192,27 +195,27 @@ export default function ToDoTracker({ user, onSave, isSyncing, initialData }: To
 
         {/* Input Form */}
         {!isExporting && (
-          <div data-export-ignore="true" className="aksana-glass p-8 rounded-3xl border border-white/20 shadow-xl mb-12">
-            <h2 className="text-sm font-bold uppercase tracking-[0.2em] text-slate-400 mb-6 flex items-center gap-2">
-              <Plus size={16} /> Tambah Tugas Baru
+          <div data-export-ignore="true" className="p-8 bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl mb-12 shadow-sm aksana-glass">
+            <h2 className="text-sm font-bold uppercase tracking-[0.2em] text-slate-600 dark:text-slate-300 mb-6 flex items-center gap-2">
+              <Plus size={16} /> {t('addNew')}
             </h2>
             <form onSubmit={addTodo} className="grid grid-cols-1 md:grid-cols-12 gap-4">
               <div className="md:col-span-5">
                 <input 
                   type="text" 
-                  placeholder="Deskripsi tugas..." 
-                  className="w-full px-5 py-4 rounded-2xl bg-slate-50/50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 focus:border-slate-400 outline-none transition-all font-medium"
+                  placeholder={t('placeholderTask')} 
+                  className="w-full px-5 py-4 rounded-2xl bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 focus:border-black outline-none transition-all font-semibold placeholder-slate-400 dark:placeholder-slate-500"
                   value={newTask}
                   onChange={(e) => setNewTask(e.target.value)}
                 />
               </div>
               <div className="md:col-span-3">
                 <div className="relative">
-                  <User size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <User size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600 dark:text-slate-300" />
                   <input 
                     type="text"
-                    placeholder="PIC / Owner"
-                    className="w-full pl-12 pr-5 py-4 rounded-2xl bg-slate-50/50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 focus:border-slate-400 outline-none transition-all font-medium"
+                    placeholder={t('placeholderPic')}
+                    className="w-full pl-12 pr-5 py-4 rounded-2xl bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 focus:border-black outline-none transition-all font-semibold placeholder-slate-400 dark:placeholder-slate-500"
                     value={newOwner}
                     onChange={(e) => setNewOwner(e.target.value)}
                   />
@@ -220,10 +223,10 @@ export default function ToDoTracker({ user, onSave, isSyncing, initialData }: To
               </div>
               <div className="md:col-span-2">
                 <div className="relative">
-                  <Calendar size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                  <Calendar size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600 dark:text-slate-300 pointer-events-none" />
                   <input 
                     type="date"
-                    className="w-full pl-12 pr-4 py-4 rounded-2xl bg-slate-50/50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 focus:border-slate-400 outline-none transition-all font-medium appearance-none"
+                    className="w-full pl-12 pr-4 py-4 rounded-2xl bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 focus:border-black outline-none transition-all font-semibold appearance-none"
                     value={newDueDate}
                     onChange={(e) => setNewDueDate(e.target.value)}
                   />
@@ -232,9 +235,9 @@ export default function ToDoTracker({ user, onSave, isSyncing, initialData }: To
               <div className="md:col-span-2">
                 <button 
                   type="submit"
-                  className="w-full h-full bg-slate-900 dark:bg-slate-50 text-white dark:text-slate-900 font-bold rounded-2xl hover:opacity-90 active:scale-95 transition-all flex items-center justify-center gap-2 shadow-lg"
+                  className="w-full h-full bg-black dark:bg-slate-50 text-white dark:text-black font-bold rounded-2xl hover:opacity-90 active:scale-95 transition-all flex items-center justify-center gap-2"
                 >
-                  Simpan <ArrowRight size={18} />
+                  {t('save')} <ArrowRight size={18} />
                 </button>
               </div>
             </form>
@@ -242,31 +245,31 @@ export default function ToDoTracker({ user, onSave, isSyncing, initialData }: To
         )}
 
         {/* Task List Container */}
-        <div className="aksana-glass rounded-3xl border border-white/20 shadow-2xl overflow-hidden min-h-[400px]">
-          <div className="p-8 border-b border-slate-100 dark:border-slate-800 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 bg-white/40 dark:bg-slate-900/40">
+        <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden min-h-[400px] shadow-sm aksana-glass">
+          <div className="p-8 border-b border-slate-200 dark:border-slate-800 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 bg-white dark:bg-[#1E1E1E] shadow-sm">
             <div className="flex items-center gap-4">
-              <h3 className="font-black text-xl">Daftar Eksekusi</h3>
-              <span className="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-[10px] font-bold rounded-lg uppercase tracking-widest">
-                {stats.total} Tasks
+              <h3 className="font-black text-xl text-black dark:text-[#EEEEEE]">{t('listTitle')}</h3>
+              <span className="px-3 py-1 bg-black text-white dark:bg-slate-800 dark:text-slate-400 text-[10px] font-bold rounded-lg uppercase tracking-widest">
+                {t('tasksCount', { n: stats.total })}
               </span>
             </div>
             
             {!isExporting && (
               <div data-export-ignore="true" className="flex items-center gap-3">
-                <Filter size={16} className="text-slate-400" />
+                <Filter size={16} className="text-slate-600 dark:text-slate-300" />
                 <select 
-                  className="px-4 py-2 text-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl outline-none focus:border-slate-400 font-bold cursor-pointer"
+                  className="px-4 py-2 text-sm bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 rounded-xl outline-none focus:border-black font-bold cursor-pointer"
                   value={filterOwner}
                   onChange={(e) => setFilterOwner(e.target.value)}
                 >
-                  <option value="Semua">Semua PIC</option>
+                  <option value="all">{t('allPic')}</option>
                   {uniqueOwners.map(m => <option key={m} value={m}>{m}</option>)}
                 </select>
               </div>
             )}
           </div>
 
-          <div className="divide-y divide-slate-50 dark:divide-slate-800/50">
+          <div className="divide-y divide-slate-200 dark:divide-slate-800/50">
             <AnimatePresence initial={false}>
               {filteredTodos.length > 0 ? (
                 filteredTodos.map((todo) => (
@@ -275,30 +278,30 @@ export default function ToDoTracker({ user, onSave, isSyncing, initialData }: To
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: 20 }}
-                    className={`group p-6 md:p-8 flex items-start gap-6 transition-all ${todo.completed ? 'bg-emerald-50/10 dark:bg-emerald-500/5' : 'hover:bg-slate-50/50 dark:hover:bg-slate-800/20'}`}
+                    className={`group p-6 md:p-8 flex items-start gap-6 transition-all ${todo.completed ? 'bg-emerald-50/10 dark:bg-emerald-500/5' : 'hover:bg-black/5 dark:hover:bg-slate-800/20'}`}
                   >
                     <button 
                       onClick={() => toggleTodo(todo.id)}
-                      className={`shrink-0 w-10 h-10 flex items-center justify-center rounded-xl transition-all ${todo.completed ? 'text-emerald-500 bg-emerald-500/10' : 'text-slate-300 dark:text-slate-600 hover:text-blue-500 hover:bg-blue-500/10'}`}
+                      className={`shrink-0 w-10 h-10 flex items-center justify-center rounded-xl transition-all ${todo.completed ? 'text-emerald-500 bg-emerald-500/10' : 'text-slate-900 dark:text-slate-700 hover:text-blue-500 hover:bg-blue-500/10'}`}
                     >
                       {todo.completed ? <CheckCircle2 size={28} /> : <Circle size={28} />}
                     </button>
                     
                     <div className="flex-1 min-w-0">
                       <p 
-                        className={`text-lg font-bold transition-all cursor-pointer ${todo.completed ? 'line-through text-slate-400 decoration-2' : 'text-slate-900 dark:text-slate-100'}`} 
+                        className={`text-lg font-bold transition-all cursor-pointer ${todo.completed ? 'line-through text-slate-600 dark:text-slate-400 decoration-2' : 'text-black dark:text-[#EEEEEE]'}`} 
                         onClick={() => toggleTodo(todo.id)}
                       >
                         {todo.task}
                       </p>
                       <div className="mt-4 flex flex-wrap items-center gap-6">
-                        <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest px-3 py-1.5 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-lg border border-blue-100 dark:border-blue-800/50">
+                        <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest px-3 py-1.5 bg-black text-white dark:bg-blue-900/30 dark:text-blue-400 rounded-lg border border-black dark:border-blue-800/50 shadow-sm">
                           <User size={12} />
                           {todo.owner}
                         </div>
-                        <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                        <div className="flex items-center gap-2 text-[10px] font-bold text-slate-600 dark:text-slate-300 uppercase tracking-widest">
                           <Calendar size={12} />
-                          Deadline: {todo.dueDate}
+                          {t('deadline', { date: todo.dueDate })}
                         </div>
                       </div>
                     </div>
@@ -307,7 +310,7 @@ export default function ToDoTracker({ user, onSave, isSyncing, initialData }: To
                       <button 
                         data-export-ignore="true"
                         onClick={() => deleteTodo(todo.id)}
-                        className="opacity-0 group-hover:opacity-100 p-3 text-slate-300 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 rounded-xl transition-all"
+                        className="opacity-0 group-hover:opacity-100 p-3 text-black dark:text-slate-300 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 rounded-xl transition-all"
                       >
                         <Trash2 size={20} />
                       </button>
@@ -316,10 +319,10 @@ export default function ToDoTracker({ user, onSave, isSyncing, initialData }: To
                 ))
               ) : (
                 <div className="p-20 text-center space-y-4">
-                  <div className="w-16 h-16 bg-slate-50 dark:bg-slate-800 rounded-2xl flex items-center justify-center mx-auto text-slate-300">
+                  <div className="w-16 h-16 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-800 rounded-xl flex items-center justify-center mx-auto text-black dark:text-slate-700">
                     <Layout size={32} />
                   </div>
-                  <p className="text-slate-400 font-medium italic">Belum ada tugas dalam daftar ini.</p>
+                  <p className="text-slate-600 dark:text-slate-400 font-normal italic">{t('empty')}</p>
                 </div>
               )}
             </AnimatePresence>
@@ -328,9 +331,9 @@ export default function ToDoTracker({ user, onSave, isSyncing, initialData }: To
 
         {/* Footer Branding for Export */}
         {isExporting && (
-          <div className="mt-12 pt-8 border-t border-slate-200 dark:border-slate-800 flex justify-between items-center text-slate-400 text-xs font-bold uppercase tracking-[0.2em]">
-            <p>Aksana Business Lab - Pelacak Tugas</p>
-            <p>{new Date().toLocaleDateString('id-ID', { dateStyle: 'full' })}</p>
+          <div className="mt-12 pt-8 border-t border-slate-200 dark:border-slate-800 flex justify-between items-center text-slate-600 dark:text-slate-300 text-xs font-bold uppercase tracking-[0.2em] shadow-sm">
+            <p>Aksana Business Lab - {t('title')}</p>
+            <p>{new Date().toLocaleDateString(locale, { dateStyle: 'full' })}</p>
           </div>
         )}
       </div>
@@ -338,20 +341,20 @@ export default function ToDoTracker({ user, onSave, isSyncing, initialData }: To
       {/* Cloud Sync Status */}
       {user && !isExporting && (
         <div className="fixed bottom-8 right-8 z-50">
-          <div className="aksana-glass px-6 py-4 rounded-full border border-white/20 shadow-2xl flex items-center gap-3">
+          <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-full px-6 py-4 flex items-center gap-3 shadow-sm aksana-glass">
             {isSyncing ? (
               <Loader2 className="animate-spin text-blue-500" size={20} />
             ) : (
               <Cloud className="text-emerald-500" size={20} />
             )}
-            <span className="text-sm font-bold">
-              {isSyncing ? 'Menyingkronkan...' : 'Cloud Terkoneksi'}
+            <span className="text-sm font-bold text-slate-600 dark:text-[#EEEEEE]">
+              {isSyncing ? t('sync.syncing') : t('sync.connected')}
             </span>
             {onSave && !isSyncing && (
                <button 
                 onClick={() => onSave({ todos })}
-                className="ml-2 p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-all"
-                title="Simpan Manual"
+                className="ml-2 p-2 hover:bg-white dark:hover:bg-slate-800 rounded-lg transition-all text-black dark:text-slate-400 border border-slate-200 dark:border-slate-800"
+                title={t('sync.save')}
               >
                 <Save size={16} />
               </button>

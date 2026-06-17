@@ -1,0 +1,660 @@
+{
+  "Navigation": {
+    "home": "Beranda",
+    "services": "Layanan",
+    "tools": "Alat",
+    "contact": "Kontak",
+    "login": "Masuk",
+    "dashboard": "Dasbor"
+  },
+  "HomePage": {
+    "title": "Aksana Business Lab",
+    "description": "Memberdayakan pertumbuhan bisnis Anda.",
+    "hero": {
+      "title": "Menjadikan Bisnis Lebih",
+      "subtitle": "Rapi, Tumbuh, dan Menenangkan.",
+      "description": "Ruang bertumbuh bagi pengusaha untuk berprogres dan membangun fondasi bisnis yang kokoh dan lebih berdaya.",
+      "approach": "Pendekatan kami: Sederhana, Terukur, dan Manusiawi.",
+      "ctaStart": "Mulai Sekarang",
+      "ctaExplore": "Jelajahi Tools"
+    },
+    "features": {
+      "organized": {
+        "title": "Struktur Rapi",
+        "description": "Transformasi data yang berantakan menjadi sistem yang kokoh dan terorganisir."
+      },
+      "growth": {
+        "title": "Pertumbuhan Terukur",
+        "description": "Gunakan tools simulasi kami untuk melihat arah progres dan ROI bisnis Anda."
+      },
+      "calm": {
+        "title": "Ketenangan Operasional",
+        "description": "Teknologi manusiawi yang dirancang untuk mengurangi beban pikiran pengusaha."
+      }
+    }
+  },
+  "Footer": {
+    "rights": "Seluruh hak cipta dilindungi."
+  },
+  "Tools": {
+    "CacLtv": {
+      "title": "Biaya Akuisisi (CAC)",
+      "adSpend": "Anggaran Iklan (Monthly)",
+      "opsCost": "Biaya Ops Iklan (Gaji/Agency)",
+      "newCustomers": "Jumlah Pelanggan Baru",
+      "cacResult": "CAC Hasil:",
+      "ltvTitle": "Lifetime Value (LTV)",
+      "aov": "AOV (Rata-rata Order)",
+      "frequency": "Frekuensi (Bulan)",
+      "lifespan": "Lifespan (Bulan)",
+      "margin": "Margin (%)",
+      "ltvResult": "LTV Hasil:",
+      "healthRatio": "Marketing Health Ratio",
+      "analysis": "Analisis Performa LTV : CAC",
+      "ratioLabel": "RASIO LTV / CAC",
+      "totalCac": "Total CAC",
+      "netLtv": "Net LTV",
+      "aiRecommendation": "Rekomendasi Aksana AI",
+      "realtime": "Dihitung secara real-time",
+      "syncing": "MENYINKRONKAN...",
+      "burnMoney": "Bakar Uang! CAC lebih tinggi dari nilai pelanggan. Segera audit iklan Anda.",
+      "healthyOps": "Operasional Sehat, tapi butuh efisiensi lebih untuk growth agresif.",
+      "scaleAds": "Skalakan Iklan! ROI Anda luar biasa. Waktunya injek modal lebih besar.",
+      "whatIsLtvCac": "Apa itu Rasio LTV:CAC?",
+      "ltvCacDescription": "Metrik ini mengukur hubungan antara nilai yang diberikan pelanggan selama masa hidup mereka dan biaya yang dikeluarkan untuk mendapatkan mereka. Rasio ideal untuk bisnis growth adalah 3:1 atau lebih tinggi.",
+      "loss": "Bisnis merugi setiap kali mendapatkan pelanggan baru.",
+      "stable": "Bisnis stabil, namun margin tipis untuk reinvestasi.",
+      "veryHealthy": "Bisnis sangat sehat. Skalakan marketing budget Anda.",
+      "placeholders": {
+        "aov": "Rp",
+        "frequency": "Berapa kali beli/bln",
+        "lifespan": "Berapa bln setia"
+      }
+    },
+    "Cashflow": {
+      "tabs": {
+        "input": "Input Data",
+        "dashboard": "Dasbor Kas",
+        "report": "Deep Research"
+      },
+      "config": {
+        "frequency": "Frekuensi Pencatatan",
+        "initialBalance": "Saldo Awal Bisnis",
+        "lockBalance": "Kunci Saldo Awal",
+        "balanceLocked": "Saldo Terkunci"
+      },
+      "addRecord": "Tambah Record {period}",
+      "placeholders": {
+        "name": "Nama {period} (misal: Januari)",
+        "rp": "Rp"
+      },
+      "labels": {
+        "inOps": "In-Ops",
+        "inInvest": "In-Invest",
+        "outOps": "Out-Ops",
+        "outInvest": "Out-Invest",
+        "recordData": "Catat Data"
+      },
+      "ledger": {
+        "title": "Ledger Riwayat Kas",
+        "reset": "Reset Semua",
+        "period": "Periode",
+        "totalIn": "Total In",
+        "totalOut": "Total Out",
+        "netFlow": "Net Flow",
+        "balance": "Saldo",
+        "empty": "Belum ada data tercatat. Mulai input saldo awal dan record pertama Anda."
+      },
+      "dashboard": {
+        "healthScore": "Skor Kesehatan",
+        "points": "Points",
+        "status": {
+          "healthy": "SEHAT",
+          "warning": "WASPADA",
+          "critical": "KRITIS"
+        },
+        "finalBalance": "Saldo Akhir",
+        "avgNetFlow": "Rata-rata Net Flow",
+        "runway": "Cash Runway",
+        "runwayUnit": {
+          "bulanan": "Bulan",
+          "mingguan": "Minggu",
+          "harian": "Hari"
+        },
+        "chartTitle": "Grafik Tren Arus Kas",
+        "chartPlaceholder": "Input minimal 1 record untuk melihat grafik."
+      },
+      "report": {
+        "diagnosis": "Diagnosa Struktural",
+        "status": {
+          "solid": "Arus kas Anda menunjukkan struktur yang sangat solid dengan daya tahan tinggi.",
+          "risk": "Ada potensi risiko likuiditas yang perlu dimonitor ketat dalam jangka menengah.",
+          "critical": "Kesehatan finansial kritis. Struktur pengeluaran melebihi kapasitas pendapatan."
+        },
+        "alerts": {
+          "bleedingTitle": "Operasional Berdarah:",
+          "bleedingDesc": "Pendapatan operasional tidak cukup untuk menutup biaya harian. Bisnis bergantung pada suntikan dana luar.",
+          "shortRunwayTitle": "Runway Pendek:",
+          "shortRunwayDesc": "Cadangan kas hanya bertahan kurang dari 3 periode. Bahaya jika terjadi keterlambatan pembayaran dari klien.",
+          "highEfficiencyTitle": "Efisiensi Tinggi:",
+          "highEfficiencyDesc": "Margin operasional positif kuat. Anda memiliki ruang untuk melakukan ekspansi atau investasi ulang."
+        },
+        "actionPlan": "Rencana Aksi",
+        "tasks": {
+          "audit": "Audit biaya operasional tetap dan cari penghematan minimal 15%.",
+          "pricing": "Tinjau kembali pricing model untuk meningkatkan gross margin.",
+          "safetyNet": "Siapkan jalur kredit darurat atau cari investor untuk safety net.",
+          "arPolicy": "Perketat kebijakan penagihan (AR) untuk mempercepat inflow.",
+          "surplus": "Mulai alokasikan surplus ke instrumen investasi jangka pendek atau dana ekspansi.",
+          "update": "Update ledger ini setiap akhir {period} untuk akurasi data."
+        }
+      },
+      "cloud": {
+        "save": "Simpan ke Cloud",
+        "syncing": "Menyinkronkan..."
+      },
+      "confirmReset": "Hapus seluruh data pencatatan?"
+    },
+    "Funnel": {
+      "title": "Simulator Funnel Marketing",
+      "subtitle": "Simulasikan aliran trafik dan potensi revenue bisnis Anda.",
+      "export": "Unduh PNG",
+      "syncing": "Menyinkronkan...",
+      "profiling": {
+        "title": "Profiling Bisnis",
+        "industry": "Industri / Kategori",
+        "channel": "Saluran Penjualan Utama",
+        "applyStandard": "Terapkan Standar Industri"
+      },
+      "inputs": {
+        "title": "Input Parameter Funnel",
+        "budget": "Anggaran Pemasaran",
+        "aov": "AOV (Rata-rata Order)",
+        "cpm": "CPM (Biaya per 1rb Impresi)",
+        "ctr": "CTR (%)",
+        "visit": "Visit Rate (%)",
+        "atc": "ATC Rate (%)",
+        "checkout": "Checkout / Closing Rate (%)"
+      },
+      "results": {
+        "roas": "ROAS",
+        "status": {
+          "profit": "Sangat Profit",
+          "stable": "Stabil",
+          "loss": "Rugi"
+        },
+        "revenueProfit": "Revenue & Profit",
+        "cpaClosing": "CPA & Closing",
+        "sales": "Penjualan"
+      },
+      "diagnostic": {
+        "title": "Laporan Diagnostik AI",
+        "basedOn": "Berdasarkan benchmark industri {industry}",
+        "leakTitle": "Titik Kebocoran Terbesar",
+        "leakBelow": "{diff}% di bawah rata-rata",
+        "healthy": "Funnel Sehat",
+        "healthyDesc": "Performa di atas benchmark industri.",
+        "recommendationTitle": "Rekomendasi Strategis AI"
+      },
+      "visual": {
+        "title": "Visualisasi Funnel",
+        "totalVolume": "Total Volume",
+        "steps": {
+          "impressions": "Impresi",
+          "clicks": "Klik",
+          "visit": "Kunjungan",
+          "atc": "ATC",
+          "purchases": "Beli"
+        }
+      },
+      "recommendations": {
+        "ctr": "Konten iklan Anda kurang menarik. Coba gunakan hook yang lebih kuat atau visual yang lebih kontras.",
+        "visit": "Halaman pendaratan (LP) lambat atau tidak relevan dengan iklan. Periksa kecepatan loading dan konsistensi pesan.",
+        "atc": "Penawaran di halaman produk kurang meyakinkan. Tambahkan social proof atau perjelas benefit produk.",
+        "checkout": "Proses checkout terlalu rumit atau ongkir terlalu mahal. Pertimbangkan promo gratis ongkir atau simplifikasi form.",
+        "default": "Fokus pada optimalisasi konten kreatif untuk meningkatkan CTR."
+      }
+    },
+    "Growth": {
+      "global": {
+        "title": "Pengaturan Global",
+        "subtitle": "Simulasi kenaikan serentak untuk strategi 5-Ways.",
+        "growth": "Kenaikan Serentak (%)",
+        "period": "Periode Analisis",
+        "per": "Per {period}"
+      },
+      "fiveWays": {
+        "title": "Strategi 5-Ways",
+        "current": "Saat Ini",
+        "target": "Target",
+        "leads": "Jumlah Leads",
+        "conv": "Tingkat Konversi",
+        "trans": "Rata-rata Transaksi",
+        "sale": "Rata-rata Nilai Jual",
+        "margin": "Margin Laba",
+        "customers": "Pelanggan"
+      },
+      "costs": {
+        "marketing": "Biaya Pemasaran ({period})",
+        "fixed": "Biaya Tetap ({period})"
+      },
+      "results": {
+        "title": "Proyeksi Profit Akhir",
+        "growth": "Pertumbuhan {percent}%",
+        "current": "dibandingkan {val} saat ini.",
+        "revenue": "Target Omzet",
+        "profitIncrease": "Kenaikan Profit",
+        "save": "Simpan Strategi Pertumbuhan"
+      },
+      "waterfall": {
+        "title": "Visualisasi Lompatan Profit",
+        "label": "Lompatan Profit"
+      },
+      "health": {
+        "efficiency": "Efisiensi Akuisisi (CAC vs LTV)",
+        "status": {
+          "healthy": "SEHAT",
+          "fair": "WAJAR",
+          "loss": "RUGI"
+        },
+        "cac": "Biaya Akuisisi (CAC)",
+        "ltv": "Lifetime Value (LTV)",
+        "ratio": "Rasio LTV/CAC"
+      },
+      "bep": {
+        "title": "Target Titik Impas (BEP)",
+        "revenue": "Omzet BEP",
+        "statusLabel": "Status Omzet",
+        "status": {
+          "above": "Diatas BEP",
+          "below": "Dibawah BEP"
+        },
+        "progress": "Progres Balik Modal",
+        "success": "Selamat! Bisnis Anda sudah melewati titik balik modal operasional.",
+        "needed": "Butuh tambahan omzet {val} untuk mencapai BEP."
+      }
+    },
+    "L10": {
+      "title": "LEVEL 10 MEETING",
+      "dateLabel": "Tanggal Rapat Efektif",
+      "pdf": {
+        "generating": "MENYIAPKAN PDF...",
+        "export": "EKSPOR LAPORAN L10"
+      },
+      "syncing": "MENYINKRONKAN...",
+      "slides": {
+        "intro": {
+          "title": "LEVEL 10 MEETING"
+        },
+        "start": {
+          "title": "Segmen Awal",
+          "subtitle": "Kehadiran & Kabar Baik (5 Menit)",
+          "attendance": "Daftar Hadir",
+          "goodNews": "Kabar Baik",
+          "placeholder": "Kabar baik dari {pic}..."
+        },
+        "scorecard": {
+          "subtitle": "Review KPI Mingguan",
+          "table": {
+            "metric": "Metrik KPI",
+            "target": "Target",
+            "realization": "Realisasi",
+            "type": "Jenis",
+            "status": "Status"
+          },
+          "empty": "Belum ada metrik untuk divisi ini.",
+          "add": "Tambah Metrik KPI"
+        },
+        "rocks": {
+          "title": "Review Rock",
+          "subtitle": "Prioritas Strategis 90 Hari",
+          "table": {
+            "pic": "PIC / Tim",
+            "rock": "Target (Rock)",
+            "status": "Status",
+            "notes": "Catatan Progres"
+          },
+          "placeholderPic": "Nama PIC",
+          "placeholderNotes": "Update status..."
+        },
+        "headlines": {
+          "title": "Headlines",
+          "subtitle": "Berita Penting Rapat",
+          "customer": "Headlines Pelanggan",
+          "internal": "Headlines Internal",
+          "placeholder": "Masukkan berita...",
+          "add": "Tambah Headline Baru"
+        },
+        "todo": {
+          "title": "To-Do List",
+          "subtitle": "Review Minggu Lalu & Rencana Aksi",
+          "owner": "Pemilik:",
+          "placeholder": "Apa tugasnya?",
+          "empty": "Belum ada tugas untuk minggu ini.",
+          "add": "Tambah To-Do List Baru"
+        },
+        "ids": {
+          "title": "Sesi IDS",
+          "subtitle": "Identifikasi, Diskusi, Solusi (60 Menit)",
+          "pull": "Tarik Data Off-Track",
+          "identify": "1. Identifikasi (Masalah)",
+          "discuss": "2. Diskusi (Catatan)",
+          "solve": "3. Solusi (Rencana Aksi)",
+          "placeholderIssues": "Masalah baru...",
+          "placeholderNotes": "Tulis catatan diskusi penting di sini...",
+          "placeholderSolutions": "Apa solusi finalnya? Masukkan ke To-Do List jika perlu...",
+          "add": "Input Masalah Baru"
+        },
+        "conclude": {
+          "title": "Kesimpulan",
+          "subtitle": "\"Seberapa efektif rapat ini bagi pencapaian visi?\" (1 - 10)",
+          "scoreLabel": "Skor Kualitas Komposit",
+          "ratingPlaceholder": "0",
+          "empty": "Pilih peserta untuk memberikan rating."
+        }
+      },
+      "setup": {
+        "title": "Setup Mesin Rapat",
+        "subtitle": "Konfigurasi struktur rapat untuk efisiensi maksimal.",
+        "company": "Perusahaan / Organisasi",
+        "divisions": "DIVISI PESERTA RAPAT",
+        "placeholderDiv": "Nama Divisi {n}",
+        "addDiv": "TAMBAH DIVISI BARU",
+        "rocks": "Rock Kuartalan (Prioritas)",
+        "addRock": "TAMBAH ROCK BARU",
+        "launch": "MULAI SESI RAPAT"
+      }
+    },
+    "People": {
+      "title": "Analisis SDM",
+      "subtitle": "Manajemen Talenta & Psikometrik",
+      "syncing": "MENYINKRONKAN",
+      "addEmployee": "Tambah Karyawan",
+      "dashboard": "Dasbor",
+      "setup": {
+        "title": "Konfigurasi Organisasi",
+        "description": "Definisikan struktur tim Anda. AI kami akan memetakan standar psikometrik ideal untuk setiap posisi.",
+        "companyName": "Nama Perusahaan",
+        "placeholderCompany": "PT Maju Bersama...",
+        "seats": "Divisi / Peran (Seats)",
+        "placeholderSeat": "Contoh: Marketing, Frontend Dev, HR...",
+        "add": "Tambah",
+        "empty": "Belum ada divisi terdaftar.",
+        "errorName": "Nama perusahaan wajib diisi.",
+        "errorDiv": "Masukkan minimal 1 divisi/peran.",
+        "generate": "Terapkan & Analisis Struktur",
+        "generating": "AI sedang menganalisis standar..."
+      },
+      "dashboardView": {
+        "empty": {
+          "title": "Mulai Database Tim",
+          "description": "Anda telah menetapkan {n} divisi. Sekarang, jalankan asesmen untuk karyawan Anda untuk melihat kecocokan kapasitas mereka.",
+          "structure": "Struktur Tersimpan:"
+        },
+        "sidebar": "Database Talenta",
+        "fitStatus": "Status Kecocokan",
+        "needAdjustment": "Perlu Penyesuaian",
+        "optimal": "Optimal (Right Seat)",
+        "visualization": "Visualisasi Kapasitas vs Standar",
+        "actual": "KAPASITAS AKTUAL",
+        "standard": "STANDAR KURSI AI",
+        "actualLabel": "Aktual: {actual} / Standar: {required}",
+        "recommendation": "Rekomendasi Sistem Aksana",
+        "gapDesc": "Karyawan menunjukkan gap kompetensi pada aspek {traits}. Posisi {role} membutuhkan standar yang lebih tinggi.",
+        "reassignment": "Potensi Re-assignment",
+        "reassignmentDesc": "Pola karakter {name} memiliki kecocokan {percent}% dengan standar posisi {role}. Pertimbangkan rotasi untuk optimasi performa.",
+        "perfectFit": "Penempatan Sempurna",
+        "perfectFitDesc": "Kapasitas {name} sangat selaras dengan kebutuhan strategis posisi {role}. Fokus pada delegasi dan pengembangan lanjut di jalur ini.",
+        "traits": {
+          "creativity": "Kreativitas & Inovasi",
+          "leadership": "Kepemimpinan",
+          "detail": "Ketelitian (Detail)",
+          "execution": "Eksekusi & Logika"
+        },
+        "anomalies": {
+          "creativity": "Kreativitas",
+          "leadership": "Kepemimpinan",
+          "detail": "Ketelitian",
+          "execution": "Eksekusi"
+        }
+      },
+      "assessment": {
+        "title": "Asesmen Talenta",
+        "description": "Pemetaan psikologis berbasis skenario untuk menentukan penempatan terbaik.",
+        "name": "Nama Lengkap",
+        "placeholderName": "Masukkan nama kandidat...",
+        "role": "Posisi Target",
+        "start": "Mulai Tes Psikometrik",
+        "progress": "Progres: {step} / {total}",
+        "finished": "{percent}% SELESAI"
+      },
+      "questions": {
+        "q1": {
+          "text": "Saat terjadi krisis mendadak di mana klien besar komplain terkait hasil kerja tim Anda, apa insting pertama Anda?",
+          "options": {
+            "leadership": "Mengumpulkan tim untuk segera membagi tugas penanganan darurat.",
+            "detail": "Menganalisis log data dan laporan sebelumnya untuk mencari letak kesalahan pasti.",
+            "creativity": "Memikirkan kompensasi kreatif atau layanan tambahan untuk menenangkan klien.",
+            "execution": "Langsung menelepon klien dan menyelesaikan masalah teknisnya saat itu juga."
+          }
+        },
+        "q2": {
+          "text": "Jika Anda diminta untuk memimpin proyek peluncuran produk baru, bagian mana yang paling Anda nikmati?",
+          "options": {
+            "creativity": "Merancang konsep produk dan strategi branding yang belum pernah ada.",
+            "execution": "Memastikan timeline berjalan cepat dan target mingguan tercapai tanpa alasan.",
+            "detail": "Menyusun SOP rinci dan mengecek QA (Quality Assurance) sebelum rilis.",
+            "leadership": "Memotivasi anggota tim lintas divisi agar visi produk sejalan."
+          }
+        },
+        "q3": {
+          "text": "Kolega Anda sedang cuti dan Anda harus mem-backup pekerjaannya yang berisi ratusan baris data spreadsheet. Reaksi Anda?",
+          "options": {
+            "detail": "Bagus. Saya suka merapikan dan memastikan angka-angkanya akurat.",
+            "leadership": "Saya akan mendelegasikan beberapa bagian ke staf lain agar lebih efisien.",
+            "execution": "Saya kerjakan secepat mungkin agar target hari ini tetap selesai.",
+            "creativity": "Saya akan mencoba membuat rumus/makro baru agar formatnya lebih menarik dan mudah dibaca."
+          }
+        },
+        "q4": {
+          "text": "Dalam rapat evaluasi tahunan, gaya komunikasi Anda biasanya...",
+          "options": {
+            "execution": "Fokus pada poin-poin aksi (action items) untuk segera dieksekusi besok.",
+            "creativity": "Memberikan ide-ide liar tentang arah perusahaan ke depan.",
+            "leadership": "Mengarahkan diskusi agar semua anggota tim mendapat kesempatan bicara.",
+            "detail": "Membawa catatan lengkap tentang metrik dan KPI yang tercapai/gagal."
+          }
+        },
+        "q5": {
+          "text": "Apa kelemahan terbesar yang sering Anda (atau orang lain) sadari dalam diri Anda?",
+          "options": {
+            "execution": "Sering mengabaikan aturan kecil demi mencapai tujuan dengan cepat.",
+            "detail": "Terlalu perfeksionis pada hal kecil sehingga kadang lambat.",
+            "creativity": "Sering melompat dari satu ide ke ide lain sebelum ide pertama selesai.",
+            "leadership": "Terlalu mengambil alih pekerjaan karena kurang sabar melihat tim yang lambat."
+          }
+        }
+      },
+      "confirmDelete": "Apakah Anda yakin ingin menghapus data karyawan ini?",
+      "confirmReset": "Perhatian: Memulai ulang profil perusahaan akan menghapus semua data divisi dan karyawan. Lanjutkan?",
+      "resetTitle": "Reset Profil"
+    },
+    "Production": {
+      "identity": {
+        "title": "Identitas Produk",
+        "sku": "Nama / SKU Produk",
+        "placeholderSku": "Contoh: Hijab Voal Ultra",
+        "category": "Kategori Strategis",
+        "magnet": "Produk Magnet 🔥",
+        "profit": "Produk Profit 💰",
+        "magnetDesc": "Produk Magnet: Harus selalu tersedia (Service Level 98%). Umumnya digunakan sebagai penarik pengunjung toko Anda.",
+        "profitDesc": "Produk Profit: Fokus pada perputaran modal (Service Level 90%). Dapat ditoleransi jika sesekali habis demi efisiensi modal."
+      },
+      "data": {
+        "title": "Data Lapangan",
+        "sales": "Historis Penjualan Bulanan",
+        "placeholderSales": "Contoh: 150, 180, 140, 210, 190, 250",
+        "salesNote": "* Pisahkan dengan koma. Bisa menggunakan titik sebagai pemisah ribuan.",
+        "leadTime": "Lead Time (Hari)",
+        "placeholderLeadTime": "7",
+        "stock": "Sisa Stok (Pcs)",
+        "placeholderStock": "50"
+      },
+      "analysis": {
+        "subtitle": "Simulasi Target Produksi",
+        "untitled": "Produk Tanpa Nama",
+        "sync": "Sinkron...",
+        "export": "Unduh PNG",
+        "processing": "Memproses...",
+        "errorTitle": "Gagal membuat gambar PNG: ",
+        "errorAlert": "Terjadi kesalahan saat memproses gambar.",
+        "reportFilename": "Laporan-Target-Produksi-",
+        "waiting": "Menunggu Data Valid",
+        "waitingDesc": "Masukkan setidaknya 2 data historis penjualan untuk memulai analisis.",
+        "alert": "🚨 Waktunya Memproduksi!",
+        "safe": "✅ Stok Masih Aman",
+        "alertDesc": "Sisa stok ({stock}) sudah di bawah Alarm Produksi ({rop}).",
+        "safeDesc": "Jumlah stok masih mencukupi kebutuhan operasional.",
+        "targetLabel": "Target Produksi Sekarang",
+        "pcs": "Pcs",
+        "avgSales": "Rata-rata Penjualan / Hari",
+        "avgSalesUnit": "Pcs per hari",
+        "safetyStock": "Stok Jaga-jaga 🛡️",
+        "safetyStockDesc": "Batas aman sebelum stok habis",
+        "rop": "Alarm Produksi 🔔",
+        "ropDesc": "Mulai produksi jika stok mencapai angka ini",
+        "chartTitle": "Simulasi Pergerakan Stok",
+        "chartDesc": "Proyeksi sisa stok jika tidak memproduksi hari ini.",
+        "projection": "Proyeksi",
+        "ropLegend": "Alarm (ROP)",
+        "safetyStockLegend": "Stok Jaga-jaga",
+        "explanation": "💡 Penjelasan Perhitungan:",
+        "explanationList": {
+          "stdDevMonthly": "<bold>Fluktuasi Bulanan (StdDev):</bold> {val}",
+          "stdDevDaily": "<bold>Normalisasi Harian:</bold> {val1} / √30 = {val2}",
+          "safetyStock": "<bold>Stok Jaga-jaga:</bold> Z-Score({z}) × Fluktuasi Harian × √LeadTime({lt}) = <highlight>{res}</highlight>",
+          "rop": "<bold>Alarm Produksi:</bold> (Rata Harian × Lead Time) + Stok Jaga-jaga = <highlight>{res}</highlight>"
+        }
+      }
+    },
+    "Sop": {
+      "steps": {
+        "1": "Pilih Divisi",
+        "2": "Input Form",
+        "3": "AI Review",
+        "4": "Dokumen Final"
+      },
+      "step1": {
+        "title": "Pilih Divisi SOP",
+        "subtitle": "AI akan menyesuaikan format input berdasarkan struktur divisi Anda."
+      },
+      "step2": {
+        "back": "Kembali",
+        "division": "Divisi {name}",
+        "title": "Draft Rincian SOP",
+        "subtitle": "Lengkapi data di bawah. AI akan membantu merapikan bahasanya nanti.",
+        "generate": "Generate dengan Aksana AI"
+      },
+      "step3": {
+        "title": "Analisis AI Selesai",
+        "subtitle": "Aksana AI telah menganalisis risiko dan metrik untuk SOP Anda.",
+        "riskTitle": "Analisis Risiko",
+        "kpiTitle": "Rekomendasi KPI",
+        "edit": "Edit Draft",
+        "approve": "Setujui & Rapikan Dokumen",
+        "risks": [
+          "Potensi keterlambatan koordinasi pada langkah ke-2 karena kurangnya checklist fisik.",
+          "Risiko human error tinggi pada input data manual. Rekomendasi: Gunakan validasi software."
+        ],
+        "kpis": {
+          "accuracy": "Tingkat Akurasi",
+          "sla": "Penyelesaian SLA"
+        }
+      },
+      "step4": {
+        "title": "DOKUMEN SOP",
+        "subtitle": "STANDARD OPERATING PROCEDURE • AKSANA BUSINESS LAB",
+        "author": "Penyusun",
+        "authorVal": "Aksana AI Business Intelligence",
+        "date": "Tanggal Terbit",
+        "new": "Buat SOP Baru",
+        "export": "Ekspor ke Word (.doc)",
+        "save": "Simpan ke Cloud"
+      },
+      "divisions": {
+        "ops": {
+          "name": "Operasional",
+          "description": "Produksi, Logistik, & Layanan"
+        },
+        "fin": {
+          "name": "Keuangan",
+          "description": "Payroll, Arus Kas, & Pajak"
+        },
+        "mkt": {
+          "name": "Pemasaran",
+          "description": "Sales, Branding, & Sosmed"
+        },
+        "hrd": {
+          "name": "SDM / HRD",
+          "description": "Rekrutmen & Kedisiplinan"
+        }
+      },
+      "schemas": {
+        "ops": [
+          { "label": "Nama Proses / Alur Kerja", "placeholder": "Misal: Prosedur Pengiriman Barang" },
+          { "label": "Penanggung Jawab Utama", "placeholder": "Misal: Manager Gudang" },
+          { "label": "Alat & Bahan yang Dibutuhkan", "placeholder": "Sebutkan tools atau software..." },
+          { "label": "Langkah-langkah Kerja (Urutan)", "placeholder": "1. Terima order...\n2. Packing...\n3. Kirim..." }
+        ],
+        "fin": [
+          { "label": "Nama Prosedur Keuangan", "placeholder": "Misal: Pengajuan Reimbursement" },
+          { "label": "Otorisator (Pemberi Izin)", "placeholder": "Misal: CFO atau Finance Lead" },
+          { "label": "Batas Waktu Proses (SLA)", "placeholder": "Misal: Maksimal 2x24 Jam" },
+          { "label": "Dokumen Pendukung Wajib", "placeholder": "Kwitansi asli, Invoice, dll..." }
+        ],
+        "mkt": [
+          { "label": "Nama Campaign / Aktivitas", "placeholder": "Misal: Posting Konten Instagram" },
+          { "label": "Target Audiens", "placeholder": "Siapa yang dituju?" },
+          { "label": "Langkah Kreatif & Eksekusi", "placeholder": "Brainstorming -> Desain -> Approval..." },
+          { "label": "Metrik Keberhasilan", "placeholder": "Jumlah leads, engagement rate, dll..." }
+        ],
+        "hrd": [
+          { "label": "Nama Kebijakan / SOP", "placeholder": "Misal: Onboarding Karyawan Baru" },
+          { "label": "Departemen Terkait", "placeholder": "Seluruh divisi atau spesifik..." },
+          { "label": "Tahapan Proses", "placeholder": "Siapkan laptop -> TTD Kontrak -> Training..." },
+          { "label": "Sanksi Jika Melanggar (Opsional)", "placeholder": "Peringatan tertulis, dll..." }
+        ]
+      },
+      "export": {
+        "filename": "Dokumen_SOP",
+        "docTitle": "STANDARD OPERATING PROCEDURE",
+        "divisi": "Divisi: {name}",
+        "riskAnalysis": "Analisis Risiko AI (Risk Analysis)",
+        "riskRecommendation": "Berdasarkan draf, AI merekomendasikan pengecekan ganda pada langkah kritis untuk menghindari human error.",
+        "kpiTitle": "Key Performance Indicators (KPI)",
+        "accuracy": "Akurasi Proses: 98%",
+        "sla": "SLA Pemenuhan: < 24 Jam"
+      }
+    },
+    "Todo": {
+      "title": "Pelacak Tugas",
+      "subtitle": "Pantau eksekusi tugas strategis tim secara real-time.",
+      "export": "Unduh Gambar",
+      "progress": "Progres Tim",
+      "addNew": "Tambah Tugas Baru",
+      "placeholderTask": "Deskripsi tugas...",
+      "placeholderPic": "PIC / Pemilik",
+      "save": "Simpan",
+      "listTitle": "Daftar Eksekusi",
+      "tasksCount": "{n} Tugas",
+      "allPic": "Semua PIC",
+      "deadline": "Deadline: {date}",
+      "empty": "Belum ada tugas dalam daftar ini.",
+      "sync": {
+        "syncing": "Menyingkronkan...",
+        "connected": "Cloud Terkoneksi",
+        "save": "Simpan Manual"
+      }
+    }
+  }
+}

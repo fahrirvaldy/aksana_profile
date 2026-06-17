@@ -115,68 +115,68 @@ export default function CashflowPage() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[70vh]">
-        <Loader2 className="animate-spin text-slate-400" size={40} />
+        <Loader2 className="animate-spin text-slate-700" size={40} />
       </div>
     );
   }
 
   return (
     <div className="max-w-5xl mx-auto px-8 py-12">
-      <Link href="/dashboard" className="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-slate-900 dark:hover:text-slate-50 transition-colors mb-8 group">
+      <Link href="/dashboard" className="inline-flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-slate-50 transition-colors mb-8 group">
         <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
         Kembali ke Dasbor
       </Link>
 
       <div className="mb-12 space-y-2">
         <h1 className="text-3xl font-bold tracking-tight">Cashflow Analysis</h1>
-        <p className="text-slate-500 dark:text-slate-400">Proyeksikan kesehatan finansial bisnis Anda dengan presisi.</p>
+        <p className="text-slate-700 dark:text-slate-400">Proyeksikan kesehatan finansial bisnis Anda dengan presisi.</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
         {/* Form Section */}
         <div className="space-y-8">
-          <div className="p-8 rounded-2xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-sm space-y-6">
+          <div className="p-8 rounded-2xl bg-white dark:bg-slate-900 border border-black dark:border-slate-800 shadow-sm space-y-6 aksana-glass">
             <div className="space-y-2">
-              <label className="text-xs font-semibold uppercase tracking-wider text-slate-400">Pemasukan Bulanan</label>
+              <label className="text-xs font-semibold uppercase tracking-wider text-slate-700">Pemasukan Bulanan</label>
               <div className="relative">
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-medium">Rp</span>
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-700 font-medium">Rp</span>
                 <input
                   type="number"
                   value={pemasukan}
                   onChange={(e) => setPemasukan(e.target.value === "" ? "" : Number(e.target.value))}
                   placeholder="0"
-                  className="w-full pl-12 pr-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-transparent focus:ring-2 focus:ring-slate-400 outline-none transition-all"
+                  className="w-full pl-12 pr-4 py-3 rounded-xl border border-black dark:border-slate-800 bg-transparent focus:ring-2 focus:ring-slate-400 outline-none transition-all"
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <label className="text-xs font-semibold uppercase tracking-wider text-slate-400">Pengeluaran Tetap</label>
+              <label className="text-xs font-semibold uppercase tracking-wider text-slate-700">Pengeluaran Tetap</label>
               <div className="relative">
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-medium">Rp</span>
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-700 font-medium">Rp</span>
                 <input
                   type="number"
                   value={pengeluaran}
                   onChange={(e) => setPengeluaran(e.target.value === "" ? "" : Number(e.target.value))}
                   placeholder="0"
-                  className="w-full pl-12 pr-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-transparent focus:ring-2 focus:ring-slate-400 outline-none transition-all"
+                  className="w-full pl-12 pr-4 py-3 rounded-xl border border-black dark:border-slate-800 bg-transparent focus:ring-2 focus:ring-slate-400 outline-none transition-all"
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <label className="text-xs font-semibold uppercase tracking-wider text-slate-400">Pajak (%)</label>
+              <label className="text-xs font-semibold uppercase tracking-wider text-slate-700">Pajak (%)</label>
               <input
                 type="number"
                 value={pajak}
                 onChange={(e) => setPajak(e.target.value === "" ? "" : Number(e.target.value))}
                 placeholder="0"
-                className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-transparent focus:ring-2 focus:ring-slate-400 outline-none transition-all"
+                className="w-full px-4 py-3 rounded-xl border border-black dark:border-slate-800 bg-transparent focus:ring-2 focus:ring-slate-400 outline-none transition-all"
               />
             </div>
 
             {(!pemasukan || !pengeluaran) && (
-              <div className="p-4 rounded-xl bg-amber-50 dark:bg-amber-900/10 border border-amber-100 dark:border-amber-900/20 text-amber-600 dark:text-amber-500 text-sm font-medium">
+              <div className="p-4 rounded-xl bg-amber-50 dark:bg-amber-900/10 border border-amber-100 dark:border-amber-900/20 text-amber-600 dark:text-amber-500 text-sm font-medium shadow-sm">
                 Mari masukkan angka untuk melihat proyeksi arus kas Anda.
               </div>
             )}
@@ -184,7 +184,7 @@ export default function CashflowPage() {
             <button
               onClick={handleSave}
               disabled={isSaving || !pemasukan}
-              className="w-full py-4 rounded-xl bg-slate-900 dark:bg-slate-50 text-slate-50 dark:text-slate-900 font-bold transition-all hover:opacity-90 active:scale-[0.98] flex items-center justify-center gap-2 disabled:opacity-50"
+              className="w-full py-4 rounded-xl bg-slate-900 dark:bg-slate-50 text-slate-50 dark:text-slate-950 font-bold transition-all hover:opacity-90 active:scale-[0.98] flex items-center justify-center gap-2 disabled:opacity-50"
             >
               {isSaving ? <Loader2 className="animate-spin" size={20} /> : <><Save size={20} /> Simpan Analisis ini</>}
             </button>
@@ -193,8 +193,8 @@ export default function CashflowPage() {
 
         {/* Result Section */}
         <div className="space-y-8">
-          <div className="p-8 rounded-3xl bg-slate-900 dark:bg-slate-50 text-slate-50 dark:text-slate-900 space-y-6 shadow-2xl">
-            <h3 className="text-sm font-semibold uppercase tracking-widest text-slate-400 dark:text-slate-500">Arus Kas Bersih</h3>
+          <div className="p-8 rounded-3xl bg-slate-900 dark:bg-slate-50 text-slate-50 dark:text-slate-950 space-y-6">
+            <h3 className="text-sm font-semibold uppercase tracking-widest text-slate-700 dark:text-slate-700">Arus Kas Bersih</h3>
             <div className="space-y-2">
               <div className="text-4xl md:text-5xl font-bold tracking-tighter">
                 {formatCurrency(arusKasBersih)}
@@ -212,13 +212,13 @@ export default function CashflowPage() {
               </div>
             </div>
             
-            <div className="pt-6 border-t border-slate-800 dark:border-slate-200 grid grid-cols-2 gap-4">
+            <div className="pt-6 border-t border-slate-800 dark:border-slate-200 grid grid-cols-2 gap-4 shadow-sm">
               <div className="space-y-1">
-                <span className="text-[10px] uppercase tracking-wider text-slate-500">Estimasi Pajak</span>
+                <span className="text-[10px] uppercase tracking-wider text-slate-950">Estimasi Pajak</span>
                 <p className="font-bold">{formatCurrency(totalPajakVal)}</p>
               </div>
               <div className="space-y-1">
-                <span className="text-[10px] uppercase tracking-wider text-slate-500">Margin Bersih</span>
+                <span className="text-[10px] uppercase tracking-wider text-slate-950">Margin Bersih</span>
                 <p className="font-bold">{rawPemasukan > 0 ? ((arusKasBersih / rawPemasukan) * 100).toFixed(1) : 0}%</p>
               </div>
             </div>
@@ -226,24 +226,24 @@ export default function CashflowPage() {
 
           {/* History Preview */}
           <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-bold text-slate-400 uppercase tracking-widest px-2">
+            <div className="flex items-center gap-2 text-sm font-bold text-slate-700 uppercase tracking-widest px-2">
               <HistoryIcon size={14} /> 3 Riwayat Terakhir
             </div>
             <div className="space-y-3">
               {history.length > 0 ? (
                 history.map((entry) => (
-                  <div key={entry.id} className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 flex justify-between items-center group hover:border-slate-300 dark:hover:border-slate-700 transition-colors">
+                  <div key={entry.id} className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-black dark:border-slate-800 flex justify-between items-center group hover:border-slate-300 dark:hover:border-slate-700 transition-colors aksana-glass shadow-sm">
                     <div className="space-y-1">
-                      <p className="text-xs text-slate-400">{new Date(entry.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
+                      <p className="text-xs text-slate-700">{new Date(entry.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
                       <p className="font-bold text-sm">{formatCurrency(entry.data_payload.hasil_akhir)}</p>
                     </div>
-                    <div className="text-[10px] font-bold px-2 py-1 rounded-lg bg-slate-50 dark:bg-slate-800 text-slate-400">
+                    <div className="text-[10px] font-bold px-2 py-1 rounded-lg bg-slate-50 dark:bg-slate-800 text-slate-700">
                       IN: {formatCurrency(entry.data_payload.pemasukan)}
                     </div>
                   </div>
                 ))
               ) : (
-                <div className="p-8 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800 text-center text-slate-400 text-sm italic">
+                <div className="p-8 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800 text-center text-slate-700 text-sm italic shadow-sm">
                   Belum ada riwayat tersimpan.
                 </div>
               )}

@@ -187,7 +187,7 @@ const generatePsychometricProfile = async (divisions: string[]): Promise<Record<
 // --- UTILITY COMPONENTS ---
 
 const Card = ({ children, className = "" }: { children: React.ReactNode, className?: string }) => (
-  <div className={`aksana-glass bg-white/70 backdrop-blur-xl border border-white/40 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-3xl overflow-hidden transition-all duration-300 ${className}`}>
+  <div className={`aksana-glass bg-white dark:bg-[#1E1E1E] backdrop-blur-xl border border-slate-200 dark:border-slate-800 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-3xl overflow-hidden transition-all duration-300 ${className}`}>
     {children}
   </div>
 );
@@ -199,12 +199,12 @@ const ProgressBar = ({ label, actual, required, colorClass = "bg-blue-500" }: { 
   return (
     <div className="mb-6">
       <div className="flex justify-between text-xs mb-2">
-        <span className="font-semibold text-slate-700 dark:text-slate-300">{label}</span>
-        <span className="text-slate-500 font-mono">Aktual: {actual} / Standar: {required}</span>
+        <span className="font-semibold text-slate-600 dark:text-slate-300">{label}</span>
+        <span className="text-slate-600 dark:text-slate-200 font-mono">Aktual: {actual} / Standar: {required}</span>
       </div>
-      <div className="relative h-3 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+      <div className="relative h-3 bg-slate-100 dark:bg-[#121212] rounded-full overflow-hidden border border-slate-200 dark:border-slate-800 shadow-sm">
         <div 
-          className="absolute top-0 bottom-0 border-r-2 border-dashed border-slate-400 dark:border-slate-500 z-10 transition-all duration-500" 
+          className="absolute top-0 bottom-0 border-r-2 border-dashed border-slate-300 dark:border-slate-500 z-10 transition-all duration-500 shadow-sm" 
           style={{ left: `${required}%` }}
         />
         <motion.div 
@@ -280,23 +280,23 @@ export default function PeopleAnalyzer({ onSave, isSyncing, initialData }: Peopl
   };
 
   return (
-    <div className="min-h-screen bg-[#F5F5F7] text-[#1D1D1F] font-sans selection:bg-indigo-100">
-      <nav className="sticky top-0 z-50 bg-white/60 backdrop-blur-2xl border-b border-gray-200/50">
+    <div className="min-h-screen bg-white dark:bg-black text-black dark:text-white font-sans selection:bg-indigo-100">
+      <nav className="sticky top-0 z-50 bg-white/60 backdrop-blur-2xl border-b border-black shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-3 cursor-pointer" onClick={() => setView('dashboard')}>
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-indigo-500 to-blue-600 text-white flex items-center justify-center font-bold shadow-lg shadow-indigo-500/20">
+              <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-slate-800 to-black text-white flex items-center justify-center font-bold shadow-lg">
                 <Building2 size={22} />
               </div>
               <div className="flex flex-col">
-                <span className="font-bold text-sm leading-tight text-gray-900 tracking-tight">{companyName || 'People Analyzer'}</span>
-                <span className="text-[10px] uppercase font-black text-indigo-600 tracking-widest">Aksana Profile</span>
+                <span className="font-bold text-sm leading-tight text-black tracking-tight">{companyName || 'People Analyzer'}</span>
+                <span className="text-[10px] uppercase font-black text-slate-800 dark:text-indigo-400 tracking-widest">Aksana Profile</span>
               </div>
             </div>
             
             <div className="flex items-center gap-3">
               {isSyncing && (
-                <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-100 text-slate-500 text-[10px] font-black animate-pulse">
+                <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white border border-black text-black text-[10px] font-black animate-pulse shadow-sm">
                   <RefreshCcw size={12} className="animate-spin" /> SYNCING
                 </div>
               )}
@@ -304,14 +304,14 @@ export default function PeopleAnalyzer({ onSave, isSyncing, initialData }: Peopl
                 <>
                   <button 
                     onClick={handleReset}
-                    className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
+                    className="p-2 text-black hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
                     title="Reset App"
                   >
                     <Settings size={20} />
                   </button>
                   <button 
                     onClick={() => setView(view === 'dashboard' ? 'assessment' : 'dashboard')}
-                    className="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 text-white rounded-2xl text-sm font-bold transition-all hover:bg-indigo-700 shadow-xl shadow-indigo-200"
+                    className="flex items-center gap-2 px-5 py-2.5 bg-black text-white rounded-2xl text-sm font-bold transition-all hover:bg-slate-800 shadow-xl"
                   >
                     {view === 'dashboard' ? (
                       <><Plus size={18} /> <span className="hidden sm:inline">Mulai Asesmen</span></>
@@ -433,21 +433,21 @@ function CompanySetup({ onComplete }: { onComplete: (seats: Record<string, Seat>
   };
 
   return (
-    <Card className="w-full max-w-2xl mx-auto p-12 bg-white shadow-2xl">
+    <Card className="w-full max-w-2xl mx-auto p-12 bg-white border border-black aksana-glass">
       <div className="text-center mb-10">
         <div className="w-20 h-20 bg-indigo-50 text-indigo-600 rounded-[2.5rem] flex items-center justify-center mx-auto mb-6 shadow-inner">
           <Building2 size={40} />
         </div>
-        <h1 className="text-3xl font-black text-gray-900 tracking-tight">Setup Profil Organisasi</h1>
-        <p className="text-gray-500 mt-3 font-medium">AI akan menganalisis kebutuhan psikologis untuk setiap peran yang Anda masukkan.</p>
+        <h1 className="text-3xl font-black text-black tracking-tight">Setup Profil Organisasi</h1>
+        <p className="text-black mt-3 font-medium">AI akan menganalisis kebutuhan psikologis untuk setiap peran yang Anda masukkan.</p>
       </div>
 
       <div className="space-y-8">
         <div className="space-y-2">
-          <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Nama Perusahaan</label>
+          <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 dark:text-slate-300 ml-1">Nama Perusahaan</label>
           <input 
             type="text" 
-            className="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold"
+            className="w-full p-4 bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 rounded-2xl outline-none focus:ring-4 focus:ring-black/5 transition-all font-bold placeholder-slate-400 dark:placeholder-slate-500"
             placeholder="Masukkan nama perusahaan..."
             value={compName}
             onChange={(e) => setCompName(e.target.value)}
@@ -456,11 +456,11 @@ function CompanySetup({ onComplete }: { onComplete: (seats: Record<string, Seat>
         </div>
 
         <div className="space-y-4">
-          <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Daftar Divisi / Seats</label>
+          <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 dark:text-slate-300 ml-1">Daftar Divisi / Seats</label>
           <form onSubmit={handleAddDivision} className="flex gap-3">
             <input 
               type="text" 
-              className="flex-1 p-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold"
+              className="flex-1 p-4 bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 rounded-2xl outline-none focus:ring-4 focus:ring-black/5 transition-all font-bold placeholder-slate-400 dark:placeholder-slate-500"
               placeholder="Contoh: Marketing, Frontend Dev..."
               value={newDivision}
               onChange={(e) => setNewDivision(e.target.value)}
@@ -469,23 +469,23 @@ function CompanySetup({ onComplete }: { onComplete: (seats: Record<string, Seat>
             <button 
               type="submit"
               disabled={!newDivision.trim() || isGenerating}
-              className="px-6 py-4 bg-white border border-gray-200 text-indigo-600 font-bold rounded-2xl hover:bg-gray-50 disabled:opacity-50 transition-all shadow-sm"
+              className="px-6 py-4 bg-white border border-black text-indigo-600 font-bold rounded-2xl hover:bg-slate-50 disabled:opacity-50 transition-all shadow-sm aksana-glass"
             >
               Tambah
             </button>
           </form>
 
-          <div className="flex flex-wrap gap-2.5 min-h-[100px] p-5 border border-gray-100 rounded-[2rem] bg-gray-50/50">
-            {divisions.length === 0 && <span className="text-sm text-gray-400 italic m-auto font-medium">Belum ada divisi ditambahkan.</span>}
+          <div className="flex flex-wrap gap-2.5 min-h-[100px] p-5 border border-black rounded-[2rem] bg-white shadow-sm">
+            {divisions.length === 0 && <span className="text-sm text-black italic m-auto font-medium">Belum ada divisi ditambahkan.</span>}
             {divisions.map((div, idx) => (
               <motion.div 
                 key={idx} 
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-xl shadow-sm text-sm font-bold text-gray-700"
+                className="flex items-center gap-2 px-4 py-2 bg-white border border-black rounded-xl shadow-sm text-sm font-bold text-black aksana-glass"
               >
                 {div}
-                <button type="button" onClick={() => handleRemoveDivision(div)} disabled={isGenerating} className="text-gray-300 hover:text-red-500 transition-colors">
+                <button type="button" onClick={() => handleRemoveDivision(div)} disabled={isGenerating} className="text-black hover:text-red-500 transition-colors">
                   <Trash2 size={14} />
                 </button>
               </motion.div>
@@ -493,12 +493,12 @@ function CompanySetup({ onComplete }: { onComplete: (seats: Record<string, Seat>
           </div>
         </div>
 
-        {error && <div className="p-4 bg-red-50 text-red-600 text-sm font-bold rounded-2xl border border-red-100 text-center">{error}</div>}
+        {error && <div className="p-4 bg-red-50 text-red-600 text-sm font-bold rounded-2xl border border-red-100 text-center shadow-sm">{error}</div>}
 
         <button 
           onClick={handleGenerate}
           disabled={isGenerating || divisions.length === 0 || !compName}
-          className="w-full py-5 mt-4 bg-slate-900 text-white font-black rounded-[2rem] hover:opacity-90 disabled:bg-slate-300 transition-all shadow-2xl shadow-slate-200 flex justify-center items-center gap-3 text-lg"
+          className="w-full py-5 mt-4 bg-black text-white font-black rounded-[2rem] hover:opacity-90 disabled:bg-slate-300 transition-all shadow-xl flex justify-center items-center gap-3 text-lg"
         >
           {isGenerating ? (
             <>
@@ -524,17 +524,17 @@ function Dashboard({ employees, seats, onDelete }: { employees: Employee[], seat
   if (employees.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
-        <Users size={80} className="text-slate-200 mb-8" />
-        <h2 className="text-3xl font-black text-gray-900 mb-4">Profil Organisasi Terbentuk</h2>
-        <p className="text-gray-500 max-w-md mb-10 font-medium">Anda telah menetapkan {Object.keys(seats).length} divisi. Tambahkan karyawan melalui asesmen untuk melihat analisis kecocokan.</p>
+        <Users size={80} className="text-black/10 dark:text-slate-800 mb-8" />
+        <h2 className="text-3xl font-black text-black dark:text-white mb-4">Profil Organisasi Terbentuk</h2>
+        <p className="text-black dark:text-slate-400 max-w-md mb-10 font-medium italic">Anda telah menetapkan {Object.keys(seats).length} divisi. Tambahkan karyawan melalui asesmen untuk melihat analisis kecocokan.</p>
         
-        <div className="w-full max-w-xl text-left bg-white p-8 rounded-[3rem] shadow-xl border border-gray-100">
-          <h3 className="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-6 border-b pb-4">Standar Divisi (AI Generated)</h3>
+        <div className="w-full max-w-xl text-left bg-white p-8 rounded-[3rem] border border-black dark:border-slate-800 aksana-glass shadow-sm">
+          <h3 className="text-[10px] font-black text-black dark:text-white uppercase tracking-widest mb-6 border-b border-black/10 dark:border-white/10 pb-4">Standar Divisi (AI Generated)</h3>
           <div className="space-y-4">
             {Object.entries(seats).map(([divName, data], i) => (
-              <div key={i} className="flex justify-between items-center text-sm bg-slate-50 p-4 rounded-2xl">
-                <span className="font-bold text-slate-800">{divName}</span>
-                <span className="text-[10px] font-black text-slate-400 font-mono">
+              <div key={i} className="flex justify-between items-center text-sm bg-white border border-black/10 dark:border-white/10 p-4 rounded-2xl">
+                <span className="font-bold text-black dark:text-white">{divName}</span>
+                <span className="text-[10px] font-black text-black dark:text-slate-400 font-mono">
                   Cr: {data.req.creativity} | Ld: {data.req.leadership} | Dt: {data.req.detail} | Ex: {data.req.execution}
                 </span>
               </div>
@@ -576,28 +576,28 @@ function Dashboard({ employees, seats, onDelete }: { employees: Employee[], seat
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
       {/* Sidebar List */}
       <div className="lg:col-span-4">
-        <Card className="p-6 h-full bg-white/50 backdrop-blur-xl border border-white/20">
-          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6 px-2">Database Talenta</h3>
+        <Card className="p-6 h-full bg-white dark:bg-slate-900 border border-black dark:border-white/20 shadow-sm">
+          <h3 className="text-[10px] font-black text-black dark:text-white uppercase tracking-widest mb-6 px-2">Database Talenta</h3>
           <div className="space-y-3 max-h-[700px] overflow-y-auto pr-2 custom-scrollbar">
             {employees.map(emp => (
               <motion.div
                 key={emp.id}
                 layout
                 onClick={() => setSelectedId(emp.id)}
-                className={`p-5 rounded-3xl border transition-all cursor-pointer flex items-center justify-between ${activeEmp.id === emp.id ? 'bg-indigo-600 border-indigo-600 shadow-xl shadow-indigo-100' : 'bg-white border-slate-100 hover:border-indigo-200'}`}
+                className={`p-5 rounded-3xl border transition-all cursor-pointer flex items-center justify-between ${activeEmp.id === emp.id ? 'bg-black border-black shadow-xl' : 'bg-white border-black dark:border-slate-800 hover:border-black'}`}
               >
                 <div>
-                  <p className={`font-bold transition-colors ${activeEmp.id === emp.id ? 'text-white' : 'text-slate-900'}`}>{emp.name}</p>
-                  <p className={`text-[10px] font-black uppercase tracking-wider mt-1 ${activeEmp.id === emp.id ? 'text-indigo-200' : 'text-slate-400'}`}>{emp.role}</p>
+                  <p className={`font-bold transition-colors ${activeEmp.id === emp.id ? 'text-white' : 'text-black dark:text-slate-100'}`}>{emp.name}</p>
+                  <p className={`text-[10px] font-black uppercase tracking-wider mt-1 ${activeEmp.id === emp.id ? 'text-white/60' : 'text-black/60 dark:text-slate-400'}`}>{emp.role}</p>
                 </div>
                 <div className="flex items-center gap-3">
                    <button 
                     onClick={(e) => { e.stopPropagation(); onDelete(emp.id); }} 
-                    className={`p-2 rounded-xl transition-all ${activeEmp.id === emp.id ? 'text-indigo-300 hover:text-white hover:bg-white/10' : 'text-slate-300 hover:text-red-500 hover:bg-red-50'}`}
+                    className={`p-2 rounded-xl transition-all ${activeEmp.id === emp.id ? 'text-white/40 hover:text-white' : 'text-black/20 dark:text-slate-600 hover:text-red-500 hover:bg-red-50'}`}
                   >
                     <Trash2 size={16} />
                   </button>
-                  <ChevronRight size={18} className={activeEmp.id === emp.id ? 'text-white' : 'text-slate-300'} />
+                  <ChevronRight size={18} className={activeEmp.id === emp.id ?'text-white' : 'text-black/20 dark:text-slate-600'} />
                 </div>
               </motion.div>
             ))}
@@ -607,25 +607,25 @@ function Dashboard({ employees, seats, onDelete }: { employees: Employee[], seat
 
       {/* Main Analysis */}
       <div className="lg:col-span-8">
-        <Card className="p-10 h-full bg-white/80 backdrop-blur-xl border border-white/20">
-          <div className="flex flex-col md:flex-row justify-between items-start gap-6 mb-12 pb-10 border-b border-slate-100">
+        <Card className="p-10 h-full bg-white dark:bg-slate-900 border border-black dark:border-white/20 shadow-sm">
+          <div className="flex flex-col md:flex-row justify-between items-start gap-6 mb-12 pb-10 border-b border-black shadow-sm">
             <div className="space-y-4">
-              <h2 className="text-4xl font-black text-slate-900 tracking-tight">{activeEmp.name}</h2>
+              <h2 className="text-4xl font-black text-black dark:text-white tracking-tight">{activeEmp.name}</h2>
               <div className="flex items-center gap-3">
-                <div className="px-5 py-2 bg-slate-900 text-white rounded-2xl text-[10px] font-black tracking-widest flex items-center gap-2 shadow-lg shadow-slate-200">
+                <div className="px-5 py-2 bg-black text-white rounded-2xl text-[10px] font-black tracking-widest flex items-center gap-2 shadow-sm">
                   <Briefcase size={14} /> {activeEmp.role.toUpperCase()}
                 </div>
               </div>
             </div>
             
             <div className="text-left md:text-right">
-              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-3">Status Kecocokan</span>
+              <span className="text-[10px] font-black text-black dark:text-white uppercase tracking-widest block mb-3">Status Kecocokan</span>
               {anomalies.length > 0 ? (
-                <div className="inline-flex items-center gap-2 px-6 py-3 bg-amber-50 text-amber-700 border border-amber-100 rounded-[2rem] text-sm font-black shadow-sm">
+                <div className="inline-flex items-center gap-2 px-6 py-3 bg-amber-50 text-amber-700 border border-amber-500 rounded-[2rem] text-sm font-black shadow-sm">
                   <AlertCircle size={18} /> PERLU PENYESUAIAN
                 </div>
               ) : (
-                <div className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-50 text-emerald-700 border border-emerald-100 rounded-[2rem] text-sm font-black shadow-sm">
+                <div className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-50 text-emerald-700 border border-emerald-500 rounded-[2rem] text-sm font-black shadow-sm">
                   <CheckCircle size={18} /> OPTIMAL (RIGHT SEAT)
                 </div>
               )}
@@ -634,7 +634,7 @@ function Dashboard({ employees, seats, onDelete }: { employees: Employee[], seat
 
           <div className="space-y-12 mb-12">
             <div>
-              <h4 className="text-[10px] font-black text-slate-900 uppercase tracking-[0.2em] mb-8 flex items-center gap-2">
+              <h4 className="text-[10px] font-black text-black dark:text-white uppercase tracking-[0.2em] mb-8 flex items-center gap-2">
                 <Target size={18} className="text-indigo-500" /> Profil Kapasitas vs Standar AI
               </h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
@@ -643,12 +643,12 @@ function Dashboard({ employees, seats, onDelete }: { employees: Employee[], seat
                 <ProgressBar label="Ketelitian (Analisis)" actual={empPsycho.detail} required={seatReq.detail} colorClass="bg-amber-500" />
                 <ProgressBar label="Eksekusi & Logika" actual={empPsycho.execution} required={seatReq.execution} colorClass="bg-emerald-500" />
               </div>
-              <div className="flex justify-start items-center gap-8 mt-6 pt-6 border-t border-slate-50">
-                <div className="flex items-center gap-2 text-[10px] font-black text-slate-400 tracking-wider">
+              <div className="flex justify-start items-center gap-8 mt-6 pt-6 border-t border-black shadow-sm">
+                <div className="flex items-center gap-2 text-[10px] font-black text-black dark:text-white tracking-wider">
                   <div className="w-8 h-2 bg-indigo-500 rounded-full"></div> AKTUAL
                 </div>
-                <div className="flex items-center gap-2 text-[10px] font-black text-slate-400 tracking-wider">
-                  <div className="w-8 h-0 border-t-2 border-dashed border-slate-400"></div> STANDAR
+                <div className="flex items-center gap-2 text-[10px] font-black text-black dark:text-white tracking-wider">
+                  <div className="w-8 h-0 border-t-2 border-dashed border-black shadow-sm"></div> STANDAR
                 </div>
               </div>
             </div>
@@ -658,7 +658,7 @@ function Dashboard({ employees, seats, onDelete }: { employees: Employee[], seat
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             key={activeEmp.id}
-            className="bg-gradient-to-br from-slate-900 to-indigo-900 rounded-[3rem] p-10 text-white shadow-2xl relative overflow-hidden"
+            className="bg-gradient-to-br from-slate-900 to-indigo-900 rounded-[3rem] p-10 text-white relative overflow-hidden"
           >
             <div className="absolute top-0 right-0 w-80 h-80 bg-white/5 rounded-full -mr-40 -mt-40 blur-3xl"></div>
             
@@ -674,8 +674,8 @@ function Dashboard({ employees, seats, onDelete }: { employees: Employee[], seat
                   </p>
                   
                   {bestFit && (
-                    <div className="p-6 bg-white/10 backdrop-blur-xl rounded-[2rem] border border-white/10 flex items-start gap-6 shadow-inner">
-                      <div className="p-4 bg-white text-indigo-900 rounded-[1.5rem] shadow-xl shrink-0">
+                    <div className="p-6 bg-white/10 backdrop-blur-xl rounded-[2rem] border border-white/10 flex items-start gap-6 shadow-inner shadow-sm">
+                      <div className="p-4 bg-white text-indigo-900 rounded-[1.5rem] shrink-0 border border-black aksana-glass">
                         <Map size={24} />
                       </div>
                       <div>
@@ -689,7 +689,7 @@ function Dashboard({ employees, seats, onDelete }: { employees: Employee[], seat
                 </>
               ) : (
                 <div className="flex gap-6 items-start">
-                  <div className="p-4 bg-emerald-500/20 text-emerald-400 rounded-[1.5rem] border border-emerald-500/20 shrink-0 shadow-lg">
+                  <div className="p-4 bg-emerald-500/20 text-emerald-400 rounded-[1.5rem] border border-emerald-500/20 shrink-0 shadow-sm">
                     <CheckCircle size={28} />
                   </div>
                   <div>
@@ -751,22 +751,22 @@ function AssessmentForm({ seats, onComplete }: { seats: Record<string, Seat>, on
 
   if (step === 0) {
     return (
-      <Card className="max-w-xl mx-auto p-12 bg-white shadow-2xl">
+      <Card className="max-w-xl mx-auto p-12 bg-white aksana-glass border border-black dark:border-slate-800">
         <div className="text-center mb-10">
-          <div className="w-20 h-20 bg-indigo-50 text-indigo-600 rounded-[2rem] flex items-center justify-center mx-auto mb-6 shadow-inner">
+          <div className="w-20 h-20 bg-black text-white rounded-[2rem] flex items-center justify-center mx-auto mb-6 shadow-xl">
             <BrainCircuit size={40} />
           </div>
-          <h2 className="text-2xl font-black text-slate-900 tracking-tight mb-2">Asesmen Talenta Baru</h2>
-          <p className="text-gray-500 font-medium text-sm">Jawab {PSYCHO_QUESTIONS.length} skenario situasi untuk memetakan kapasitas psikologis.</p>
+          <h2 className="text-2xl font-black text-black dark:text-white tracking-tight mb-2">Asesmen Talenta Baru</h2>
+          <p className="text-black dark:text-slate-400 font-medium text-sm italic">Jawab {PSYCHO_QUESTIONS.length} skenario situasi untuk memetakan kapasitas psikologis.</p>
         </div>
 
         <form onSubmit={handleStart} className="space-y-8">
           <div className="space-y-2">
-            <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Nama Lengkap</label>
-            <input 
+            <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 dark:text-slate-300 ml-1">Nama Lengkap</label>
+            <input
               required
-              type="text" 
-              className="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold"
+              type="text"
+              className="w-full p-4 bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 rounded-2xl outline-none focus:ring-4 focus:ring-black/5 transition-all font-bold placeholder-slate-400 dark:placeholder-slate-500"
               placeholder="Contoh: John Doe"
               value={formData.name}
               onChange={e => setFormData({...formData, name: e.target.value})}
@@ -774,9 +774,9 @@ function AssessmentForm({ seats, onComplete }: { seats: Record<string, Seat>, on
           </div>
 
           <div className="space-y-2">
-            <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Penempatan Seat</label>
-            <select 
-              className="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-700 appearance-none"
+            <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 dark:text-slate-300 ml-1">Penempatan Seat</label>
+            <select
+              className="w-full p-4 bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 rounded-2xl outline-none focus:ring-4 focus:ring-black/5 transition-all font-bold appearance-none"
               value={formData.role}
               onChange={e => setFormData({...formData, role: e.target.value})}
               required
@@ -787,9 +787,9 @@ function AssessmentForm({ seats, onComplete }: { seats: Record<string, Seat>, on
             </select>
           </div>
 
-          <button 
+          <button
             type="submit"
-            className="w-full py-5 mt-6 bg-slate-900 text-white font-black rounded-[2rem] hover:opacity-90 transition-all shadow-2xl shadow-slate-200 flex justify-center items-center gap-2"
+            className="w-full py-5 mt-6 bg-black dark:bg-white text-white dark:text-black font-black rounded-[2rem] hover:opacity-90 transition-all shadow-xl flex justify-center items-center gap-2"
           >
             Mulai Tes Psikometrik <ArrowRight size={18} />
           </button>
@@ -797,14 +797,13 @@ function AssessmentForm({ seats, onComplete }: { seats: Record<string, Seat>, on
       </Card>
     );
   }
-
   const currentQ = PSYCHO_QUESTIONS[step - 1];
   const progress = ((step - 1) / PSYCHO_QUESTIONS.length) * 100;
 
   return (
     <div className="max-w-2xl mx-auto mt-6">
       <div className="mb-12">
-        <div className="flex justify-between text-[10px] font-black text-slate-400 mb-4 uppercase tracking-[0.3em]">
+        <div className="flex justify-between text-[10px] font-black text-slate-950 mb-4 uppercase tracking-[0.3em]">
           <span>Skenario {step} / {PSYCHO_QUESTIONS.length}</span>
           <span>{Math.round(progress)}% SELESAI</span>
         </div>
@@ -826,8 +825,8 @@ function AssessmentForm({ seats, onComplete }: { seats: Record<string, Seat>, on
           exit={{ opacity: 0, x: -50 }}
           transition={{ duration: 0.4, ease: "easeOut" }}
         >
-          <Card className="p-12 bg-white shadow-2xl">
-            <h3 className="text-2xl font-black text-slate-900 mb-10 leading-snug tracking-tight">
+          <Card className="p-12 bg-white dark:bg-slate-900/90 border border-black dark:border-slate-800 aksana-glass">
+            <h3 className="text-2xl font-black text-black dark:text-white mb-10 leading-snug tracking-tight">
               {currentQ.question}
             </h3>
             
@@ -840,13 +839,13 @@ function AssessmentForm({ seats, onComplete }: { seats: Record<string, Seat>, on
                     onClick={() => handleAnswer(currentQ.id, opt.trait)}
                     className={`w-full text-left p-6 rounded-[2rem] border-2 transition-all duration-300 group relative overflow-hidden ${
                       isSelected 
-                        ? 'bg-indigo-600 border-indigo-600 text-white shadow-2xl shadow-indigo-200 scale-[1.02]' 
-                        : 'bg-white border-slate-50 hover:border-indigo-100 hover:bg-slate-50/50 text-slate-700'
+                        ? 'bg-black border-black text-white shadow-2xl scale-[1.02]' 
+                        : 'bg-white border-black hover:border-indigo-100 hover:bg-slate-100/50 text-black dark:text-white'
                     }`}
                   >
                     <div className="flex items-center gap-6 relative z-10">
-                      <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${isSelected ? 'border-white/40 bg-white/20' : 'border-slate-200 group-hover:border-indigo-300'}`}>
-                        {isSelected && <div className="w-3 h-3 bg-white rounded-full" />}
+                      <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${isSelected ? 'border-white/40 bg-white/20' : 'border-black dark:border-slate-800 group-hover:border-indigo-300'}`}>
+                        {isSelected && <div className="w-3 h-3 bg-white rounded-full border border-black aksana-glass" />}
                       </div>
                       <span className="text-base font-bold leading-relaxed">{opt.text}</span>
                     </div>

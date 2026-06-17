@@ -71,10 +71,10 @@ export default function LayananPage() {
   return (
     <div className="max-w-7xl mx-auto px-8 py-20 md:py-24 min-h-screen font-[family-name:var(--font-inter)]">
       <div className="max-w-3xl mb-24 space-y-6">
-        <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-slate-900 dark:text-slate-50 leading-tight font-[family-name:var(--font-plus-jakarta)]">
-          Solusi Terintegrasi untuk Bisnis yang <span className="text-slate-400 dark:text-slate-500 italic">Lebih Berdaya</span>
+        <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-slate-950 dark:text-slate-50 leading-tight font-[family-name:var(--font-plus-jakarta)]">
+          Solusi Terintegrasi untuk Bisnis yang <span className="text-slate-700 dark:text-slate-700 italic">Lebih Berdaya</span>
         </h1>
-        <p className="text-slate-500 dark:text-slate-400 text-lg md:text-xl leading-relaxed font-medium">
+        <p className="text-slate-700 dark:text-slate-400 text-lg md:text-xl leading-relaxed font-normal">
           Kami menghadirkan layanan yang menggabungkan presisi teknologi dengan pemahaman mendalam atas tantangan nyata pengusaha. Bukan sekadar digitalisasi, melainkan penyelarasan sistem untuk pertumbuhan yang berkelanjutan.
         </p>
       </div>
@@ -86,24 +86,24 @@ export default function LayananPage() {
             whileHover={{ y: -5 }}
             transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
             onClick={() => setSelectedService(service)}
-            className="group cursor-pointer p-10 rounded-[2rem] bg-white/70 dark:bg-slate-900/40 aksana-glass shadow-sm space-y-6 relative overflow-hidden"
+            className="group cursor-pointer p-10 rounded-[2rem] bg-white/90 dark:bg-slate-900/40 aksana-glass shadow-sm border border-slate-200 dark:border-white/10 space-y-6 relative overflow-hidden"
           >
-            <div className="w-14 h-14 rounded-2xl bg-slate-50 dark:bg-slate-800/50 flex items-center justify-center text-slate-500 group-hover:scale-110 group-hover:bg-slate-900 group-hover:text-slate-50 dark:group-hover:bg-slate-50 dark:group-hover:text-slate-900 transition-all duration-500">
+            <div className="w-14 h-14 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-950 group-hover:scale-110 group-hover:bg-slate-900 group-hover:text-slate-50 dark:group-hover:bg-slate-50 dark:group-hover:text-slate-950 transition-all duration-500 shadow-sm">
               {service.icon}
             </div>
             <div className="space-y-3">
               <p className="text-xs font-bold tracking-[0.2em] text-amber-600 dark:text-amber-400 uppercase font-[family-name:var(--font-plus-jakarta)]">
                 {service.tagline}
               </p>
-              <h3 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-50 font-[family-name:var(--font-plus-jakarta)]">
+              <h3 className="text-2xl font-bold tracking-tight text-slate-950 dark:text-slate-50 font-[family-name:var(--font-plus-jakarta)]">
                 {service.title}
               </h3>
-              <p className="text-slate-500 dark:text-slate-400 leading-relaxed text-sm font-medium">
+              <p className="text-slate-700 dark:text-slate-400 leading-relaxed text-sm font-normal">
                 {service.perumpamaan}
               </p>
             </div>
             
-            <div className="pt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center gap-2 text-slate-900 dark:text-slate-50 font-bold text-xs tracking-wider">
+            <div className="pt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center gap-2 text-slate-950 dark:text-slate-50 font-bold text-xs tracking-wider">
               LIHAT DETAIL <ArrowRight size={14} />
             </div>
           </motion.div>
@@ -125,41 +125,41 @@ export default function LayananPage() {
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="max-w-2xl w-[90%] bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 md:p-12 shadow-2xl relative z-10 overflow-hidden"
+              className="max-w-2xl w-[90%] bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-[2.5rem] p-8 md:p-12 relative z-10 border border-slate-200 dark:border-slate-800 shadow-sm"
             >
               <button 
                 onClick={() => setSelectedService(null)}
-                className="absolute top-8 right-8 text-slate-400 hover:text-slate-900 dark:hover:text-slate-50 transition-colors"
+                className="absolute top-8 right-8 text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-slate-50 transition-colors"
               >
                 <X size={24} />
               </button>
 
               <div className="space-y-8">
                 <div className="space-y-4">
-                  <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800/50 flex items-center justify-center text-slate-900 dark:text-slate-50">
+                  <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800/50 flex items-center justify-center text-slate-950 dark:text-slate-50">
                     {selectedService.icon}
                   </div>
                   <div>
                     <p className="text-sm font-bold tracking-[0.2em] text-amber-600 dark:text-amber-400 uppercase font-[family-name:var(--font-plus-jakarta)] mb-1">
                       {selectedService.tagline}
                     </p>
-                    <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-slate-50 font-[family-name:var(--font-plus-jakarta)]">
+                    <h2 className="text-3xl md:text-4xl font-bold text-slate-950 dark:text-slate-50 font-[family-name:var(--font-plus-jakarta)]">
                       {selectedService.title}
                     </h2>
                   </div>
                 </div>
 
-                <div className="p-6 md:p-8 rounded-3xl bg-amber-50/50 dark:bg-amber-900/10 border border-amber-200/30 space-y-3">
+                <div className="p-6 md:p-8 rounded-3xl bg-amber-50/30 dark:bg-amber-900/10 border border-amber-200/50 space-y-3 shadow-sm">
                   <p className="text-[10px] font-bold tracking-[0.3em] text-amber-600/70 dark:text-amber-400/70 uppercase">
                     PERUMPAMAAN
                   </p>
-                  <p className="text-lg md:text-xl text-slate-800 dark:text-slate-200 font-medium leading-relaxed italic">
+                  <p className="text-lg md:text-xl text-slate-700 dark:text-slate-200 font-semibold leading-relaxed italic">
                     &ldquo;{selectedService.perumpamaan}&rdquo;
                   </p>
                 </div>
 
                 <div className="space-y-4">
-                  <p className="text-slate-500 dark:text-slate-400 text-lg leading-relaxed font-medium">
+                  <p className="text-slate-700 dark:text-slate-400 text-lg leading-relaxed font-normal">
                     {selectedService.penjelasan}
                   </p>
                 </div>
@@ -168,7 +168,7 @@ export default function LayananPage() {
                   whileHover={{ scale: 1.01 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => handleConsultation(selectedService.title)}
-                  className="w-full bg-slate-900 dark:bg-slate-50 text-white dark:text-slate-900 py-5 rounded-2xl font-bold flex items-center justify-center gap-3 group hover:bg-slate-800 dark:hover:bg-slate-200 transition-all duration-300 cursor-pointer"
+                  className="w-full bg-slate-900 dark:bg-slate-50 text-white dark:text-slate-950 py-5 rounded-2xl font-bold flex items-center justify-center gap-3 group hover:bg-slate-800 dark:hover:bg-slate-200 transition-all duration-300 cursor-pointer shadow-lg"
                 >
                   Konsultasikan Masalah Ini <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
                 </motion.button>

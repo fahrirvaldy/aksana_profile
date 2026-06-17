@@ -9,14 +9,14 @@ import {
   Loader2,
   Info
 } from "lucide-react";
-import { motion } from "framer-motion";
-import {
+import { 
   Chart as ChartJS,
   ArcElement,
   Tooltip,
   Legend,
 } from 'chart.js';
 import { Doughnut } from 'react-chartjs-2';
+import { useTranslations } from 'next-intl';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -38,6 +38,8 @@ interface CacLtvCalculatorProps {
 }
 
 export default function CacLtvCalculator({ onSave, isSyncing, initialData }: CacLtvCalculatorProps) {
+  const t = useTranslations("Tools.CacLtv");
+  
   // --- States ---
   const [adSpend, setAdSpend] = useState<number>(0);
   const [opsCost, setOpsCost] = useState<number>(0);
@@ -125,9 +127,9 @@ export default function CacLtvCalculator({ onSave, isSyncing, initialData }: Cac
   };
 
   const getAiRecommendation = () => {
-    if (ratio < 1) return { text: "Bakar Uang! CAC lebih tinggi dari nilai pelanggan. Segera audit iklan Anda.", color: "text-rose-500", bg: "bg-rose-500/10" };
-    if (ratio < 3) return { text: "Operasional Sehat, tapi butuh efisiensi lebih untuk growth agresif.", color: "text-amber-500", bg: "bg-amber-500/10" };
-    return { text: "Skalakan Iklan! ROI Anda luar biasa. Waktunya injek modal lebih besar.", color: "text-emerald-500", bg: "bg-emerald-500/10" };
+    if (ratio < 1) return { text: t("burnMoney"), color: "text-rose-500", bg: "bg-rose-500/10" };
+    if (ratio < 3) return { text: t("healthyOps"), color: "text-amber-500", bg: "bg-amber-500/10" };
+    return { text: t("scaleAds"), color: "text-emerald-500", bg: "bg-emerald-500/10" };
   };
 
   const recommendation = getAiRecommendation();
@@ -140,113 +142,113 @@ export default function CacLtvCalculator({ onSave, isSyncing, initialData }: Cac
         <div className="lg:col-span-5 space-y-8">
           
           {/* Card 1: Parameter Iklan (CAC) */}
-          <div className="p-8 rounded-[2rem] bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 shadow-sm space-y-6">
+          <div className="p-8 bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm space-y-6 aksana-glass">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-blue-500/10 rounded-xl text-blue-500">
                 <Megaphone size={20} />
               </div>
-              <h3 className="font-black uppercase tracking-widest text-xs dark:text-slate-200">Biaya Akuisisi (CAC)</h3>
+              <h3 className="font-black uppercase tracking-widest text-xs text-slate-600 dark:text-slate-300">{t("title")}</h3>
             </div>
             
             <div className="space-y-4">
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Anggaran Iklan (Monthly)</label>
+                <label className="text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-300 ml-1">{t("adSpend")}</label>
                 <div className="relative">
-                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs font-bold">Rp</span>
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600 dark:text-slate-300 text-xs font-bold">Rp</span>
                   <input
                     type="number"
                     value={adSpend || ""}
                     onChange={(e) => setAdSpend(Number(e.target.value))}
                     placeholder="0"
-                    className="w-full pl-12 pr-4 py-4 rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 focus:border-blue-500 outline-none transition-all font-medium text-sm"
+                    className="w-full pl-12 pr-4 py-4 rounded-2xl bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 focus:border-blue-500 outline-none transition-all font-medium text-sm placeholder-slate-400 dark:placeholder-slate-500"
                   />
                 </div>
               </div>
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Biaya Ops Iklan (Gaji/Agency)</label>
+                <label className="text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-300 ml-1">{t("opsCost")}</label>
                 <div className="relative">
-                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs font-bold">Rp</span>
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600 dark:text-slate-300 text-xs font-bold">Rp</span>
                   <input
                     type="number"
                     value={opsCost || ""}
                     onChange={(e) => setOpsCost(Number(e.target.value))}
                     placeholder="0"
-                    className="w-full pl-12 pr-4 py-4 rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 focus:border-blue-500 outline-none transition-all font-medium text-sm"
+                    className="w-full pl-12 pr-4 py-4 rounded-2xl bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 focus:border-blue-500 outline-none transition-all font-medium text-sm placeholder-slate-400 dark:placeholder-slate-500"
                   />
                 </div>
               </div>
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Jumlah Pelanggan Baru</label>
+                <label className="text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-300 ml-1">{t("newCustomers")}</label>
                 <input
                   type="number"
                   value={newCustomers || ""}
                   onChange={(e) => setNewCustomers(Number(e.target.value))}
                   placeholder="0"
-                  className="w-full px-6 py-4 rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 focus:border-blue-500 outline-none transition-all font-medium text-sm"
+                  className="w-full px-6 py-4 rounded-2xl bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 focus:border-blue-500 outline-none transition-all font-medium text-sm placeholder-slate-400 dark:placeholder-slate-500"
                 />
               </div>
             </div>
 
-            <div className="pt-6 border-t border-slate-50 dark:border-slate-700 flex justify-between items-center">
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">CAC Hasil:</span>
+            <div className="pt-6 border-t border-slate-100 dark:border-slate-700 flex justify-between items-center shadow-sm">
+              <span className="text-[10px] font-bold text-slate-600 dark:text-slate-300 uppercase tracking-widest">{t("cacResult")}</span>
               <span className="text-lg font-black text-blue-500">{formatCurrency(cac)}</span>
             </div>
           </div>
 
           {/* Card 2: Potensi Pelanggan (LTV) */}
-          <div className="p-8 rounded-[2rem] bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 shadow-sm space-y-6">
+          <div className="p-8 bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm space-y-6 aksana-glass">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-emerald-500/10 rounded-xl text-emerald-500">
                 <Wallet size={20} />
               </div>
-              <h3 className="font-black uppercase tracking-widest text-xs dark:text-slate-200">Lifetime Value (LTV)</h3>
+              <h3 className="font-black uppercase tracking-widest text-xs text-slate-600 dark:text-slate-300">{t("ltvTitle")}</h3>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">AOV (Rata-rata Order)</label>
+                <label className="text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-300 ml-1">{t("aov")}</label>
                 <input
                   type="number"
                   value={aov || ""}
                   onChange={(e) => setAov(Number(e.target.value))}
-                  placeholder="Rp"
-                  className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 focus:border-emerald-500 outline-none transition-all text-sm font-medium"
+                  placeholder={t("placeholders.aov")}
+                  className="w-full px-4 py-3 rounded-xl bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 focus:border-emerald-500 outline-none transition-all text-sm font-medium placeholder-slate-400 dark:placeholder-slate-500"
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Frekuensi (Bulan)</label>
+                <label className="text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-300 ml-1">{t("frequency")}</label>
                 <input
                   type="number"
                   value={frequency || ""}
                   onChange={(e) => setFrequency(Number(e.target.value))}
-                  placeholder="Berapa kali beli/bln"
-                  className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 focus:border-emerald-500 outline-none transition-all text-sm font-medium"
+                  placeholder={t("placeholders.frequency")}
+                  className="w-full px-4 py-3 rounded-xl bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 focus:border-emerald-500 outline-none transition-all text-sm font-medium placeholder-slate-400 dark:placeholder-slate-500"
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Lifespan (Bulan)</label>
+                <label className="text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-300 ml-1">{t("lifespan")}</label>
                 <input
                   type="number"
                   value={lifespan || ""}
                   onChange={(e) => setLifespan(Number(e.target.value))}
-                  placeholder="Berapa bln setia"
-                  className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 focus:border-emerald-500 outline-none transition-all text-sm font-medium"
+                  placeholder={t("placeholders.lifespan")}
+                  className="w-full px-4 py-3 rounded-xl bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 focus:border-emerald-500 outline-none transition-all text-sm font-medium placeholder-slate-400 dark:placeholder-slate-500"
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Margin (%)</label>
+                <label className="text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-300 ml-1">{t("margin")}</label>
                 <input
                   type="number"
                   value={margin || ""}
                   onChange={(e) => setMargin(Number(e.target.value))}
                   placeholder="0%"
-                  className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 focus:border-emerald-500 outline-none transition-all text-sm font-medium"
+                  className="w-full px-4 py-3 rounded-xl bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 focus:border-emerald-500 outline-none transition-all text-sm font-medium placeholder-slate-400 dark:placeholder-slate-500"
                 />
               </div>
             </div>
 
-            <div className="pt-6 border-t border-slate-50 dark:border-slate-700 flex justify-between items-center">
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">LTV Hasil:</span>
+            <div className="pt-6 border-t border-slate-100 dark:border-slate-700 flex justify-between items-center shadow-sm">
+              <span className="text-[10px] font-bold text-slate-600 dark:text-slate-300 uppercase tracking-widest">{t("ltvResult")}</span>
               <span className="text-lg font-black text-emerald-500">{formatCurrency(ltv)}</span>
             </div>
           </div>
@@ -254,11 +256,11 @@ export default function CacLtvCalculator({ onSave, isSyncing, initialData }: Cac
 
         {/* Kolom Kanan: Hasil & Analisis */}
         <div className="lg:col-span-7 space-y-8">
-          <div className="p-10 lg:p-16 rounded-[3rem] bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-2xl space-y-12 relative overflow-hidden h-full flex flex-col justify-center">
+          <div className="p-10 lg:p-16 bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl space-y-12 relative overflow-hidden h-full flex flex-col justify-center aksana-glass shadow-sm">
             
             <div className="space-y-2 text-center">
-              <h2 className="text-3xl font-black dark:text-white uppercase">Marketing Health Ratio</h2>
-              <p className="text-slate-500 font-medium italic">LTV : CAC Performance Analysis</p>
+              <h2 className="text-3xl font-black text-black dark:text-white uppercase">{t("healthRatio")}</h2>
+              <p className="text-slate-600 dark:text-slate-300 font-normal italic">{t("analysis")}</p>
             </div>
 
             <div className="relative h-64 flex items-center justify-center">
@@ -269,17 +271,17 @@ export default function CacLtvCalculator({ onSave, isSyncing, initialData }: Cac
                 <span className={`text-6xl font-black ${ratio < 1 ? "text-rose-500" : ratio <= 3 ? "text-amber-500" : "text-emerald-500"}`}>
                   {ratio}x
                 </span>
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-2">LTV / CAC RATIO</p>
+                <p className="text-[10px] font-bold text-slate-600 dark:text-slate-300 uppercase tracking-widest mt-2">{t("ratioLabel")}</p>
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-6">
-              <div className="p-6 rounded-[2rem] bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 space-y-1">
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Total CAC</p>
+              <div className="p-6 bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl space-y-1 shadow-sm">
+                <p className="text-[10px] font-bold text-slate-600 dark:text-slate-300 uppercase tracking-[0.2em]">{t("totalCac")}</p>
                 <p className="text-xl font-black text-blue-500">{formatCurrency(cac)}</p>
               </div>
-              <div className="p-6 rounded-[2rem] bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 space-y-1">
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Net LTV</p>
+              <div className="p-6 bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl space-y-1 shadow-sm">
+                <p className="text-[10px] font-bold text-slate-600 dark:text-slate-300 uppercase tracking-[0.2em]">{t("netLtv")}</p>
                 <p className="text-xl font-black text-emerald-500">{formatCurrency(ltv)}</p>
               </div>
             </div>
@@ -287,22 +289,22 @@ export default function CacLtvCalculator({ onSave, isSyncing, initialData }: Cac
             <div className={`p-8 rounded-[2rem] border-2 ${recommendation.bg} border-white/20 dark:border-white/5 space-y-4`}>
               <div className="flex items-center gap-3">
                 <BrainCircuit className={recommendation.color} size={24} />
-                <h4 className={`text-xs font-black uppercase tracking-widest ${recommendation.color}`}>Rekomendasi Aksana AI</h4>
+                <h4 className={`text-xs font-black uppercase tracking-widest ${recommendation.color}`}>{t("aiRecommendation")}</h4>
               </div>
-              <p className="text-lg font-bold dark:text-slate-200 leading-relaxed">
+              <p className="text-lg font-bold text-black dark:text-slate-200 leading-relaxed">
                 {recommendation.text}
               </p>
             </div>
 
             <div className="flex items-center justify-between pt-6">
-              <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400">
+              <div className="flex items-center gap-2 text-[10px] font-bold text-slate-600 dark:text-slate-300">
                 <TrendingUp size={14} className="text-emerald-500" />
-                Dihitung secara real-time
+                {t("realtime")}
               </div>
               {isSyncing && (
                 <div className="flex items-center gap-2 text-[10px] font-bold text-blue-500 animate-pulse">
                   <Loader2 size={12} className="animate-spin" />
-                  MENYINKRONKAN...
+                  {t("syncing")}
                 </div>
               )}
             </div>
@@ -313,16 +315,16 @@ export default function CacLtvCalculator({ onSave, isSyncing, initialData }: Cac
       </div>
       
       {/* Help Section */}
-      <div className="mt-12 p-8 rounded-[2rem] bg-slate-900 text-slate-400 text-xs leading-relaxed flex gap-6 items-start">
-        <div className="p-3 bg-white/5 rounded-2xl shrink-0">
-          <Info size={24} className="text-slate-500" />
+      <div className="mt-12 p-8 bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl text-slate-600 dark:text-slate-300 text-xs leading-relaxed flex gap-6 items-start">
+        <div className="p-3 bg-slate-900 dark:bg-white/5 rounded-2xl shrink-0">
+          <Info size={24} className="text-white dark:text-slate-950" />
         </div>
         <div className="space-y-4">
-          <p><strong className="text-slate-100">Apa itu Rasio LTV:CAC?</strong> Metrik ini mengukur hubungan antara nilai yang diberikan pelanggan selama masa hidup mereka dan biaya yang dikeluarkan untuk mendapatkan mereka. Rasio ideal untuk bisnis growth adalah 3:1 atau lebih tinggi.</p>
+          <p><strong className="text-black dark:text-slate-100">{t("whatIsLtvCac")}</strong> {t("ltvCacDescription")}</p>
           <ul className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <li><span className="text-rose-500 font-bold">&lt; 1:1</span> Bisnis merugi setiap kali mendapatkan pelanggan baru.</li>
-            <li><span className="text-amber-500 font-bold">1:1 - 3:1</span> Bisnis stabil, namun margin tipis untuk reinvestasi.</li>
-            <li><span className="text-emerald-500 font-bold">&gt; 3:1</span> Bisnis sangat sehat. Skalakan marketing budget Anda.</li>
+            <li><span className="text-rose-500 font-bold">&lt; 1:1</span> {t("loss")}</li>
+            <li><span className="text-amber-500 font-bold">1:1 - 3:1</span> {t("stable")}</li>
+            <li><span className="text-emerald-500 font-bold">&gt; 3:1</span> {t("veryHealthy")}</li>
           </ul>
         </div>
       </div>
