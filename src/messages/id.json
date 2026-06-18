@@ -292,6 +292,8 @@
           "subtitle": "Kehadiran & Kabar Baik (5 Menit)",
           "attendance": "Daftar Hadir",
           "goodNews": "Kabar Baik",
+          "owner": "Owner",
+          "integrator": "Integrator",
           "placeholder": "Kabar baik dari {pic}..."
         },
         "scorecard": {

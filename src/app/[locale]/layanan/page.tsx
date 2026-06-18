@@ -69,7 +69,7 @@ export default function LayananPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-8 py-20 md:py-24 min-h-screen font-[family-name:var(--font-inter)]">
+    <div className="max-w-7xl mx-auto px-8 pt-4 pb-20 md:pb-24 min-h-screen font-[family-name:var(--font-inter)]">
       <div className="max-w-3xl mb-24 space-y-6">
         <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-slate-950 dark:text-slate-50 leading-tight font-[family-name:var(--font-plus-jakarta)]">
           Solusi Terintegrasi untuk Bisnis yang <span className="text-slate-700 dark:text-slate-700 italic">Lebih Berdaya</span>

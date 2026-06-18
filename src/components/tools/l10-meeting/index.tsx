@@ -91,6 +91,43 @@ interface L10MeetingProps {
   initialData?: L10Data;
 }
 
+// --- Components ---
+const AutoResizeTextarea = ({ 
+  value, 
+  onChange, 
+  placeholder, 
+  className 
+}: { 
+  value: string; 
+  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void; 
+  placeholder?: string; 
+  className?: string;
+}) => {
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const adjustHeight = () => {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      textarea.style.height = 'auto';
+      textarea.style.height = `${textarea.scrollHeight}px`;
+    }
+  };
+
+  useEffect(() => {
+    adjustHeight();
+  }, [value]);
+
+  return (
+    <textarea
+      ref={textareaRef}
+      value={value}
+      onChange={onChange}
+      placeholder={placeholder}
+      className={`${className} resize-none overflow-hidden`}
+    />
+  );
+};
+
 // --- Default Data ---
 const DEFAULT_DATA: L10Data = {
   config: {
@@ -703,11 +740,11 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
               {['owner', 'integrator', 'team'].map((pic) => (
                 <div key={pic} className="space-y-1">
                   <label className="text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-300 px-1">{pic}</label>
-                  <textarea 
+                  <AutoResizeTextarea 
                     value={data.goodNews[pic as keyof typeof data.goodNews]}
                     onChange={(e) => updateData(`goodNews.${pic}`, e.target.value)}
                     placeholder={`Kabar baik dari ${pic}...`}
-                    className="w-full p-4 rounded-xl bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 focus:ring-2 focus:ring-emerald-500 outline-none h-20 resize-none font-medium text-sm transition-shadow placeholder-slate-400 dark:placeholder-slate-500"
+                    className="w-full p-4 rounded-xl bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 focus:ring-2 focus:ring-emerald-500 outline-none min-h-[5rem] font-medium text-sm transition-shadow placeholder-slate-400 dark:placeholder-slate-500"
                   />
                 </div>
               ))}
@@ -850,7 +887,7 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
                 {(data.headlines[type as keyof typeof data.headlines] || []).map((h, i) => (
                   <div key={i} className="flex gap-3 items-center group bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 p-3 rounded-xl focus-within:ring-2 focus-within:ring-blue-500/20 shadow-sm">
                     <span className="text-sm font-black text-slate-600 dark:text-slate-300 w-4">{i + 1}.</span>
-                    <input type="text" value={h} onChange={(e) => {
+                    <AutoResizeTextarea value={h} onChange={(e) => {
                       const newH = [...data.headlines[type as keyof typeof data.headlines]]; newH[i] = e.target.value; updateData(`headlines.${type}`, newH);
                     }} placeholder="Masukkan berita..." className="flex-1 bg-transparent border-none focus:ring-0 p-0 text-sm font-semibold text-black dark:text-[#EEEEEE] placeholder-slate-400 dark:placeholder-slate-500" />
                     <button onClick={() => {
@@ -880,7 +917,7 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
                   const newList = [...data.todoList]; newList[i].isDone = !todo.isDone; updateData('todoList', newList);
                 }} className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 transition-colors ${todo.isDone ? 'bg-emerald-500 text-white' : 'bg-white dark:bg-[#1E1E1E] border-2 border-slate-200 dark:border-slate-800'}`}>{todo.isDone && <CheckCircle2 size={18} />}</button>
                 <div className="flex-1 min-w-0 space-y-0.5">
-                  <input type="text" value={todo.text} onChange={(e) => {
+                  <AutoResizeTextarea value={todo.text} onChange={(e) => {
                     const newList = [...data.todoList]; newList[i].text = e.target.value; updateData('todoList', newList);
                   }} placeholder="Apa tugasnya?" className={`bg-transparent border-none focus:ring-0 w-full font-bold text-base p-0 text-black dark:text-[#EEEEEE] placeholder-slate-400 dark:placeholder-slate-500 ${todo.isDone ? 'line-through opacity-40' : ''}`} />
                   <div className="flex items-center gap-1.5"><span className="text-[9px] font-black text-slate-600 dark:text-slate-300 uppercase tracking-widest">Owner:</span>
@@ -917,7 +954,7 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
                 <div key={issue.id} className={`flex items-start gap-3 p-4 rounded-2xl group border transition-all ${issue.isResolved ? 'bg-slate-50 dark:bg-slate-800/20 border-slate-200 dark:border-slate-800 opacity-50' : 'bg-white dark:bg-[#1E1E1E] border-slate-200 dark:border-slate-800 shadow-sm'}`}>
                   <input type="checkbox" checked={issue.isResolved} onChange={(e) => handleIssueCheck(i, e.target.checked)} className="mt-1.5 w-5 h-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer" />
                   <div className="flex-1 min-w-0 space-y-1"><span className="inline-block px-2.5 py-1 rounded-lg text-[10px] bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 font-extrabold uppercase tracking-widest shadow-sm">{issue.source}</span>
-                    <input type="text" value={issue.text} onChange={(e) => {
+                    <AutoResizeTextarea value={issue.text} onChange={(e) => {
                       const newI = [...(data.idsSession?.issues || [])]; newI[i].text = e.target.value; updateData('idsSession.issues', newI);
                     }} className={`bg-transparent border-none focus:ring-0 w-full p-0 text-sm font-bold text-black dark:text-[#EEEEEE] transition-all ${issue.isResolved ? 'line-through font-medium' : ''}`} />
                   </div>
@@ -931,11 +968,11 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
           </div>
           <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col shadow-sm">
             <h3 className="text-base font-black border-b border-slate-200 dark:border-slate-800 pb-4 text-emerald-500 uppercase tracking-wider flex-shrink-0 shadow-sm">2. Discuss (Notes)</h3>
-            <textarea value={data.idsSession.notes} onChange={(e) => updateData('idsSession.notes', e.target.value)} placeholder="Tulis catatan diskusi penting di sini..." className="flex-1 bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 p-4 rounded-xl mt-5 focus:ring-2 focus:ring-emerald-500 outline-none text-base font-medium leading-relaxed resize-none custom-scrollbar placeholder-slate-400 dark:placeholder-slate-500" />
+            <AutoResizeTextarea value={data.idsSession.notes} onChange={(e) => updateData('idsSession.notes', e.target.value)} placeholder="Tulis catatan diskusi penting di sini..." className="flex-1 bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 p-4 rounded-xl mt-5 focus:ring-2 focus:ring-emerald-500 outline-none text-base font-medium leading-relaxed custom-scrollbar placeholder-slate-400 dark:placeholder-slate-500" />
           </div>
           <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col shadow-sm">
             <h3 className="text-base font-black border-b border-slate-200 dark:border-slate-800 pb-4 text-purple-500 uppercase tracking-wider flex-shrink-0 shadow-sm">3. Solve (Action Items)</h3>
-            <textarea value={data.idsSession.solutions} onChange={(e) => updateData('idsSession.solutions', e.target.value)} placeholder="Apa solusi finalnya? Masukkan ke To-Do List jika perlu..." className="flex-1 bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 p-4 rounded-xl mt-5 focus:ring-2 focus:ring-purple-500 outline-none text-base font-bold leading-relaxed resize-none custom-scrollbar placeholder-slate-400 dark:placeholder-slate-500" />
+            <AutoResizeTextarea value={data.idsSession.solutions} onChange={(e) => updateData('idsSession.solutions', e.target.value)} placeholder="Apa solusi finalnya? Masukkan ke To-Do List jika perlu..." className="flex-1 bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 p-4 rounded-xl mt-5 focus:ring-2 focus:ring-purple-500 outline-none text-base font-bold leading-relaxed custom-scrollbar placeholder-slate-400 dark:placeholder-slate-500" />
           </div>
         </div>
       </div>
@@ -1092,7 +1129,7 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
                     <div className="space-y-3 max-h-[220px] overflow-y-auto custom-scrollbar pr-1">
                       {data.config.rocks.map((rock, i) => (
                         <div key={i} className="flex gap-3 group">
-                          <input type="text" value={rock} onChange={(e) => {
+                          <AutoResizeTextarea value={rock} onChange={(e) => {
                             const newRocks = [...data.config.rocks]; newRocks[i] = e.target.value; updateData('config.rocks', newRocks);
                           }} className="flex-1 px-5 py-3 rounded-xl bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 focus:ring-4 focus:ring-blue-500/10 text-sm font-bold outline-none transition-all placeholder-slate-400 dark:placeholder-slate-500" />
                           <button onClick={() => updateData('config.rocks', data.config.rocks.filter((_, idx) => idx !== i))} className="p-3 text-rose-500 hover:bg-rose-500/10 rounded-xl transition-all opacity-0 group-hover:opacity-100"><Trash2 size={18}/></button>

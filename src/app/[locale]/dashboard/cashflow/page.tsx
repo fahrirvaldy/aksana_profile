@@ -121,7 +121,7 @@ export default function CashflowPage() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-8 py-12">
+    <div className="max-w-5xl mx-auto px-8 pt-4 pb-12">
       <Link href="/tools" className="inline-flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-slate-50 transition-colors mb-8 group">
         <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
         Kembali ke Katalog

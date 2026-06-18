@@ -94,7 +94,7 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-8 py-12 font-inter">
+    <div className="max-w-7xl mx-auto px-8 pt-4 pb-12 font-inter">
       {/* Navigation & Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
         <div className="space-y-2">

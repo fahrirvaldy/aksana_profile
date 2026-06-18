@@ -233,7 +233,7 @@ export default function ToolsPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-8 py-20 min-h-screen font-[family-name:var(--font-inter)]">
+    <div className="max-w-7xl mx-auto px-8 pt-4 pb-20 min-h-screen font-[family-name:var(--font-inter)]">
       <div className={`mb-16 space-y-4 relative transition-all duration-500 ${activeTool ? 'opacity-0 h-0 overflow-hidden mb-0' : 'opacity-100'}`}>
         <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-center font-[family-name:var(--font-plus-jakarta)] text-slate-950 dark:text-slate-50">Tools Katalog</h1>
         <p className="text-slate-700 dark:text-slate-400 text-center max-w-2xl mx-auto text-lg font-normal">

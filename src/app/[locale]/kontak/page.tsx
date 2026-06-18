@@ -52,7 +52,7 @@ export default function KontakPage() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto px-8 py-20">
+    <div className="max-w-3xl mx-auto px-8 pt-4 pb-20">
       <div className="space-y-6 mb-12 text-center">
         <h1 className="text-4xl font-bold tracking-tight text-slate-950 dark:text-slate-50">Hubungi Kami</h1>
         <p className="text-slate-700 dark:text-slate-400 font-normal">

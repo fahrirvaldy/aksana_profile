@@ -292,6 +292,8 @@
           "subtitle": "Attendance & Good News (5 Minutes)",
           "attendance": "Attendance List",
           "goodNews": "Good News",
+          "owner": "Owner",
+          "integrator": "Integrator",
           "placeholder": "Good news from {pic}..."
         },
         "scorecard": {
