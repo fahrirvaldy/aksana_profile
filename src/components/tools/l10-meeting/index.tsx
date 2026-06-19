@@ -885,7 +885,7 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
                           className="bg-transparent text-black dark:text-[#EEEEEE] focus:ring-0 w-full font-bold text-sm p-0 border-none placeholder-slate-400 dark:placeholder-slate-500" 
                         />
                       </td>
-                      <td className="p-3 font-bold text-sm text-black dark:text-[#EEEEEE] max-w-xs">{rock}</td>
+                      <td className="p-3 font-bold text-sm text-black dark:text-[#EEEEEE] whitespace-normal break-words leading-relaxed">{rock}</td>
                       <td className="p-3 text-center">
                         <button onClick={() => {
                           const newStatus = [...data.rocksStatus]; if(!newStatus[i]) newStatus[i] = {pic: "", status: "on", notes: ""};
@@ -1176,7 +1176,7 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
                         <div key={i} className="flex gap-3 group">
                           <AutoResizeTextarea value={rock} onChange={(e) => {
                             const newRocks = [...data.config.rocks]; newRocks[i] = e.target.value; updateData('config.rocks', newRocks);
-                          }} className="flex-1 px-5 py-3 rounded-xl bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 focus:ring-4 focus:ring-blue-500/10 text-sm font-bold outline-none transition-all placeholder-slate-400 dark:placeholder-slate-500" />
+                          }} className="flex-1 px-5 py-3 rounded-xl bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 focus:ring-4 focus:ring-blue-500/10 text-sm font-bold outline-none transition-all placeholder-slate-400 dark:placeholder-slate-500 whitespace-normal break-words leading-relaxed" />
                           <button onClick={() => updateData('config.rocks', data.config.rocks.filter((_, idx) => idx !== i))} className="p-3 text-rose-500 hover:bg-rose-500/10 rounded-xl transition-all opacity-0 group-hover:opacity-100"><Trash2 size={18}/></button>
                         </div>
                       ))}
