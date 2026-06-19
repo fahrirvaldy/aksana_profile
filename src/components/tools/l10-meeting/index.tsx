@@ -96,12 +96,18 @@ const AutoResizeTextarea = ({
   value, 
   onChange, 
   placeholder, 
-  className 
+  className,
+  rows = 1,
+  onBlur,
+  disabled
 }: { 
   value: string; 
   onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void; 
   placeholder?: string; 
   className?: string;
+  rows?: number;
+  onBlur?: (e: React.FocusEvent<HTMLTextAreaElement>) => void;
+  disabled?: boolean;
 }) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -122,8 +128,11 @@ const AutoResizeTextarea = ({
       ref={textareaRef}
       value={value}
       onChange={onChange}
+      onBlur={onBlur}
       placeholder={placeholder}
-      className={`${className} resize-none overflow-hidden`}
+      rows={rows}
+      disabled={disabled}
+      className={`${className} resize-none overflow-hidden w-full`}
     />
   );
 };
@@ -699,11 +708,10 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
         
         <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 max-w-md w-full shadow-sm">
           <p className="text-[10px] font-bold text-slate-600 dark:text-slate-300 uppercase tracking-widest mb-2">Tanggal Rapat Efektif</p>
-          <input 
-            type="text" 
+          <AutoResizeTextarea 
             value={data.meetingDate}
             onChange={(e) => updateData('meetingDate', e.target.value)}
-            className="text-2xl font-bold bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 text-center focus:ring-0 outline-none w-full"
+            className="text-2xl font-bold bg-transparent text-black dark:text-[#EEEEEE] text-center focus:ring-0 outline-none w-full p-0 border-none"
           />
         </div>
       </div>
@@ -782,15 +790,33 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
                 <tbody>
                   {kpis.map((k, i) => (
                     <tr key={i} className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl group overflow-hidden shadow-sm">
-                      <td className="p-3"><input type="text" value={k.kpi} onChange={(e) => {
-                        const newKpis = [...kpis]; newKpis[i].kpi = e.target.value; updateData(`scorecards.${divId}`, newKpis);
-                      }} className="bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 focus:ring-0 w-full font-bold text-sm" /></td>
-                      <td className="p-3"><input type="text" value={k.target} onChange={(e) => {
-                        const newKpis = [...kpis]; newKpis[i].target = e.target.value; updateData(`scorecards.${divId}`, newKpis);
-                      }} className="bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 focus:ring-0 w-full font-medium text-sm" /></td>
-                      <td className="p-3"><input type="text" value={k.realisasi} onChange={(e) => {
-                        const newKpis = [...kpis]; newKpis[i].realisasi = e.target.value; updateData(`scorecards.${divId}`, newKpis);
-                      }} className="bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 focus:ring-0 w-full font-mono text-sm text-blue-600 dark:text-blue-400" /></td>
+                      <td className="p-3">
+                        <AutoResizeTextarea 
+                          value={k.kpi} 
+                          onChange={(e) => {
+                            const newKpis = [...kpis]; newKpis[i].kpi = e.target.value; updateData(`scorecards.${divId}`, newKpis);
+                          }} 
+                          className="bg-transparent text-black dark:text-[#EEEEEE] focus:ring-0 w-full font-bold text-sm p-0 border-none" 
+                        />
+                      </td>
+                      <td className="p-3">
+                        <AutoResizeTextarea 
+                          value={k.target} 
+                          onChange={(e) => {
+                            const newKpis = [...kpis]; newKpis[i].target = e.target.value; updateData(`scorecards.${divId}`, newKpis);
+                          }} 
+                          className="bg-transparent text-black dark:text-[#EEEEEE] focus:ring-0 w-full font-medium text-sm p-0 border-none" 
+                        />
+                      </td>
+                      <td className="p-3">
+                        <AutoResizeTextarea 
+                          value={k.realisasi} 
+                          onChange={(e) => {
+                            const newKpis = [...kpis]; newKpis[i].realisasi = e.target.value; updateData(`scorecards.${divId}`, newKpis);
+                          }} 
+                          className="bg-transparent text-black dark:text-[#EEEEEE] focus:ring-0 w-full font-mono text-sm text-blue-600 dark:text-blue-400 p-0 border-none" 
+                        />
+                      </td>
                       <td className="p-3 text-center">
                         <button onClick={() => {
                           const newKpis = [...kpis]; newKpis[i].jenis = k.jenis === 'output' ? 'outcome' : 'output'; updateData(`scorecards.${divId}`, newKpis);
@@ -848,21 +874,35 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
                 <tbody>
                   {rocks.map((rock, i) => (
                     <tr key={i} className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden group shadow-sm">
-                      <td className="p-3"><input type="text" value={data.rocksStatus[i]?.pic || ""} onChange={(e) => {
-                        const newStatus = [...data.rocksStatus]; if(!newStatus[i]) newStatus[i] = {pic: "", status: "on", notes: ""};
-                        newStatus[i].pic = e.target.value; updateData('rocksStatus', newStatus);
-                      }} placeholder="Nama PIC" className="bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 focus:ring-0 w-full font-bold text-sm placeholder-slate-400 dark:placeholder-slate-500" /></td>
-                      <td className="p-3 font-bold text-sm text-black dark:text-[#EEEEEE] max-w-xs truncate">{rock}</td>
+                      <td className="p-3">
+                        <AutoResizeTextarea 
+                          value={data.rocksStatus[i]?.pic || ""} 
+                          onChange={(e) => {
+                            const newStatus = [...data.rocksStatus]; if(!newStatus[i]) newStatus[i] = {pic: "", status: "on", notes: ""};
+                            newStatus[i].pic = e.target.value; updateData('rocksStatus', newStatus);
+                          }} 
+                          placeholder="Nama PIC" 
+                          className="bg-transparent text-black dark:text-[#EEEEEE] focus:ring-0 w-full font-bold text-sm p-0 border-none placeholder-slate-400 dark:placeholder-slate-500" 
+                        />
+                      </td>
+                      <td className="p-3 font-bold text-sm text-black dark:text-[#EEEEEE] max-w-xs">{rock}</td>
                       <td className="p-3 text-center">
                         <button onClick={() => {
                           const newStatus = [...data.rocksStatus]; if(!newStatus[i]) newStatus[i] = {pic: "", status: "on", notes: ""};
                           newStatus[i].status = newStatus[i].status === 'on' ? 'off' : 'on'; updateData('rocksStatus', newStatus);
                         }} className={`px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${data.rocksStatus[i]?.status === 'off' ? 'bg-rose-500/10 text-rose-600 dark:bg-rose-500/20' : 'bg-emerald-500/10 text-emerald-600 dark:bg-emerald-500/20'}`}>{data.rocksStatus[i]?.status === 'off' ? 'Off Track' : 'On Track'}</button>
                       </td>
-                      <td className="p-3"><input type="text" value={data.rocksStatus[i]?.notes || ""} onChange={(e) => {
-                        const newStatus = [...data.rocksStatus]; if(!newStatus[i]) newStatus[i] = {pic: "", status: "on", notes: ""};
-                        newStatus[i].notes = e.target.value; updateData('rocksStatus', newStatus);
-                      }} placeholder="Update status..." className="bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 focus:ring-0 w-full italic text-sm placeholder-slate-400 dark:placeholder-slate-500" /></td>
+                      <td className="p-3">
+                        <AutoResizeTextarea 
+                          value={data.rocksStatus[i]?.notes || ""} 
+                          onChange={(e) => {
+                            const newStatus = [...data.rocksStatus]; if(!newStatus[i]) newStatus[i] = {pic: "", status: "on", notes: ""};
+                            newStatus[i].notes = e.target.value; updateData('rocksStatus', newStatus);
+                          }} 
+                          placeholder="Update status..." 
+                          className="bg-transparent text-black dark:text-[#EEEEEE] focus:ring-0 w-full italic text-sm p-0 border-none placeholder-slate-400 dark:placeholder-slate-500" 
+                        />
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -921,9 +961,13 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
                     const newList = [...data.todoList]; newList[i].text = e.target.value; updateData('todoList', newList);
                   }} placeholder="Apa tugasnya?" className={`bg-transparent border-none focus:ring-0 w-full font-bold text-base p-0 text-black dark:text-[#EEEEEE] placeholder-slate-400 dark:placeholder-slate-500 ${todo.isDone ? 'line-through opacity-40' : ''}`} />
                   <div className="flex items-center gap-1.5"><span className="text-[9px] font-black text-slate-600 dark:text-slate-300 uppercase tracking-widest">Owner:</span>
-                    <input type="text" value={todo.owner} onChange={(e) => {
-                      const newList = [...data.todoList]; newList[i].owner = e.target.value; updateData('todoList', newList);
-                    }} className="bg-transparent border-none focus:ring-0 text-xs font-bold text-blue-500 p-0 h-auto w-40" />
+                    <AutoResizeTextarea 
+                      value={todo.owner} 
+                      onChange={(e) => {
+                        const newList = [...data.todoList]; newList[i].owner = e.target.value; updateData('todoList', newList);
+                      }} 
+                      className="bg-transparent border-none focus:ring-0 text-xs font-bold text-blue-500 p-0 h-auto w-40" 
+                    />
                   </div>
                 </div>
                 <button onClick={() => {
@@ -989,18 +1033,17 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
           {attendees.map((role, i) => data.attendance[i] ? (
             <div key={i} className="flex flex-col items-center gap-2.5 w-28">
               <label className="text-[10px] font-black text-slate-600 dark:text-slate-300 uppercase tracking-widest truncate w-full text-center" title={role}>{role}</label>
-              <input
-                type="number"
-                min="0"
-                max="10"
-                step="0.1"
+              <AutoResizeTextarea
                 placeholder="0"
-                value={data.ratings?.[i] !== undefined ? data.ratings[i] : ""}
+                value={data.ratings?.[i] !== undefined ? String(data.ratings[i]) : ""}
                 onChange={(e) => {
                   const val = e.target.value;
-                  // Validasi batas nilai 0 - 10 secara reaktif
-                  if (val === "" || (parseFloat(val) >= 0 && parseFloat(val) <= 10)) {
-                    updateData(`ratings.${i}`, val);
+                  // Only allow numbers and decimal point
+                  if (val === "" || /^[0-9]*\.?[0-9]*$/.test(val)) {
+                    const numVal = parseFloat(val);
+                    if (val === "" || (numVal >= 0 && numVal <= 10)) {
+                      updateData(`ratings.${i}`, val);
+                    }
                   }
                 }}
                 disabled={!data.attendance?.[i]}
@@ -1076,7 +1119,11 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
                 <div className="text-center flex-shrink-0 space-y-1"><h2 className="text-3xl font-black text-black dark:text-white">Meeting Engine Setup</h2><p className="text-black font-bold tracking-tight">Konfigurasi struktur rapat untuk efisiensi maksimal.</p></div>
                 <div className="space-y-6 flex-1 overflow-y-auto pr-3 custom-scrollbar pb-4">
                   <div className="space-y-2"><label className="text-[10px] font-black text-slate-600 dark:text-slate-300 uppercase tracking-widest ml-1">Company / Organization</label>
-                    <input type="text" value={data.config.companyName} onChange={(e) => updateData('config.companyName', e.target.value)} className="w-full px-5 py-4 rounded-2xl bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 focus:ring-4 focus:ring-black/5 font-black text-lg outline-none transition-all placeholder-slate-400 dark:placeholder-slate-500" />
+                    <AutoResizeTextarea 
+                      value={data.config.companyName} 
+                      onChange={(e) => updateData('config.companyName', e.target.value)} 
+                      className="w-full px-5 py-4 rounded-2xl bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 focus:ring-4 focus:ring-black/5 font-black text-lg outline-none transition-all placeholder-slate-400 dark:placeholder-slate-500" 
+                    />
                   </div>
                   <div>
                     <label className="block text-xs font-black text-slate-600 dark:text-slate-300 tracking-wider mb-3 uppercase">
@@ -1085,8 +1132,7 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
                     <div className="space-y-3 max-h-60 overflow-y-auto pr-2 mb-3">
                       {data.config.divisions.map((division, i) => (
                         <div key={i} className="flex items-center gap-3 group">
-                          <input
-                            type="text"
+                          <AutoResizeTextarea
                             value={division}
                             placeholder={`Nama Divisi ${i + 1}`}
                             onChange={(e) => {
@@ -1095,7 +1141,6 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
                               updateData('config.divisions', newDivisions);
                             }}
                             className="flex-1 px-5 py-3 rounded-xl bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 focus:ring-4 focus:ring-black/5 text-sm font-bold outline-none transition-all placeholder-slate-400 dark:placeholder-slate-500"
-
                           />
                           <button
                             onClick={() => {
