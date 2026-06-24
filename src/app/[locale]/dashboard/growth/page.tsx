@@ -13,7 +13,8 @@ import {
   BarChart,
   Loader2,
   Save,
-  TrendingUp
+  TrendingUp,
+  Trash2
 } from "lucide-react";
 import Link from "next/link";
 import {
@@ -46,6 +47,7 @@ export default function GrowthSimulator() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [companyId, setCompanyId] = useState<string | null>(null);
   const [history, setHistory] = useState<HistoryEntry[]>([]);
   const [globalGrowth, setGlobalGrowth] = useState<number>(10);
@@ -151,6 +153,27 @@ export default function GrowthSimulator() {
     }]);
     if (!error) await fetchHistory(companyId);
     setIsSaving(false);
+  };
+
+  const handleDeleteHistory = async () => {
+    if (!companyId || history.length === 0) return;
+
+    if (window.confirm("Apakah Anda yakin ingin menghapus seluruh riwayat untuk Growth Simulator? Tindakan ini tidak dapat diurungkan.")) {
+        setIsDeleting(true);
+        const { error } = await supabase
+            .from('tool_data_history')
+            .delete()
+            .eq('company_id', companyId)
+            .eq('tool_id', 'growth-simulator');
+
+        if (!error) {
+            setHistory([]);
+        } else {
+            alert("Gagal menghapus riwayat. Silakan coba lagi.");
+            console.error("Delete history error:", error);
+        }
+        setIsDeleting(false);
+    }
   };
 
   if (isLoading) return <div className="flex items-center justify-center min-h-[70vh]"><Loader2 className="animate-spin text-slate-700" size={40} /></div>;
@@ -308,11 +331,23 @@ export default function GrowthSimulator() {
 
           {/* History */}
           <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-bold text-slate-700 uppercase tracking-widest px-2">
-              <HistoryIcon size={14} /> Riwayat Simulasi
+            <div className="flex items-center justify-between gap-2 text-sm font-bold text-slate-700 uppercase tracking-widest px-2">
+                <div className="flex items-center gap-2">
+                    <HistoryIcon size={14} /> Riwayat Simulasi
+                </div>
+                <button
+                    onClick={handleDeleteHistory}
+                    disabled={isDeleting || history.length === 0}
+                    className="text-xs text-red-500 hover:text-red-700 disabled:opacity-50 transition-colors font-semibold flex items-center gap-1"
+                >
+                    {isDeleting ? <Loader2 size={14} className="animate-spin" /> : <Trash2 size={14} />}
+                    Hapus Riwayat
+                </button>
             </div>
             <div className="space-y-3">
-              {history.map((entry) => (
+              {history.length === 0 ? (
+                <div className="text-center text-sm text-slate-500 italic py-8">Tidak ada riwayat.</div>
+              ) : history.map((entry) => (
                 <div key={entry.id} className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-black dark:border-slate-800 flex justify-between items-center aksana-glass shadow-sm">
                   <div className="space-y-1">
                     <p className="text-[10px] text-slate-700">{new Date(entry.created_at).toLocaleDateString('id-ID')}</p>

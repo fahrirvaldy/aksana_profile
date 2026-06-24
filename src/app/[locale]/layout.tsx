@@ -53,7 +53,7 @@ export default async function RootLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale} suppressHydrationWarning>
+    <html lang={locale} suppressHydrationWarning data-scroll-behavior="smooth">
       <body className={`${inter.variable} ${plusJakartaSans.variable} font-sans antialiased min-h-screen flex flex-col bg-white text-black dark:bg-slate-950 dark:text-white`}>
         <ThemeProvider>
           <NextIntlClientProvider messages={messages}>

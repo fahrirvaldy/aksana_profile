@@ -472,33 +472,36 @@ const L10PDFDocument = ({ data, attendees, averageRating }: { data: L10Data; att
         </View>
       </View>
 
-      <View style={{ flexDirection: "row", gap: 16, height: "100%" }}>
-        <View style={{ flex: 1 }}>
-          <View style={pdfStyles.section}>
-            <Text style={pdfStyles.sectionTitle}>1. Issues Identified</Text>
-            {(data.idsSession?.issues || []).map((issue) => (
-              <View key={issue.id} style={{ marginBottom: 6, flexDirection: "row", alignItems: "flex-start" }}>
-                <Text style={{ width: 15, fontSize: 8, color: "#3b82f6", fontWeight: "bold" }}>{issue.isResolved ? "✓" : "•"}</Text>
-                <View style={{ flex: 1 }}>
-                  <Text style={{ fontSize: 9, fontWeight: "bold", color: "#64748b", textTransform: "uppercase", marginBottom: 1 }}>[{issue.source}]</Text>
-                  <Text style={{ fontSize: 10, color: issue.isResolved ? "#94a3b8" : "#1e293b" }}>{issue.text}</Text>
-                </View>
+      <View style={{ flexDirection: "column", gap: 12 }}>
+        {/* Block 1: Identify */}
+        <View style={pdfStyles.section} wrap={false}>
+          <Text style={pdfStyles.sectionTitle}>1. Issues Identified</Text>
+          {(data.idsSession?.issues || []).map((issue) => (
+            <View key={issue.id} style={{ marginBottom: 6, flexDirection: "row", alignItems: "flex-start" }}>
+              <Text style={{ width: 15, fontSize: 8, color: "#3b82f6", fontWeight: "bold" }}>{issue.isResolved ? "✓" : "•"}</Text>
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: 9, fontWeight: "bold", color: "#64748b", textTransform: "uppercase", marginBottom: 1 }}>[{issue.source}]</Text>
+                <Text style={{ fontSize: 10, color: issue.isResolved ? "#94a3b8" : "#1e293b" }}>{issue.text}</Text>
               </View>
-            ))}
-          </View>
+            </View>
+          ))}
+          {(!data.idsSession?.issues || data.idsSession.issues.length === 0) && (
+            <Text style={{ fontSize: 9, color: "#94a3b8", fontStyle: "italic" }}>Tidak ada isu yang diidentifikasi.</Text>
+          )}
         </View>
 
-        <View style={{ flex: 1.5 }}>
-          <View style={pdfStyles.section}>
-            <Text style={pdfStyles.sectionTitle}>2. Discussion Notes</Text>
-            <Text style={[pdfStyles.textArea, { minHeight: 120 }]}>{data.idsSession.notes || "Tidak ada catatan diskusi khusus."}</Text>
-          </View>
-          <View style={pdfStyles.section}>
-            <Text style={pdfStyles.sectionTitle}>3. Solutions & Execution</Text>
-            <Text style={[pdfStyles.textArea, { minHeight: 120, borderLeft: "4pt solid #7e22ce", backgroundColor: "#faf5ff" }]}>
-              {data.idsSession.solutions || "Tidak ada item solusi yang dihasilkan."}
-            </Text>
-          </View>
+        {/* Block 2: Discuss */}
+        <View style={pdfStyles.section} wrap={false}>
+          <Text style={pdfStyles.sectionTitle}>2. Discussion Notes</Text>
+          <Text style={[pdfStyles.textArea, { minHeight: 120 }]}>{data.idsSession.notes || "Tidak ada catatan diskusi khusus."}</Text>
+        </View>
+
+        {/* Block 3: Solve */}
+        <View style={pdfStyles.section} wrap={false}>
+          <Text style={pdfStyles.sectionTitle}>3. Solutions & Execution</Text>
+          <Text style={[pdfStyles.textArea, { minHeight: 120, borderLeft: "4pt solid #7e22ce", backgroundColor: "#faf5ff" }]}>
+            {data.idsSession.solutions || "Tidak ada item solusi yang dihasilkan."}
+          </Text>
         </View>
       </View>
     </Page>
