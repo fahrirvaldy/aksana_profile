@@ -692,7 +692,7 @@ function AssessmentForm({ seats, onComplete }: { seats: Record<string, Seat>, on
 
   if (step === 0) {
     return (
-      <Card className="max-w-xl mx-auto p-12 bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 shadow-sm">
+      <Card className="max-w-xl mx-auto p-6 md:p-12 bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 shadow-sm">
         <div className="text-center mb-10">
           <div className="w-16 h-16 bg-slate-900 text-white dark:bg-slate-800 dark:text-white rounded-xl flex items-center justify-center mx-auto mb-6 shadow-inner">
             <BrainCircuit size={32} />
@@ -766,7 +766,7 @@ function AssessmentForm({ seats, onComplete }: { seats: Record<string, Seat>, on
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -20 }}
         >
-          <Card className="p-10 bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 shadow-sm">
+          <Card className="p-6 md:p-10 bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 shadow-sm">
             <h3 className="text-xl md:text-2xl font-black text-black dark:text-white mb-10 leading-relaxed font-[family-name:var(--font-plus-jakarta)]">
               {currentQ.question}
             </h3>

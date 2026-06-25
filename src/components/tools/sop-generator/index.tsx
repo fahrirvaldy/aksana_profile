@@ -163,7 +163,7 @@ export default function SOPGenerator({ onSave, isSyncing, initialData }: SOPGene
                   <button
                     key={div.id}
                     onClick={() => { setSelectedDivision(div.id); setStep(2); }}
-                    className="p-8 bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl hover:border-emerald-500 transition-all text-left flex items-start gap-6 group shadow-sm hover:shadow-emerald-500/5"
+                    className="p-6 md:p-8 bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl hover:border-emerald-500 transition-all text-left flex items-start gap-6 group shadow-sm hover:shadow-emerald-500/5"
                   >
                     <div className="w-14 h-14 rounded-xl bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-400 group-hover:text-emerald-500 group-hover:bg-emerald-500/10 transition-all">
                       {div.icon}
@@ -190,7 +190,7 @@ export default function SOPGenerator({ onSave, isSyncing, initialData }: SOPGene
                 </div>
               </div>
 
-              <div className="p-8 md:p-12 bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl space-y-8 aksana-glass shadow-sm">
+              <div className="p-6 md:p-8 md:p-12 bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl space-y-8 aksana-glass shadow-sm">
                 <div className="space-y-2">
                   <h3 className="text-2xl font-black dark:text-white">{t('step2.title')}</h3>
                   <p className="text-sm text-slate-600 dark:text-slate-300 font-normal">{t('step2.subtitle')}</p>
@@ -244,7 +244,7 @@ export default function SOPGenerator({ onSave, isSyncing, initialData }: SOPGene
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="p-8 bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl space-y-4 aksana-glass shadow-sm">
+                <div className="p-6 md:p-8 bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl space-y-4 aksana-glass shadow-sm">
                   <div className="flex items-center gap-3 text-amber-500">
                     <AlertTriangle size={24} />
                     <h4 className="font-black uppercase tracking-widest text-xs">{t('step3.riskTitle')}</h4>
@@ -258,7 +258,7 @@ export default function SOPGenerator({ onSave, isSyncing, initialData }: SOPGene
                     ))}
                   </ul>
                 </div>
-                <div className="p-8 bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl space-y-4 aksana-glass shadow-sm">
+                <div className="p-6 md:p-8 bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl space-y-4 aksana-glass shadow-sm">
                   <div className="flex items-center gap-3 text-emerald-500">
                     <ShieldCheck size={24} />
                     <h4 className="font-black uppercase tracking-widest text-xs">{t('step3.kpiTitle')}</h4>
@@ -290,7 +290,7 @@ export default function SOPGenerator({ onSave, isSyncing, initialData }: SOPGene
           {/* STEP 4: FINAL DOCUMENT */}
           {step === 4 && selectedDivision && (
             <div className="space-y-8">
-              <div className="p-8 md:p-16 bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl space-y-12 relative overflow-hidden aksana-glass shadow-sm">
+              <div className="p-6 md:p-8 md:p-16 bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl space-y-12 relative overflow-hidden aksana-glass shadow-sm">
                 <div className="absolute top-0 left-0 w-full h-2 bg-emerald-500" />
                 
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">

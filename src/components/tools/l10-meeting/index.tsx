@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import React, { useState, useMemo, useEffect, useRef } from "react";
 import { 
@@ -30,6 +30,7 @@ import {
   StyleSheet, 
   pdf
 } from "@react-pdf/renderer";
+import { useTranslations } from 'next-intl';
 
 // --- Interfaces ---
 export interface L10Config {
@@ -508,10 +509,6 @@ const L10PDFDocument = ({ data, attendees, averageRating }: { data: L10Data; att
   </Document>
 );
 
-import { useTranslations } from 'next-intl';
-
-// ... (keep the rest of imports and pdf styles)
-
 // ============================================================================
 // 📊 Main Component View Layer Engine
 // ============================================================================
@@ -596,7 +593,7 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
     });
   };
 
-  const attendees = useMemo(() => getAttendees(), [data.config.divisions]);
+  const attendees = useMemo(() => getAttendees(), [data.config.divisions, t]);
 
   const averageRating = useMemo(() => {
     const attendees = data.config.divisions.length > 0 
@@ -728,10 +725,10 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
             <p className="text-black font-normal">Kehadiran & Kabar Baik (5 Menit)</p>
           </div>
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 flex-1 min-h-0 overflow-hidden pb-4">
+        <div className="grid grid-cols-1 lg:grid-cols-1 sm:grid-cols-2 gap-6 flex-1 min-h-0 overflow-hidden pb-4">
           <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col shadow-sm">
             <h3 className="text-xl font-bold flex items-center gap-2 mb-4 text-black dark:text-slate-200"><Users size={20} className="text-blue-500" /> Daftar Hadir</h3>
-            <div className="grid grid-cols-2 gap-3 overflow-y-auto pr-1 custom-scrollbar">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 overflow-y-auto pr-1 custom-scrollbar">
               {attendees.map((role, i) => (
                 <label key={i} className={`cursor-pointer transition-all rounded-xl p-4 flex items-center gap-3 border ${data.attendance[i] ? 'bg-blue-500/10 border-blue-500/30' : 'bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/80'}`}>
                   <input 
@@ -922,7 +919,7 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
           <h2 className="text-4xl font-bold text-black dark:text-white mb-1">Headlines</h2>
           <p className="text-black font-normal">Berita Penting Rapat</p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1 min-h-0 overflow-hidden pb-4">
+        <div className="grid grid-cols-1 md:grid-cols-1 sm:grid-cols-2 gap-6 flex-1 min-h-0 overflow-hidden pb-4">
           {['customer', 'internal'].map(type => (
             <div key={type} className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col space-y-4 shadow-sm">
               <h3 className={`text-xl font-bold flex items-center gap-2 ${type === 'customer' ? 'text-blue-500' : 'text-emerald-500'}`}><FileText size={20} /> {type === 'customer' ? 'Customer Headlines' : 'Internal Headlines'}</h3>
@@ -1077,24 +1074,25 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
             <div className="flex gap-4 border-l border-black dark:border-slate-800 pl-5 shadow-sm">
               <button onClick={() => setIsTimerRunning(!isTimerRunning)} className="hover:scale-110 transition-transform active:scale-95 text-black dark:text-slate-300">{isTimerRunning ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" />}</button>
               <button onClick={() => { setTimeLeft(5400); setIsTimerRunning(false); }} className="hover:scale-110 transition-transform active:scale-95 text-black dark:text-slate-300"><RotateCcw size={20} /></button>
-              </div>
-              </div>
+            </div>
+          </div>
 
-              <button 
-              onClick={handleExportPDF}
-              disabled={isExporting}
-              className="flex items-center gap-3 px-6 py-4 bg-slate-900 dark:bg-white text-white dark:text-slate-950 rounded-3xl font-black hover:scale-105 transition-all text-xs active:scale-95 disabled:opacity-50 disabled:grayscale shadow-md"
-              >
-              {isExporting ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />}
-              {isExporting ? "GENERATING PDF..." : "EXPORT L10 REPORT"}
-              </button>
+          <button 
+            onClick={handleExportPDF}
+            disabled={isExporting}
+            className="flex items-center gap-3 px-6 py-4 bg-slate-900 dark:bg-white text-white dark:text-slate-950 rounded-3xl font-black hover:scale-105 transition-all text-xs active:scale-95 disabled:opacity-50 disabled:grayscale shadow-md"
+          >
+            {isExporting ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />}
+            {isExporting ? "GENERATING PDF..." : "EXPORT L10 REPORT"}
+          </button>
 
-              {isSyncing && (
-              <div className="flex items-center gap-2 px-5 py-2.5 bg-blue-500/10 rounded-full text-blue-600 text-xs font-black animate-pulse border border-blue-500/20 shadow-sm"><Loader2 size={14} className="animate-spin" />SYNCING...</div>
-              )}
-              </div>
-              <button onClick={() => setShowSetup(true)} className="p-4 rounded-3xl bg-white dark:bg-slate-900 shadow-lg border border-slate-200 dark:border-slate-800 text-black dark:text-slate-100 hover:text-blue-500 hover:rotate-90 transition-all duration-700 active:scale-90"><Settings size={24} /></button>
-              </div>
+          {isSyncing && (
+            <div className="flex items-center gap-2 px-5 py-2.5 bg-blue-500/10 rounded-full text-blue-600 text-xs font-black animate-pulse border border-blue-500/20 shadow-sm"><Loader2 size={14} className="animate-spin" />SYNCING...</div>
+          )}
+        </div>
+        <button onClick={() => setShowSetup(true)} className="p-4 rounded-3xl bg-white dark:bg-slate-900 shadow-lg border border-slate-200 dark:border-slate-800 text-black dark:text-slate-100 hover:text-blue-500 hover:rotate-90 transition-all duration-700 active:scale-90"><Settings size={24} /></button>
+      </div>
+
       {/* Slide Canvas */}
       <div className="flex-1 px-16 pb-12 pt-4 relative overflow-hidden min-h-0">
         <div className="w-full h-full bg-transparent flex flex-col">

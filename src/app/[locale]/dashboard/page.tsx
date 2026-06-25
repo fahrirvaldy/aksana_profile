@@ -354,7 +354,7 @@ export default function DashboardPage() {
       </motion.div>
 
       {/* 2. Struktur Tab (Grouping 9 Alat) */}
-      <div className="flex justify-center">
+      <div className="flex justify-center overflow-x-auto py-2">
         <div className="p-1.5 rounded-2xl bg-slate-100/50 dark:bg-slate-900/50 aksana-glass border border-black dark:border-slate-800 flex gap-1 shadow-sm">
           {[
             { id: 'finance', label: 'Finance & Growth', icon: PieChart },

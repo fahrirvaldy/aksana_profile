@@ -329,7 +329,7 @@ export default function FunnelSimulator({ user, onSave, isSyncing, initialData }
             <div className="space-y-6">
               <div className="space-y-3">
                 <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-600 dark:text-slate-300">{t("profiling.industry")}</label>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {['fashion', 'beauty', 'gadget', 'fnb'].map((ind) => (
                     <button
                       key={ind}
@@ -383,7 +383,7 @@ export default function FunnelSimulator({ user, onSave, isSyncing, initialData }
               <h3 className="font-bold text-lg text-black dark:text-white">{t("inputs.title")}</h3>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-1 sm:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <label className="text-[10px] font-bold uppercase tracking-widest text-slate-600 ml-1 dark:text-slate-300">{t("inputs.budget")}</label>
                 <div className="relative">
@@ -552,7 +552,7 @@ export default function FunnelSimulator({ user, onSave, isSyncing, initialData }
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-1 sm:grid-cols-2 gap-8">
                 <div className="space-y-4">
                   <p className="text-[10px] font-bold uppercase tracking-widest text-slate-600 dark:text-slate-300">{t("diagnostic.leakTitle")}</p>
                   {diagnostic.biggestLeak ? (

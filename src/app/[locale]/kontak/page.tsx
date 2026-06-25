@@ -3,8 +3,10 @@
 import React, { useState } from "react";
 import { supabase } from "@/lib/supabase/client";
 import { Loader2 } from "lucide-react";
+import { useTranslations } from 'next-intl';
 
 export default function KontakPage() {
+  const t = useTranslations('ContactPage');
   const [isLoading, setIsLoading] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -41,11 +43,11 @@ export default function KontakPage() {
       if (error) throw error;
 
       // Handle Success
-      setSuccessMessage("Terima kasih! Pesan Anda telah kami terima. Tim Aksana akan segera menghubungi Anda.");
+      setSuccessMessage(t('successMessage'));
       setFormData({ name: "", email: "", message: "" });
     } catch (error: any) {
-      // Handle Graceful Failure (Amber color as requested)
-      setFormError(error.message || "Maaf, terjadi kendala saat mengirim pesan. Silakan coba beberapa saat lagi.");
+      // Handle Graceful Failure
+      setFormError(error.message || t('errorMessage'));
     } finally {
       setIsLoading(false);
     }
@@ -54,9 +56,9 @@ export default function KontakPage() {
   return (
     <div className="max-w-3xl mx-auto px-8 pt-4 pb-20">
       <div className="space-y-6 mb-12 text-center">
-        <h1 className="text-4xl font-bold tracking-tight text-slate-950 dark:text-slate-50">Hubungi Kami</h1>
+        <h1 className="text-4xl font-bold tracking-tight text-slate-950 dark:text-slate-50">{t('title')}</h1>
         <p className="text-slate-700 dark:text-slate-400 font-normal">
-          Ada pertanyaan atau ingin berkolaborasi? Kami siap mendengarkan.
+          {t('subtitle')}
         </p>
       </div>
 
@@ -73,33 +75,33 @@ export default function KontakPage() {
               onClick={() => setSuccessMessage(null)}
               className="text-sm font-semibold text-slate-950 hover:text-slate-950 dark:hover:text-slate-50 transition-colors"
             >
-              Kirim pesan lain
+              {t('sendAnotherMessage')}
             </button>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label htmlFor="name" className="text-sm font-semibold text-slate-950 dark:text-slate-50">Nama Lengkap</label>
+                <label htmlFor="name" className="text-sm font-semibold text-slate-950 dark:text-slate-50">{t('form.fullName')}</label>
                 <input
                   id="name"
                   type="text"
                   value={formData.name}
                   onChange={handleChange}
-                  placeholder="John Doe"
+                  placeholder={t('form.fullNamePlaceholder')}
                   className="w-full px-4 py-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 focus:border-slate-400 outline-none transition-all font-medium"
                   required
                   disabled={isLoading}
                 />
               </div>
               <div className="space-y-2">
-                <label htmlFor="email" className="text-sm font-semibold text-slate-950 dark:text-slate-50">Email</label>
+                <label htmlFor="email" className="text-sm font-semibold text-slate-950 dark:text-slate-50">{t('form.email')}</label>
                 <input
                   id="email"
                   type="email"
                   value={formData.email}
                   onChange={handleChange}
-                  placeholder="john@example.com"
+                  placeholder={t('form.emailPlaceholder')}
                   className="w-full px-4 py-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 focus:border-slate-400 outline-none transition-all font-medium"
                   required
                   disabled={isLoading}
@@ -108,13 +110,13 @@ export default function KontakPage() {
             </div>
             
             <div className="space-y-2">
-              <label htmlFor="message" className="text-sm font-semibold text-slate-950 dark:text-slate-50">Pesan</label>
+              <label htmlFor="message" className="text-sm font-semibold text-slate-950 dark:text-slate-50">{t('form.message')}</label>
               <textarea
                 id="message"
                 rows={5}
                 value={formData.message}
                 onChange={handleChange}
-                placeholder="Bagaimana kami bisa membantu Anda?"
+                placeholder={t('form.messagePlaceholder')}
                 className="w-full px-4 py-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 focus:border-slate-400 outline-none transition-all resize-none font-medium"
                 required
                 disabled={isLoading}
@@ -135,10 +137,10 @@ export default function KontakPage() {
               {isLoading ? (
                 <>
                   <Loader2 className="animate-spin" size={18} />
-                  Mengirim...
+                  {t('form.sending')}
                 </>
               ) : (
-                "Kirim Pesan"
+                t('form.submitButton')
               )}
             </button>
           </form>

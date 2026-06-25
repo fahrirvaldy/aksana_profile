@@ -5,8 +5,10 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase/client";
 import { Loader2, Eye, EyeOff } from "lucide-react";
+import { useTranslations } from 'next-intl';
 
 export default function LoginPage() {
+  const t = useTranslations('LoginPage');
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -31,7 +33,7 @@ export default function LoginPage() {
       router.push("/tools");
     } catch (error: any) {
       // Graceful Failure UI (Amber/Orange)
-      setAuthError(error.message || "Email atau password yang Anda masukkan salah.");
+      setAuthError(error.message || t('errorMessage'));
     } finally {
       setIsLoading(false);
     }
@@ -41,19 +43,19 @@ export default function LoginPage() {
     <div className="flex flex-col items-center justify-center min-h-[calc(100vh-200px)] px-8 py-20">
       <div className="w-full max-w-md p-10 md:p-14 rounded-[2.5rem] bg-white/95 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-8 shadow-sm">
         <div className="text-center space-y-2">
-          <h1 className="text-3xl font-bold tracking-tight text-slate-950 dark:text-slate-50">Selamat Datang</h1>
-          <p className="text-slate-700 dark:text-slate-400 font-normal">Masuk ke akun Aksana Anda</p>
+          <h1 className="text-3xl font-bold tracking-tight text-slate-950 dark:text-slate-50">{t('title')}</h1>
+          <p className="text-slate-700 dark:text-slate-400 font-normal">{t('subtitle')}</p>
         </div>
 
         <form onSubmit={handleLogin} className="space-y-6">
           <div className="space-y-2">
-            <label htmlFor="email" className="text-sm font-semibold text-slate-950 dark:text-slate-50">Email</label>
+            <label htmlFor="email" className="text-sm font-semibold text-slate-950 dark:text-slate-50">{t('emailLabel')}</label>
             <input
               id="email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="name@company.com"
+              placeholder={t('emailPlaceholder')}
               className="w-full px-4 py-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 focus:border-slate-400 outline-none transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed"
               required
               disabled={isLoading}
@@ -61,12 +63,12 @@ export default function LoginPage() {
           </div>
           <div className="space-y-2">
             <div className="flex justify-between items-end">
-              <label htmlFor="password" className="text-sm font-semibold text-slate-950 dark:text-slate-50">Password</label>
+              <label htmlFor="password" className="text-sm font-semibold text-slate-950 dark:text-slate-50">{t('passwordLabel')}</label>
               <Link 
                 href="/kontak" 
                 className="text-[11px] font-bold uppercase tracking-wider text-slate-700 hover:text-slate-950 transition-colors"
               >
-                Lupa password?
+                {t('forgotPassword')}
               </Link>
             </div>
             <div className="relative">
@@ -99,10 +101,10 @@ export default function LoginPage() {
               {isLoading ? (
                 <>
                   <Loader2 className="animate-spin" size={20} />
-                  Memverifikasi...
+                  {t('verifying')}
                 </>
               ) : (
-                "Masuk"
+                t('submitButton')
               )}
             </button>
 
@@ -115,10 +117,11 @@ export default function LoginPage() {
         </form>
 
         <p className="text-center text-sm text-slate-700 leading-relaxed font-normal">
-          Akses terbatas untuk klien eksklusif Aksana. <br />
+          {t('restrictedAccess')}
           <Link href="/kontak" className="font-bold text-slate-950 dark:text-slate-50 hover:underline underline-offset-4">
-            Hubungi tim kami
-          </Link> untuk mendapatkan akun.
+            {t('contactUs')}
+          </Link>
+          {t('getAccount')}
         </p>
       </div>
     </div>

@@ -399,7 +399,7 @@ export default function CashflowCalculator({ user, onSave, isSyncing, initialDat
                                 <tbody className="divide-y divide-slate-200 dark:divide-slate-800/50">
                                   {records.length === 0 ? (
                                     <tr>
-                                      <td colSpan={6} className="py-12 text-center text-slate-600 dark:text-slate-400 text-sm italic">{t("ledger.empty")}</td>
+                                      <td colSpan={6} className="px-4 py-12 text-center text-slate-600 dark:text-slate-400 text-sm italic">{t("ledger.empty")}</td>
                                     </tr>
                                   ) : (
                                     records.map((rec) => (

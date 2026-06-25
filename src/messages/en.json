@@ -659,5 +659,123 @@
         "save": "Save Manual"
       }
     }
+  },
+  "ServicePage": {
+    "title": "Integrated Solutions for a <italic>More Empowered</italic> Business",
+    "subtitle": "We provide services that combine technological precision with a deep understanding of the real challenges entrepreneurs face. Not just digitalization, but system alignment for sustainable growth.",
+    "detailButton": "VIEW DETAIL",
+    "consultationButton": "Consult on This Issue",
+    "modalTitle": "ANALOGY",
+    "services": [
+      {
+        "title": "Business Checkup 360",
+        "tagline": "Structural Diagnosis",
+        "analogy": "A digital MRI to map the health of your business's organs.",
+        "explanation": "Dissecting operational flows to find efficiency bottlenecks."
+      },
+      {
+        "title": "Growth OS",
+        "tagline": "System Integration",
+        "analogy": "An Autopilot system so the business runs steadily without you holding the wheel 24/7.",
+        "explanation": "Building operational independence for your time freedom."
+      },
+      {
+        "title": "Founder Finance Clarity",
+        "tagline": "Financial Architecture",
+        "analogy": "A precise aircraft cockpit—making every number speak of opportunities.",
+        "explanation": "An intuitive dashboard for clarity in strategic decision-making."
+      },
+      {
+        "title": "People & Culture Reset",
+        "tagline": "Cultural Alignment",
+        "analogy": "Aligning the team's heartbeat to move in one harmony.",
+        "explanation": "Building a culture of ownership to minimize internal drama."
+      },
+      {
+        "title": "Market & Product Sprint",
+        "tagline": "Validation Acceleration",
+        "analogy": "A telescope lens to ensure the product lands exactly where customers desire.",
+        "explanation": "Cutting failure risk through real market data validation."
+      },
+      {
+        "title": "Aksana Partner",
+        "tagline": "Strategic Elevation",
+        "analogy": "An expert navigator sitting beside you through every sharp turn in business.",
+        "explanation": "Regular mentoring to ensure strategies are executed correctly."
+      }
+    ]
+  },
+  "ToolsPage": {
+    "title": "Tools Catalog",
+    "subtitle": "Our collection of digital instruments designed to accelerate your business growth.",
+    "cloudSyncActive": "Cloud Sync Active",
+    "accessTimeLeft": "Access Time Left: {time}",
+    "backToCatalog": "Back to Catalog",
+    "sessionOver": "Session Over",
+    "sessionOverMessage": "Your trial session has ended. Let's upgrade your access to permanently save this analysis.",
+    "contactTeam": "Contact Aksana Team",
+    "unlockAccess": "Unlock Tools Access",
+    "unlockAccessSubtitle": "Fill in a short form to get exclusive trial access.",
+    "form": {
+        "fullName": "Full Name",
+        "fullNamePlaceholder": "How should we greet you?",
+        "businessName": "Business Name",
+        "businessNamePlaceholder": "Your company or brand name",
+        "sector": "Business Sector",
+        "sectorPlaceholder": "e.g., Manufacturing, F&B, Services, etc.",
+        "whatsapp": "WhatsApp Number",
+        "whatsappPlaceholder": "628xxxxxxxxxx",
+        "biggestChallenge": "Biggest Challenge",
+        "biggestChallengePlaceholder": "Tell us a bit about the business problem you want to solve...",
+        "submitButton": "Start Business Analysis",
+        "processing": "Processing...",
+        "submitDisclaimer": "By pressing the button, you will get access to Aksana's exclusive simulations."
+    },
+    "tools": [
+        { "name": "Cashflow Analysis", "description": "Cash flow analysis for business financial health.", "status": "Active", "action": "Use Tool" },
+        { "name": "Growth Simulator", "description": "Simulate your business growth projections.", "status": "Active", "action": "Use Tool" },
+        { "name": "SOP Generator", "description": "Create Standard Operating Procedures automatically.", "status": "Active", "action": "Use Tool" },
+        { "name": "CAC vs LTV", "description": "Analysis of acquisition cost efficiency vs customer value.", "status": "Active", "action": "Use Tool" },
+        { "name": "Funnel Simulator", "description": "Simulate your marketing funnel conversions.", "status": "Active", "action": "Use Tool" },
+        { "name": "Production Target Simulator", "description": "Calculate the optimal production target for the company.", "status": "Active", "action": "Use Tool" },
+        { "name": "Template L10 Meeting", "description": "An effective weekly meeting structure.", "status": "Active", "action": "Use Tool" },
+        { "name": "People Analyzer", "description": "Evaluate team alignment with cultural values.", "status": "Active", "action": "Use Tool" },
+        { "name": "To-Do Tracker", "description": "Monitor the execution of the team's strategic tasks.", "status": "Active", "action": "Use Tool" }
+    ],
+    "proToolAlert": "This tool is part of the Aksana Partner module. Contact Admin to unlock access.",
+    "sessionEndAlert": "Session ended, please log in again",
+    "proAction": "Unlock Pro Access",
+    "proTag": "PRO"
+  },
+  "ContactPage": {
+    "title": "Contact Us",
+    "subtitle": "Have a question or want to collaborate? We're here to listen.",
+    "successMessage": "Thank you! Your message has been received. The Aksana team will contact you shortly.",
+    "sendAnotherMessage": "Send another message",
+    "form": {
+        "fullName": "Full Name",
+        "fullNamePlaceholder": "John Doe",
+        "email": "Email",
+        "emailPlaceholder": "john@example.com",
+        "message": "Message",
+        "messagePlaceholder": "How can we help you?",
+        "submitButton": "Send Message",
+        "sending": "Sending..."
+    },
+    "errorMessage": "Sorry, there was a problem sending your message. Please try again in a moment."
+  },
+  "LoginPage": {
+    "title": "Welcome Back",
+    "subtitle": "Log in to your Aksana account",
+    "emailLabel": "Email",
+    "emailPlaceholder": "name@company.com",
+    "passwordLabel": "Password",
+    "forgotPassword": "Forgot password?",
+    "submitButton": "Login",
+    "verifying": "Verifying...",
+    "errorMessage": "The email or password you entered is incorrect.",
+    "restrictedAccess": "Access is restricted to exclusive Aksana clients.",
+    "contactUs": "Contact our team",
+    "getAccount": " to get an account."
   }
 }

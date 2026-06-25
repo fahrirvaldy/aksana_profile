@@ -143,7 +143,7 @@ export default function ToDoTracker({ user, onSave, isSyncing, initialData }: To
     <div className="max-w-5xl mx-auto space-y-8 animate-in fade-in duration-700">
       <div ref={captureRef} className={`${isExporting ? 'p-12 bg-white dark:bg-[#1E1E1E] rounded-xl border border-slate-200 dark:border-slate-800' : ''}`}>
         {/* Header Section */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-12">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 md:p-8 mb-12">
           <div className="space-y-2">
             <h1 className="text-3xl md:text-4xl font-black tracking-tight flex items-center gap-3 font-[family-name:var(--font-plus-jakarta)]">
               <div className="p-3 bg-black dark:bg-slate-50 text-white dark:text-black rounded-2xl">
@@ -195,7 +195,7 @@ export default function ToDoTracker({ user, onSave, isSyncing, initialData }: To
 
         {/* Input Form */}
         {!isExporting && (
-          <div data-export-ignore="true" className="p-8 bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl mb-12 shadow-sm aksana-glass">
+          <div data-export-ignore="true" className="p-6 md:p-8 bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl mb-12 shadow-sm aksana-glass">
             <h2 className="text-sm font-bold uppercase tracking-[0.2em] text-slate-600 dark:text-slate-300 mb-6 flex items-center gap-2">
               <Plus size={16} /> {t('addNew')}
             </h2>
@@ -246,7 +246,7 @@ export default function ToDoTracker({ user, onSave, isSyncing, initialData }: To
 
         {/* Task List Container */}
         <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden min-h-[400px] shadow-sm aksana-glass">
-          <div className="p-8 border-b border-slate-200 dark:border-slate-800 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 bg-white dark:bg-[#1E1E1E] shadow-sm">
+          <div className="p-6 md:p-8 border-b border-slate-200 dark:border-slate-800 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 bg-white dark:bg-[#1E1E1E] shadow-sm">
             <div className="flex items-center gap-4">
               <h3 className="font-black text-xl text-black dark:text-[#EEEEEE]">{t('listTitle')}</h3>
               <span className="px-3 py-1 bg-black text-white dark:bg-slate-800 dark:text-slate-400 text-[10px] font-bold rounded-lg uppercase tracking-widest">
@@ -278,7 +278,7 @@ export default function ToDoTracker({ user, onSave, isSyncing, initialData }: To
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: 20 }}
-                    className={`group p-6 md:p-8 flex items-start gap-6 transition-all ${todo.completed ? 'bg-emerald-50/10 dark:bg-emerald-500/5' : 'hover:bg-black/5 dark:hover:bg-slate-800/20'}`}
+                    className={`group p-6 md:p-6 md:p-8 flex items-start gap-6 transition-all ${todo.completed ? 'bg-emerald-50/10 dark:bg-emerald-500/5' : 'hover:bg-black/5 dark:hover:bg-slate-800/20'}`}
                   >
                     <button 
                       onClick={() => toggleTodo(todo.id)}

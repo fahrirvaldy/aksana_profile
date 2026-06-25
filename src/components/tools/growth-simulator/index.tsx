@@ -262,7 +262,7 @@ export default function GrowthSimulator({ user, onSave, isSyncing, initialData }
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-1 sm:grid-cols-2 gap-6">
             <div className="space-y-3">
               <label className="text-[10px] font-bold uppercase tracking-widest text-slate-600 dark:text-slate-300 ml-1">{t("global.growth")}</label>
               <div className="relative">
@@ -315,7 +315,7 @@ export default function GrowthSimulator({ user, onSave, isSyncing, initialData }
               { id: 'margin', label: t("fiveWays.margin"), icon: <BarChart3 size={18} />, key: 'margin' as keyof Metrics, isPercent: true },
             ].map((item, idx) => (
               <div key={item.id} className="relative">
-                <div className="flex items-center gap-4 p-4 rounded-xl bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 hover:border-slate-300 transition-all shadow-sm">
+                <div className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-xl bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 hover:border-slate-300 transition-all shadow-sm">
                   <div className="w-10 h-10 rounded-xl bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-300 shadow-sm aksana-glass">
                     {item.icon}
                   </div>
@@ -362,7 +362,7 @@ export default function GrowthSimulator({ user, onSave, isSyncing, initialData }
         </div>
 
         {/* Additional Costs */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-1 sm:grid-cols-2 gap-6">
           <div className="p-8 rounded-xl bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 space-y-4 aksana-glass shadow-sm">
             <label className="text-[10px] font-bold uppercase tracking-widest text-slate-600 dark:text-slate-300 flex items-center gap-2">
               <TrendingUp size={14} className="text-blue-500" /> {t("costs.marketing", { period })}
@@ -413,7 +413,7 @@ export default function GrowthSimulator({ user, onSave, isSyncing, initialData }
               <p className="text-slate-700 dark:text-slate-400 text-xs font-medium italic">{t("results.current", { val: formatValue(currentDerived.profit, true) })}</p>
             </div>
 
-            <div className="grid grid-cols-2 gap-4 pt-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
               <div className="p-4 rounded-2xl bg-white/5 border border-white/5 space-y-1 shadow-sm">
                 <p className="text-[9px] font-bold uppercase tracking-widest text-slate-700 dark:text-slate-400">{t("results.revenue")}</p>
                 <p className="text-sm font-black">{formatValue(targetDerived.revenue, true)}</p>
@@ -471,7 +471,7 @@ export default function GrowthSimulator({ user, onSave, isSyncing, initialData }
               )}
             </div>
 
-            <div className="grid grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
               <div className="space-y-1">
                 <p className="text-[9px] font-bold uppercase text-black dark:text-slate-400 tracking-tighter">{t("health.cac")}</p>
                 <p className="text-lg font-black text-black dark:text-white">{formatValue(healthMetrics.cac, true)}</p>

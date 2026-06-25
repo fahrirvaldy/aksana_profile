@@ -659,5 +659,123 @@
         "save": "Simpan Manual"
       }
     }
+  },
+  "ServicePage": {
+    "title": "Solusi Terintegrasi untuk Bisnis yang <italic>Lebih Berdaya</italic>",
+    "subtitle": "Kami menghadirkan layanan yang menggabungkan presisi teknologi dengan pemahaman mendalam atas tantangan nyata pengusaha. Bukan sekadar digitalisasi, melainkan penyelarasan sistem untuk pertumbuhan yang berkelanjutan.",
+    "detailButton": "LIHAT DETAIL",
+    "consultationButton": "Konsultasikan Masalah Ini",
+    "modalTitle": "PERUMPAMAAN",
+    "services": [
+      {
+        "title": "Business Checkup 360",
+        "tagline": "Diagnosa Struktur",
+        "analogy": "Digital MRI untuk memetakan kesehatan organ bisnis.",
+        "explanation": "Pembedahan alur operasional untuk menemukan sumbatan inefisiensi."
+      },
+      {
+        "title": "Growth OS",
+        "tagline": "Integrasi Sistem",
+        "analogy": "Sistem Autopilot agar bisnis melaju stabil tanpa harus memegang kemudi 24 jam.",
+        "explanation": "Membangun kemandirian operasional untuk kebebasan waktu Anda."
+      },
+      {
+        "title": "Founder Finance Clarity",
+        "tagline": "Arsitektur Keuangan",
+        "analogy": "Cockpit Pesawat yang presisi—membuat setiap angka bicara tentang peluang.",
+        "explanation": "Dashboard intuitif untuk kejernihan pengambilan keputusan strategis."
+      },
+      {
+        "title": "People & Culture Reset",
+        "tagline": "Penyelarasan Budaya",
+        "analogy": "Menyelaraskan Detak Jantung Tim agar bergerak dalam satu harmoni.",
+        "explanation": "Membangun budaya ownership untuk meminimalisir drama internal."
+      },
+      {
+        "title": "Market & Product Sprint",
+        "tagline": "Akselerasi Validasi",
+        "analogy": "Lensa Teropong untuk memastikan produk mendarat tepat di titik keinginan pelanggan.",
+        "explanation": "Memangkas risiko kegagalan melalui validasi data pasar yang nyata."
+      },
+      {
+        "title": "Aksana Partner",
+        "tagline": "Elevasi Strategis",
+        "analogy": "Navigator Ahli yang duduk di samping Anda menemani setiap tikungan tajam bisnis.",
+        "explanation": "Pendampingan rutin untuk memastikan strategi tereksekusi dengan benar."
+      }
+    ]
+  },
+  "ToolsPage": {
+    "title": "Tools Katalog",
+    "subtitle": "Koleksi instrumen digital kami yang dirancang untuk mempercepat pertumbuhan bisnis Anda.",
+    "cloudSyncActive": "Cloud Sync Active",
+    "accessTimeLeft": "Sisa Waktu Akses: {time}",
+    "backToCatalog": "Kembali ke Katalog",
+    "sessionOver": "Sesi Selesai",
+    "sessionOverMessage": "Sesi uji coba Anda telah selesai. Mari tingkatkan akses Anda untuk menyimpan hasil analisis ini secara permanen.",
+    "contactTeam": "Hubungi Tim Aksana",
+    "unlockAccess": "Buka Akses Tools",
+    "unlockAccessSubtitle": "Isi data singkat untuk mendapatkan akses uji coba eksklusif.",
+    "form": {
+        "fullName": "Nama Lengkap",
+        "fullNamePlaceholder": "Bagaimana kami harus menyapa Anda?",
+        "businessName": "Nama Bisnis",
+        "businessNamePlaceholder": "Nama perusahaan atau brand Anda",
+        "sector": "Sektor Bisnis",
+        "sectorPlaceholder": "Misal: Manufaktur, F&B, Jasa, dll",
+        "whatsapp": "Nomor WhatsApp",
+        "whatsappPlaceholder": "628xxxxxxxxxx",
+        "biggestChallenge": "Tantangan Terbesar",
+        "biggestChallengePlaceholder": "Ceritakan sedikit kendala bisnis yang ingin Anda tuntaskan...",
+        "submitButton": "Mulai Analisa Bisnis",
+        "processing": "Memproses...",
+        "submitDisclaimer": "Dengan menekan tombol, Anda akan mendapatkan akses ke simulasi eksklusif Aksana."
+    },
+    "tools": [
+        { "name": "Cashflow Analysis", "description": "Analisis arus kas untuk kesehatan finansial bisnis.", "status": "Active", "action": "Gunakan Tool" },
+        { "name": "Growth Simulator", "description": "Simulasi proyeksi pertumbuhan bisnis Anda.", "status": "Active", "action": "Gunakan Tool" },
+        { "name": "SOP Generator", "description": "Buat Standar Operasional Prosedur secara otomatis.", "status": "Active", "action": "Gunakan Tool" },
+        { "name": "CAC vs LTV", "description": "Analisis efisiensi biaya akuisisi vs nilai pelanggan.", "status": "Active", "action": "Gunakan Tool" },
+        { "name": "Funnel Simulator", "description": "Simulasikan konversi funnel marketing Anda.", "status": "Active", "action": "Gunakan Tool" },
+        { "name": "Production Target Simulator", "description": "Hitung target produksi optimal perusahaan.", "status": "Active", "action": "Gunakan Tool" },
+        { "name": "Template L10 Meeting", "description": "Struktur meeting mingguan yang efektif.", "status": "Active", "action": "Gunakan Tool" },
+        { "name": "People Analyzer", "description": "Evaluasi keselarasan tim dengan nilai budaya.", "status": "Active", "action": "Gunakan Tool" },
+        { "name": "To-Do Tracker", "description": "Pantau eksekusi tugas strategis tim.", "status": "Active", "action": "Gunakan Tool" }
+    ],
+    "proToolAlert": "Alat ini merupakan bagian dari modul Aksana Partner. Hubungi Admin untuk membuka akses.",
+    "sessionEndAlert": "Sesi berakhir, silakan login kembali",
+    "proAction": "Buka Akses Pro",
+    "proTag": "PRO"
+  },
+  "ContactPage": {
+    "title": "Hubungi Kami",
+    "subtitle": "Ada pertanyaan atau ingin berkolaborasi? Kami siap mendengarkan.",
+    "successMessage": "Terima kasih! Pesan Anda telah kami terima. Tim Aksana akan segera menghubungi Anda.",
+    "sendAnotherMessage": "Kirim pesan lain",
+    "form": {
+        "fullName": "Nama Lengkap",
+        "fullNamePlaceholder": "John Doe",
+        "email": "Email",
+        "emailPlaceholder": "john@example.com",
+        "message": "Pesan",
+        "messagePlaceholder": "Bagaimana kami bisa membantu Anda?",
+        "submitButton": "Kirim Pesan",
+        "sending": "Mengirim..."
+    },
+    "errorMessage": "Maaf, terjadi kendala saat mengirim pesan. Silakan coba beberapa saat lagi."
+  },
+  "LoginPage": {
+    "title": "Selamat Datang",
+    "subtitle": "Masuk ke akun Aksana Anda",
+    "emailLabel": "Email",
+    "emailPlaceholder": "nama@perusahaan.com",
+    "passwordLabel": "Password",
+    "forgotPassword": "Lupa password?",
+    "submitButton": "Masuk",
+    "verifying": "Memverifikasi...",
+    "errorMessage": "Email atau password yang Anda masukkan salah.",
+    "restrictedAccess": "Akses terbatas untuk klien eksklusif Aksana.",
+    "contactUs": "Hubungi tim kami",
+    "getAccount": " untuk mendapatkan akun."
   }
 }

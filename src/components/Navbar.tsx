@@ -54,7 +54,7 @@ export function Navbar() {
         bg-white dark:bg-slate-950/90 dark:backdrop-blur-md
         ${isScrolled ? "border-b border-black dark:border-slate-800 shadow-sm" : "border-b border-transparent"}
       `}>
-        <div className="max-w-7xl mx-auto px-8 w-full h-full flex justify-between items-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 w-full h-full flex justify-between items-center">
           {/* Branding Sisi Kiri */}
           <Link href="/" className="flex items-center gap-4 shrink-0 group">
             <Image 
@@ -71,7 +71,7 @@ export function Navbar() {
           </Link>
 
           {/* Menu & Aksi Sisi Kanan */}
-          <div className="flex items-center gap-10">
+          <div className="flex items-center gap-6 lg:gap-10">
             {/* Menu Desktop */}
             <div className="hidden md:flex items-center gap-10">
               {navLinks.map((link) => {
@@ -100,15 +100,17 @@ export function Navbar() {
             </div>
 
             <div className="flex items-center gap-4">
-              <LanguageSwitcher />
-              <ThemeToggle />
+              <div className="hidden items-center gap-4 md:flex">
+                <LanguageSwitcher />
+                <ThemeToggle />
+              </div>
               
               <div className="hidden md:block border-l border-black dark:border-slate-800 h-5 mx-2 shadow-sm"></div>
 
               {isLoggedIn ? (
                 <button
                   onClick={handleLogout}
-                  className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-slate-900 dark:bg-slate-50 text-slate-50 dark:text-slate-950 text-sm font-bold uppercase tracking-widest transition-all hover:opacity-90 active:scale-95 cursor-pointer"
+                  className="hidden md:flex items-center gap-2 px-6 py-2.5 rounded-xl bg-slate-900 dark:bg-slate-50 text-slate-50 dark:text-slate-950 text-sm font-bold uppercase tracking-widest transition-all hover:opacity-90 active:scale-95 cursor-pointer"
                 >
                   <LogOut size={18} />
                   <span>{t('logout') || 'Logout'}</span>
@@ -116,7 +118,7 @@ export function Navbar() {
               ) : (
                 <Link 
                   href="/login"
-                  className="px-6 py-2.5 rounded-xl border border-black dark:border-slate-800 text-sm font-bold uppercase tracking-widest text-slate-950 dark:text-slate-50 hover:bg-slate-900 hover:text-white dark:hover:bg-slate-50 dark:hover:text-slate-950 transition-all shadow-none"
+                  className="hidden md:inline-flex px-6 py-2.5 rounded-xl border border-black dark:border-slate-800 text-sm font-bold uppercase tracking-widest text-slate-950 dark:text-slate-50 hover:bg-slate-900 hover:text-white dark:hover:bg-slate-50 dark:hover:text-slate-950 transition-all shadow-none"
                 >
                   {t('login')}
                 </Link>
@@ -142,7 +144,7 @@ export function Navbar() {
               exit={{ opacity: 0, height: 0 }}
               className="md:hidden w-full bg-white dark:bg-slate-950 border-b border-black dark:border-slate-800 overflow-hidden aksana-glass shadow-sm"
             >
-              <div className="px-8 py-10 space-y-6">
+              <div className="px-4 sm:px-6 md:px-8 py-10 space-y-6">
                 {navLinks.map((link) => {
                   const isActive = pathname === link.href;
                   return (

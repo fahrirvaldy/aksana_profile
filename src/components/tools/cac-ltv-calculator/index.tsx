@@ -204,7 +204,7 @@ export default function CacLtvCalculator({ onSave, isSyncing, initialData }: Cac
               <h3 className="font-black uppercase tracking-widest text-xs text-slate-600 dark:text-slate-300">{t("ltvTitle")}</h3>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-300 ml-1">{t("aov")}</label>
                 <input
@@ -275,7 +275,7 @@ export default function CacLtvCalculator({ onSave, isSyncing, initialData }: Cac
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div className="p-6 bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl space-y-1 shadow-sm">
                 <p className="text-[10px] font-bold text-slate-600 dark:text-slate-300 uppercase tracking-[0.2em]">{t("totalCac")}</p>
                 <p className="text-xl font-black text-blue-500">{formatCurrency(cac)}</p>

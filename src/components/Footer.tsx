@@ -8,8 +8,8 @@ export function Footer() {
 
   return (
     <footer className="border-t border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/50 shadow-sm">
-      <div className="max-w-7xl mx-auto px-8 py-12 md:py-16">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-12 md:py-16">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-12">
           <div className="col-span-1 md:col-span-2">
             <h3 className="text-xl font-bold mb-4 tracking-tight">Aksana Business Lab</h3>
             <p className="text-slate-700 dark:text-slate-400 max-w-xs leading-relaxed font-normal">

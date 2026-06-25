@@ -309,7 +309,7 @@ export default function ProductionTargetSimulator({
               <label className="block text-sm font-bold mb-1.5 ml-1 flex items-center gap-1.5 text-slate-600 dark:text-slate-300">
                 {t('identity.category')}
               </label>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <button
                   onClick={() => setCategory('magnet')}
                   className={`py-3 rounded-xl border transition-all text-sm font-bold ${
@@ -367,7 +367,7 @@ export default function ProductionTargetSimulator({
               <p className="text-[10px] text-slate-600 dark:text-slate-300 font-normal mt-1 ml-1">{t('data.salesNote')}</p>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-bold mb-1.5 ml-1 text-slate-600 dark:text-slate-300">{t('data.leadTime')}</label>
                 <div className="relative">

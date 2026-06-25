@@ -528,7 +528,7 @@ function Dashboard({ employees, seats, onDelete }: { employees: Employee[], seat
         <h2 className="text-3xl font-black text-black dark:text-white mb-4">Profil Organisasi Terbentuk</h2>
         <p className="text-black dark:text-slate-400 max-w-md mb-10 font-medium italic">Anda telah menetapkan {Object.keys(seats).length} divisi. Tambahkan karyawan melalui asesmen untuk melihat analisis kecocokan.</p>
         
-        <div className="w-full max-w-xl text-left bg-white p-8 rounded-[3rem] border border-black dark:border-slate-800 aksana-glass shadow-sm">
+        <div className="w-full max-w-xl text-left bg-white p-6 md:p-6 md:p-8 rounded-[3rem] border border-black dark:border-slate-800 aksana-glass shadow-sm">
           <h3 className="text-[10px] font-black text-black dark:text-white uppercase tracking-widest mb-6 border-b border-black/10 dark:border-white/10 pb-4">Standar Divisi (AI Generated)</h3>
           <div className="space-y-4">
             {Object.entries(seats).map(([divName, data], i) => (
@@ -573,7 +573,7 @@ function Dashboard({ employees, seats, onDelete }: { employees: Employee[], seat
   });
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:p-6 md:p-8">
       {/* Sidebar List */}
       <div className="lg:col-span-4">
         <Card className="p-6 h-full bg-white dark:bg-slate-900 border border-black dark:border-white/20 shadow-sm">
@@ -643,7 +643,7 @@ function Dashboard({ employees, seats, onDelete }: { employees: Employee[], seat
                 <ProgressBar label="Ketelitian (Analisis)" actual={empPsycho.detail} required={seatReq.detail} colorClass="bg-amber-500" />
                 <ProgressBar label="Eksekusi & Logika" actual={empPsycho.execution} required={seatReq.execution} colorClass="bg-emerald-500" />
               </div>
-              <div className="flex justify-start items-center gap-8 mt-6 pt-6 border-t border-black shadow-sm">
+              <div className="flex justify-start items-center gap-6 md:p-6 md:p-8 mt-6 pt-6 border-t border-black shadow-sm">
                 <div className="flex items-center gap-2 text-[10px] font-black text-black dark:text-white tracking-wider">
                   <div className="w-8 h-2 bg-indigo-500 rounded-full"></div> AKTUAL
                 </div>

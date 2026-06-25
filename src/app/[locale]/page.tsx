@@ -30,7 +30,7 @@ export default function Home() {
   ];
 
   return (
-    <div className="max-w-7xl mx-auto px-8 py-20 md:py-32">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32">
       {/* Hero Section */}
       <section className="text-center space-y-10 mb-24 max-w-4xl mx-auto">
         <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-slate-950 dark:text-[#EEEEEE] leading-[1.15]">
@@ -62,7 +62,7 @@ export default function Home() {
             key={index}
             whileHover={{ scale: 1.03 }}
             transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
-            className="p-10 rounded-3xl bg-white/90 dark:bg-slate-900/40 aksana-glass shadow-sm border border-slate-200 dark:border-white/10 space-y-6 group"
+            className="p-8 md:p-10 rounded-3xl bg-white/90 dark:bg-slate-900/40 aksana-glass shadow-sm border border-slate-200 dark:border-white/10 space-y-6 group"
           >
             <div className={`w-14 h-14 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 flex items-center justify-center ${feature.color} group-hover:scale-110 transition-transform duration-500`}>
               {feature.icon}
