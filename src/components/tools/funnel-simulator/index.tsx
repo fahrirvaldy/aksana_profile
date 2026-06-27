@@ -101,7 +101,7 @@ export default function FunnelSimulator({ onSave, isSyncing, initialData }: Funn
 
   const [isExporting, setIsExporting] = useState<boolean>(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const prevInitialData = useRef<FunnelSimulatorInitialData | undefined>();
+  const prevInitialData = useRef<FunnelSimulatorInitialData | undefined>(undefined);
 
   useEffect(() => {
     // This effect synchronizes the component's internal state 

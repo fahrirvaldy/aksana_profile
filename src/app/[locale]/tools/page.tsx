@@ -300,73 +300,73 @@ export default function ToolsPage() {
             >
               {activeTool === "Cashflow Analysis" && (
                 <CashflowCalculator 
-                  user={user}
-                  initialData={savedToolData}
-                  onSave={(data) => saveToolState("Cashflow Analysis", data)} 
+                  user={user ?? undefined}
+                  initialData={savedToolData as any}
+                  onSave={(data) => saveToolState("Cashflow Analysis", data as any)} 
                   isSyncing={isSyncing} 
                 />
               )}
               {activeTool === "Growth Simulator" && (
                 <GrowthSimulator 
-                  user={user}
-                  initialData={savedToolData}
-                  onSave={(data) => saveToolState("Growth Simulator", data)} 
+                  user={user ?? undefined}
+                  initialData={savedToolData as any}
+                  onSave={(data) => saveToolState("Growth Simulator", data as any)} 
                   isSyncing={isSyncing} 
                 />
               )}
               {activeTool === "SOP Generator" && (
                 <SOPGenerator 
-                  user={user}
-                  initialData={savedToolData}
-                  onSave={(data) => saveToolState("SOP Generator", data)} 
+                  user={user ?? undefined}
+                  initialData={savedToolData as any}
+                  onSave={(data) => saveToolState("SOP Generator", data as any)} 
                   isSyncing={isSyncing} 
                 />
               )}
               {activeTool === "CAC vs LTV" && (
                 <CacLtvCalculator 
-                  user={user}
-                  initialData={savedToolData}
-                  onSave={(data) => saveToolState("CAC vs LTV", data)} 
+                  user={user ?? undefined}
+                  initialData={savedToolData as any}
+                  onSave={(data) => saveToolState("CAC vs LTV", data as any)} 
                   isSyncing={isSyncing} 
                 />
               )}
               {activeTool === "Funnel Simulator" && (
                 <FunnelSimulator 
-                  user={user}
-                  initialData={savedToolData}
-                  onSave={(data) => saveToolState("Funnel Simulator", data)} 
+                  user={user ?? undefined}
+                  initialData={savedToolData as any}
+                  onSave={(data) => saveToolState("Funnel Simulator", data as any)} 
                   isSyncing={isSyncing} 
                 />
               )}
               {activeTool === "Production Target Simulator" && (
                 <ProductionTargetSimulator 
-                  user={user}
-                  initialData={savedToolData}
-                  onSave={(data) => saveToolState("Production Target Simulator", data)} 
+                  user={user ?? undefined}
+                  initialData={savedToolData as any}
+                  onSave={(data) => saveToolState("Production Target Simulator", data as any)} 
                   isSyncing={isSyncing} 
                 />
               )}
               {activeTool === "Template L10 Meeting" && (
                 <L10Meeting 
-                  user={user}
-                  initialData={savedToolData}
-                  onSave={(data) => saveToolState("Template L10 Meeting", data)} 
+                  user={user ?? undefined}
+                  initialData={savedToolData as any}
+                  onSave={(data) => saveToolState("Template L10 Meeting", data as any)} 
                   isSyncing={isSyncing} 
                 />
               )}
               {activeTool === "People Analyzer" && (
                 <PeopleAnalyzer 
-                  user={user}
-                  initialData={savedToolData}
-                  onSave={(data) => saveToolState("People Analyzer", data)} 
+                  user={user ?? undefined}
+                  initialData={savedToolData as any}
+                  onSave={(data) => saveToolState("People Analyzer", data as any)} 
                   isSyncing={isSyncing} 
                 />
               )}
               {activeTool === "To-Do Tracker" && (
                 <ToDoTracker 
-                  user={user}
-                  initialData={savedToolData}
-                  onSave={(data) => saveToolState("To-Do Tracker", data)} 
+                  user={user ?? undefined}
+                  initialData={savedToolData as any}
+                  onSave={(data) => saveToolState("To-Do Tracker", data as any)} 
                   isSyncing={isSyncing} 
                 />
               )}
