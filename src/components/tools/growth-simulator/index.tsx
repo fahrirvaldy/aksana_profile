@@ -1,5 +1,6 @@
 "use client";
 
+import { User } from "@supabase/supabase-js";
 import React, { useState, useMemo } from "react";
 import { 
   Users, 
@@ -60,7 +61,7 @@ interface GrowthSimulatorInitialData {
 }
 
 interface GrowthSimulatorProps {
-  user?: { id: string; [key: string]: unknown };
+  user?: User;
   onSave?: (data: GrowthSimulatorInitialData) => void;
   isSyncing?: boolean;
   initialData?: GrowthSimulatorInitialData;

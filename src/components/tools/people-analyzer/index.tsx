@@ -1,5 +1,6 @@
-"use client";
+'use client';
 
+import { User } from "@supabase/supabase-js";
 import React, { useState, useCallback } from 'react';
 import { 
   Users, 
@@ -50,7 +51,7 @@ interface PeopleAnalyzerInitialData {
 }
 
 interface PeopleAnalyzerProps {
-  user?: { id: string; [key: string]: unknown };
+  user?: User;
   onSave?: (data: PeopleAnalyzerInitialData) => void;
   isSyncing?: boolean;
   initialData?: PeopleAnalyzerInitialData;

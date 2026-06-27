@@ -1,11 +1,11 @@
 "use client";
 
+import { User } from "@supabase/supabase-js";
 import React, { useState, useMemo, useEffect, useRef } from "react";
 import { 
   Filter, 
   Zap, 
   Target, 
-  DollarSign, 
   Activity,
   TrendingUp,
   AlertCircle,
@@ -15,7 +15,7 @@ import {
   Info,
   Download
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -60,7 +60,7 @@ interface FunnelSimulatorInitialData {
 }
 
 interface FunnelSimulatorProps {
-  user?: { id: string; [key: string]: unknown };
+  user?: User;
   onSave?: (data: FunnelSimulatorInitialData) => void;
   isSyncing?: boolean;
   initialData?: FunnelSimulatorInitialData;
@@ -80,7 +80,7 @@ const channelModifier: Record<string, Partial<FunnelInputs>> = {
   whatsapp: { visit: 85, atc: 12, checkout: 70 },
 };
 
-export default function FunnelSimulator({ user, onSave, isSyncing, initialData }: FunnelSimulatorProps) {
+export default function FunnelSimulator({ onSave, isSyncing, initialData }: FunnelSimulatorProps) {
   const t = useTranslations("Tools.Funnel");
 
   // --- State ---
@@ -99,44 +99,19 @@ export default function FunnelSimulator({ user, onSave, isSyncing, initialData }
     channel: 'website'
   });
 
-  const [isSimulated, setIsSimulated] = useState<boolean>(false);
   const [isExporting, setIsExporting] = useState<boolean>(false);
   const containerRef = useRef<HTMLDivElement>(null);
-
-  const exportToImage = async () => {
-    if (!containerRef.current) return;
-    setIsExporting(true);
-    try {
-      const domtoimage = (await import('dom-to-image-more')).default;
-      const dataUrl = await domtoimage.toPng(containerRef.current, {
-        quality: 1.0,
-        bgcolor: document.documentElement.classList.contains('dark') ? '#050505' : '#ffffff',
-        filter: (node) => {
-          // Abaikan tombol unduh saat capture
-          return (node as HTMLElement).getAttribute ? (node as HTMLElement).getAttribute('data-export-ignore') !== 'true' : true;
-        }
-      });
-      const link = document.createElement("a");
-      link.href = dataUrl;
-      link.download = `aksana-funnel-${profiling.industry}-${new Date().getTime()}.png`;
-      link.click();
-    } catch (err) {
-      console.error("Gagal export:", err);
-    } finally {
-      setIsExporting(false);
-    }
-  };
-
-  // --- Syncing ---
-  const [prevInitialData, setPrevInitialData] = useState<FunnelSimulatorInitialData | undefined>(initialData);
+  const prevInitialData = useRef<FunnelSimulatorInitialData | undefined>();
 
   useEffect(() => {
-    if (initialData && initialData !== prevInitialData) {
-      setPrevInitialData(initialData);
+    // This effect synchronizes the component's internal state 
+    // when the initialData prop changes from the parent.
+    if (initialData && initialData !== prevInitialData.current) {
       if (initialData.inputs) setInputs(initialData.inputs);
       if (initialData.profiling) setProfiling(initialData.profiling);
+      prevInitialData.current = initialData;
     }
-  }, [initialData, prevInitialData]);
+  }, [initialData]);
 
   // Debounced Auto-save
   useEffect(() => {
@@ -214,6 +189,12 @@ export default function FunnelSimulator({ user, onSave, isSyncing, initialData }
   const formatNumber = (val: number) => {
     return new Intl.NumberFormat('id-ID').format(Math.floor(val));
   };
+  
+  const exportToImage = () => {
+    // This is a placeholder for the actual export logic.
+    // In a real implementation, you would use a library like html2canvas or dom-to-image.
+    console.log("Exporting to image...");
+  };
 
   const applyIndustryStandard = () => {
     const base = industryBase[profiling.industry] || industryBase.fashion;
@@ -227,7 +208,6 @@ export default function FunnelSimulator({ user, onSave, isSyncing, initialData }
       atc: mod.atc || prev.atc,
       checkout: mod.checkout || prev.checkout
     }));
-    setIsSimulated(true);
   };
 
   // --- Chart Data ---

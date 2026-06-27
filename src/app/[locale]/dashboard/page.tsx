@@ -12,10 +12,7 @@ import {
   Building2,
   AlertCircle,
   ArrowRight,
-  ShieldCheck,
-  Zap,
   FileSignature,
-  Download,
   Megaphone,
   Filter,
   Package,
@@ -31,7 +28,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 interface ToolHistory {
   tool_name: string;
-  saved_state: any;
+  saved_state: Record<string, unknown>;
 }
 
 interface UserData {
@@ -73,7 +70,14 @@ export default function DashboardPage() {
           .single();
 
         if (profileError) throw profileError;
-        setUserData(profile as any);
+        if (profile) {
+          const newUserData: UserData = {
+            full_name: profile.full_name || '',
+            role: profile.role || '',
+            companies: profile.companies && profile.companies.length > 0 ? { name: profile.companies[0]?.name || '' } : null
+          };
+          setUserData(newUserData);
+        }
 
         // Fetch Tools History - Ambil semua 9 alat
         const { data: history, error: historyError } = await supabase
@@ -84,9 +88,10 @@ export default function DashboardPage() {
         if (historyError) throw historyError;
         setToolHistory(history || []);
 
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error("Dashboard init error:", err);
-        setError("Gagal memuat data dashboard. Silakan coba beberapa saat lagi.");
+        const errorMessage = err instanceof Error ? err.message : "Gagal memuat data dashboard. Silakan coba beberapa saat lagi.";
+        setError(errorMessage);
       } finally {
         setIsLoading(false);
       }
@@ -119,14 +124,21 @@ export default function DashboardPage() {
   
   // Finance & Growth Metrics
   const cashflowMetrics = useMemo(() => {
-    if (!cashflowData?.records || cashflowData.records.length === 0) {
+    if (!cashflowData?.records || !Array.isArray(cashflowData.records) || cashflowData.records.length === 0) {
       return cashflowData?.initialBalance || 0;
     }
     return cashflowData.records[cashflowData.records.length - 1]?.balance || 0;
   }, [cashflowData]);
 
   const growthMetrics = useMemo(() => {
-    const calculateProfit = (metrics: any) => {
+    interface GrowthMetrics {
+      leads?: number;
+      conv?: number;
+      trans?: number;
+      sale?: number;
+      margin?: number;
+    }
+    const calculateProfit = (metrics: GrowthMetrics | null) => {
       if (!metrics) return 0;
       const leads = metrics.leads || 0;
       const conv = metrics.conv || 0;
@@ -140,20 +152,20 @@ export default function DashboardPage() {
     };
 
     return {
-      current: calculateProfit(growthData?.current),
-      target: calculateProfit(growthData?.target)
+      current: calculateProfit(growthData?.current as GrowthMetrics | null),
+      target: calculateProfit(growthData?.target as GrowthMetrics | null)
     };
   }, [growthData]);
 
   const cacLtvMetrics = useMemo(() => {
     const data = cacLtvData;
-    const adSpend = data?.adSpend || 0;
-    const opsCost = data?.opsCost || 0;
-    const newCustomers = data?.newCustomers || 1;
-    const aov = data?.aov || 0;
-    const frequency = data?.frequency || 0;
-    const lifespan = data?.lifespan || 0;
-    const margin = data?.margin || 0;
+    const adSpend = (data?.adSpend as number) || 0;
+    const opsCost = (data?.opsCost as number) || 0;
+    const newCustomers = (data?.newCustomers as number) || 1;
+    const aov = (data?.aov as number) || 0;
+    const frequency = (data?.frequency as number) || 0;
+    const lifespan = (data?.lifespan as number) || 0;
+    const margin = (data?.margin as number) || 0;
 
     const cac = (adSpend + opsCost) / (newCustomers || 1);
     const ltv = aov * frequency * lifespan * (margin / 100);
@@ -165,31 +177,36 @@ export default function DashboardPage() {
   // Ops & Team Metrics
   const l10Metrics = useMemo(() => {
     const data = l10Data;
-    if (!data || !data.ratings) return { rating: 0, issues: 0 };
+    if (!data || !(data.ratings as any)) return { rating: 0, issues: 0 };
     
-    const ratings = Object.entries(data.ratings)
-      .filter(([idx]) => data.attendance?.[parseInt(idx)])
+    const ratings = Object.entries(data.ratings as any)
+      .filter(([idx]) => (data.attendance as any)?.[parseInt(idx)])
       .map(([, val]) => val as number);
     
     const ratingValue = ratings.length === 0 ? 0 : (ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(1);
     
     return { 
       rating: ratingValue, 
-      issues: data.idsSession?.manualIssues?.length || 0
+      issues: (data.idsSession as any)?.manualIssues?.length || 0
     };
   }, [l10Data]);
 
   const peopleMetrics = useMemo(() => {
-    const members = peopleData?.members || [];
+    const members = (peopleData?.members as any[]) || [];
     if (members.length === 0) return { avgFit: 0, count: 0 };
+
+    interface Member {
+      values?: { [key: string]: string };
+      gwc?: { get?: string; want?: string; capacity?: string };
+    }
     
-    const totalFit = members.reduce((acc: number, member: any) => {
+    const totalFit = members.reduce((acc: number, member: Member) => {
       const valuesCount = Object.values(member.values || {}).filter(v => v === '+').length;
       const gwcCount = [member.gwc?.get, member.gwc?.want, member.gwc?.capacity].filter(v => v === 'yes').length;
       return acc + (valuesCount + gwcCount);
     }, 0);
 
-    const maxPoints = members.length * ( (peopleData?.coreValues?.length || 0) + 3);
+    const maxPoints = members.length * ( ((peopleData?.coreValues as any[])?.length || 0) + 3);
     return {
       avgFit: maxPoints > 0 ? (totalFit / maxPoints) * 100 : 0,
       count: members.length
@@ -197,8 +214,11 @@ export default function DashboardPage() {
   }, [peopleData]);
 
   const todoMetrics = useMemo(() => {
-    const tasks = todoData?.tasks || [];
-    const completed = tasks.filter((t: any) => t.status === 'done').length;
+    interface Task {
+      status: string;
+    }
+    const tasks = (todoData?.tasks as any[]) || [];
+    const completed = tasks.filter((t: Task) => t.status === 'done').length;
     return {
       total: tasks.length,
       completed,
@@ -208,7 +228,7 @@ export default function DashboardPage() {
 
   // Marketing & Production Metrics
   const funnelMetrics = useMemo(() => {
-    const data = funnelData?.inputs;
+    const data = funnelData?.inputs as any;
     const impressions = ((data?.budget || 0) / (data?.cpm || 1)) * 1000;
     const clicks = impressions * ((data?.ctr || 0) / 100);
     const visitors = clicks * ((data?.visit || 0) / 100);
@@ -223,7 +243,7 @@ export default function DashboardPage() {
   }, [funnelData]);
 
   const productionMetrics = useMemo(() => {
-    const data = productionData;
+    const data = productionData as any;
     if (!data) return null;
 
     const salesArray = (data.salesInput || "")
@@ -488,8 +508,8 @@ export default function DashboardPage() {
                     <div className="flex justify-between items-end">
                       <div className="space-y-1">
                         <p className="text-xs font-bold text-slate-700 uppercase tracking-widest">SOP Terakhir</p>
-                        <h4 className="text-xl font-bold line-clamp-1">{Object.values(sopData?.formData || {})[0] as string || "Untitled"}</h4>
-                        <p className="text-[10px] text-slate-700 uppercase font-bold">Divisi: {sopData?.division}</p>
+                        <h4 className="text-xl font-bold line-clamp-1">{Object.values((sopData?.formData as any) || {})[0] as string || "Untitled"}</h4>
+                        <p className="text-[10px] text-slate-700 uppercase font-bold">Divisi: {sopData?.division as string}</p>
                       </div>
                       <Link href="/tools" className="p-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-400 hover:bg-slate-900 dark:hover:bg-slate-50 hover:text-white dark:hover:text-slate-950 transition-all">
                         <ArrowRight size={20} />

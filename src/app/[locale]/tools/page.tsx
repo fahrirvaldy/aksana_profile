@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import dynamic from 'next/dynamic';
 import { supabase } from "@/lib/supabase/client";
+import { User } from "@supabase/supabase-js";
 import { 
   DollarSign,
   TrendingUp,
@@ -54,7 +55,7 @@ export default function ToolsPage() {
   const t = useTranslations('ToolsPage');
   const tools = t.raw('tools') as { name: string; description: string; status: string; action: string }[];
 
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [isLoadingAuth, setIsLoadingAuth] = useState(true);
   const [hasAccess, setHasAccess] = useState(false);
   const [timeLeft, setTimeLeft] = useState(300); // 5 menit
@@ -63,7 +64,7 @@ export default function ToolsPage() {
   const [isSyncing, setIsSyncing] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const [activeTool, setActiveTool] = useState<string | null>(null);
-  const [savedToolData, setSavedToolData] = useState<any>(null);
+  const [savedToolData, setSavedToolData] = useState<Record<string, unknown> | null>(null);
 
   const [formData, setFormData] = useState({
     nama: "",
@@ -98,15 +99,14 @@ export default function ToolsPage() {
       timer = setInterval(() => {
         setTimeLeft((prev) => prev - 1);
       }, 1000);
-    } else if (timeLeft === 0 && hasAccess) {
-      setHasAccess(false);
+    } else if (timeLeft === 0) {
       setIsTimeUp(true);
     }
     return () => clearInterval(timer);
   }, [hasAccess, timeLeft, user]);
 
   // 2. Logika Simpan Data (History)
-  const saveToolState = async (toolName: string, stateData: any) => {
+  const saveToolState = async (toolName: string, stateData: Record<string, unknown>) => {
     if (!user) {
       alert(t('sessionEndAlert'));
       return;
@@ -300,7 +300,7 @@ export default function ToolsPage() {
             >
               {activeTool === "Cashflow Analysis" && (
                 <CashflowCalculator 
-                  user={user} 
+                  user={user}
                   initialData={savedToolData}
                   onSave={(data) => saveToolState("Cashflow Analysis", data)} 
                   isSyncing={isSyncing} 
@@ -308,7 +308,7 @@ export default function ToolsPage() {
               )}
               {activeTool === "Growth Simulator" && (
                 <GrowthSimulator 
-                  user={user} 
+                  user={user}
                   initialData={savedToolData}
                   onSave={(data) => saveToolState("Growth Simulator", data)} 
                   isSyncing={isSyncing} 
@@ -316,7 +316,7 @@ export default function ToolsPage() {
               )}
               {activeTool === "SOP Generator" && (
                 <SOPGenerator 
-                  user={user} 
+                  user={user}
                   initialData={savedToolData}
                   onSave={(data) => saveToolState("SOP Generator", data)} 
                   isSyncing={isSyncing} 
@@ -324,7 +324,7 @@ export default function ToolsPage() {
               )}
               {activeTool === "CAC vs LTV" && (
                 <CacLtvCalculator 
-                  user={user} 
+                  user={user}
                   initialData={savedToolData}
                   onSave={(data) => saveToolState("CAC vs LTV", data)} 
                   isSyncing={isSyncing} 
@@ -332,7 +332,7 @@ export default function ToolsPage() {
               )}
               {activeTool === "Funnel Simulator" && (
                 <FunnelSimulator 
-                  user={user} 
+                  user={user}
                   initialData={savedToolData}
                   onSave={(data) => saveToolState("Funnel Simulator", data)} 
                   isSyncing={isSyncing} 
@@ -340,7 +340,7 @@ export default function ToolsPage() {
               )}
               {activeTool === "Production Target Simulator" && (
                 <ProductionTargetSimulator 
-                  user={user} 
+                  user={user}
                   initialData={savedToolData}
                   onSave={(data) => saveToolState("Production Target Simulator", data)} 
                   isSyncing={isSyncing} 
@@ -348,7 +348,7 @@ export default function ToolsPage() {
               )}
               {activeTool === "Template L10 Meeting" && (
                 <L10Meeting 
-                  user={user} 
+                  user={user}
                   initialData={savedToolData}
                   onSave={(data) => saveToolState("Template L10 Meeting", data)} 
                   isSyncing={isSyncing} 
@@ -356,7 +356,7 @@ export default function ToolsPage() {
               )}
               {activeTool === "People Analyzer" && (
                 <PeopleAnalyzer 
-                  user={user} 
+                  user={user}
                   initialData={savedToolData}
                   onSave={(data) => saveToolState("People Analyzer", data)} 
                   isSyncing={isSyncing} 
@@ -364,7 +364,7 @@ export default function ToolsPage() {
               )}
               {activeTool === "To-Do Tracker" && (
                 <ToDoTracker 
-                  user={user} 
+                  user={user}
                   initialData={savedToolData}
                   onSave={(data) => saveToolState("To-Do Tracker", data)} 
                   isSyncing={isSyncing} 

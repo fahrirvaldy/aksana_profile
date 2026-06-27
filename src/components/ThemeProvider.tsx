@@ -15,18 +15,21 @@ export function ThemeProvider({
 }: { 
   children: React.ReactNode;
 }) {
-  const [theme, setThemeState] = useState<string>("light");
+  const [theme, setThemeState] = useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem("theme") || "light";
+    }
+    return "light";
+  });
 
   useEffect(() => {
-    const savedTheme = localStorage.getItem("theme") || "light";
-    setThemeState(savedTheme);
-    document.documentElement.classList.toggle("dark", savedTheme === "dark");
-  }, []);
+    document.documentElement.classList.remove("light", "dark");
+    document.documentElement.classList.add(theme);
+    localStorage.setItem("theme", theme);
+  }, [theme]);
 
   const setTheme = (newTheme: string) => {
     setThemeState(newTheme);
-    localStorage.setItem("theme", newTheme);
-    document.documentElement.classList.toggle("dark", newTheme === "dark");
   };
 
   return (

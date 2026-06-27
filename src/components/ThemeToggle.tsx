@@ -8,13 +8,7 @@ export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = React.useState(false);
 
-  React.useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) {
-    return <div className="p-2 w-9 h-9" />;
-  }
+  React.useEffect(() => setMounted(true), []);
 
   return (
     <button
@@ -22,7 +16,11 @@ export function ThemeToggle() {
       className="p-2 rounded-xl bg-white dark:bg-slate-800 border border-black dark:border-transparent text-black dark:text-slate-50 transition-colors hover:bg-slate-100 dark:hover:bg-slate-700"
       aria-label="Toggle theme"
     >
-      {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
+      {mounted ? (
+        theme === "dark" ? <Sun size={20} /> : <Moon size={20} />
+      ) : (
+        <div className="w-5 h-5" /> // Placeholder to prevent layout shift
+      )}
     </button>
   );
 }

@@ -1,12 +1,13 @@
 "use client";
 
+import { User } from "@supabase/supabase-js";
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { 
   CheckCircle2, 
   Circle, 
   Plus, 
   Trash2, 
-  User, 
+  User as UserIcon, 
   Calendar, 
   Filter, 
   Download,
@@ -33,7 +34,7 @@ interface ToDoTrackerInitialData {
 }
 
 interface ToDoTrackerProps {
-  user?: { id: string; [key: string]: unknown };
+  user?: User;
   onSave?: (data: ToDoTrackerInitialData) => void;
   isSyncing?: boolean;
   initialData?: ToDoTrackerInitialData;
@@ -211,7 +212,7 @@ export default function ToDoTracker({ user, onSave, isSyncing, initialData }: To
               </div>
               <div className="md:col-span-3">
                 <div className="relative">
-                  <User size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600 dark:text-slate-300" />
+                  <UserIcon size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600 dark:text-slate-300" />
                   <input 
                     type="text"
                     placeholder={t('placeholderPic')}
@@ -296,7 +297,7 @@ export default function ToDoTracker({ user, onSave, isSyncing, initialData }: To
                       </p>
                       <div className="mt-4 flex flex-wrap items-center gap-6">
                         <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest px-3 py-1.5 bg-black text-white dark:bg-blue-900/30 dark:text-blue-400 rounded-lg border border-black dark:border-blue-800/50 shadow-sm">
-                          <User size={12} />
+                          <UserIcon size={12} />
                           {todo.owner}
                         </div>
                         <div className="flex items-center gap-2 text-[10px] font-bold text-slate-600 dark:text-slate-300 uppercase tracking-widest">

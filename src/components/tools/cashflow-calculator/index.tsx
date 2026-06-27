@@ -1,5 +1,6 @@
 "use client";
 
+import { User } from "@supabase/supabase-js";
 import React, { useState, useMemo } from "react";
 import { 
   TrendingUp, 
@@ -64,7 +65,7 @@ interface CashflowCalculatorInitialData {
 }
 
 interface CashflowCalculatorProps {
-  user?: { id: string; [key: string]: unknown };
+  user?: User;
   onSave?: (data: CashflowCalculatorInitialData) => void;
   isSyncing?: boolean;
   initialData?: CashflowCalculatorInitialData;
@@ -344,20 +345,20 @@ export default function CashflowCalculator({ user, onSave, isSyncing, initialDat
 
                               <div className="grid grid-cols-2 gap-3">
                                 <div className="space-y-1.5">
-                                  <label className="text-[9px] font-bold text-slate-600 dark:text-slate-300 uppercase">{t("labels.inOps")}</label>
-                                  <input type="number" placeholder={t("placeholders.rp")} value={inOps} onChange={(e) => setInOps(e.target.value === "" ? "" : Number(e.target.value))} className="w-full px-3 py-2 rounded-xl bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 text-sm outline-none placeholder-slate-400 dark:placeholder-slate-500" />
+                                  <label htmlFor="inOps" className="text-[9px] font-bold text-slate-600 dark:text-slate-300 uppercase">{t("labels.inOps")}</label>
+                                  <input id="inOps" type="number" placeholder={t("placeholders.rp")} value={inOps} onChange={(e) => setInOps(e.target.value === "" ? "" : Number(e.target.value))} className="w-full px-3 py-2 rounded-xl bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 text-sm outline-none placeholder-slate-400 dark:placeholder-slate-500" />
                                 </div>
                                 <div className="space-y-1.5">
-                                  <label className="text-[9px] font-bold text-slate-600 dark:text-slate-300 uppercase">{t("labels.inInvest")}</label>
-                                  <input type="number" placeholder={t("placeholders.rp")} value={inNonOps} onChange={(e) => setInNonOps(e.target.value === "" ? "" : Number(e.target.value))} className="w-full px-3 py-2 rounded-xl bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 text-sm outline-none placeholder-slate-400 dark:placeholder-slate-500" />
+                                  <label htmlFor="inNonOps" className="text-[9px] font-bold text-slate-600 dark:text-slate-300 uppercase">{t("labels.inInvest")}</label>
+                                  <input id="inNonOps" type="number" placeholder={t("placeholders.rp")} value={inNonOps} onChange={(e) => setInNonOps(e.target.value === "" ? "" : Number(e.target.value))} className="w-full px-3 py-2 rounded-xl bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 text-sm outline-none placeholder-slate-400 dark:placeholder-slate-500" />
                                 </div>
                                 <div className="space-y-1.5">
-                                  <label className="text-[9px] font-bold text-slate-600 dark:text-slate-300 uppercase">{t("labels.outOps")}</label>
-                                  <input type="number" placeholder={t("placeholders.rp")} value={outOps} onChange={(e) => setOutOps(e.target.value === "" ? "" : Number(e.target.value))} className="w-full px-3 py-2 rounded-xl bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 text-sm outline-none placeholder-slate-400 dark:placeholder-slate-500" />
+                                  <label htmlFor="outOps" className="text-[9px] font-bold text-slate-600 dark:text-slate-300 uppercase">{t("labels.outOps")}</label>
+                                  <input id="outOps" type="number" placeholder={t("placeholders.rp")} value={outOps} onChange={(e) => setOutOps(e.target.value === "" ? "" : Number(e.target.value))} className="w-full px-3 py-2 rounded-xl bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 text-sm outline-none placeholder-slate-400 dark:placeholder-slate-500" />
                                 </div>
                                 <div className="space-y-1.5">
-                                  <label className="text-[9px] font-bold text-slate-600 dark:text-slate-300 uppercase">{t("labels.outInvest")}</label>
-                                  <input type="number" placeholder={t("placeholders.rp")} value={outNonOps} onChange={(e) => setOutNonOps(e.target.value === "" ? "" : Number(e.target.value))} className="w-full px-3 py-2 rounded-xl bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 text-sm outline-none placeholder-slate-400 dark:placeholder-slate-500" />
+                                  <label htmlFor="outNonOps" className="text-[9px] font-bold text-slate-600 dark:text-slate-300 uppercase">{t("labels.outInvest")}</label>
+                                  <input id="outNonOps" type="number" placeholder={t("placeholders.rp")} value={outNonOps} onChange={(e) => setOutNonOps(e.target.value === "" ? "" : Number(e.target.value))} className="w-full px-3 py-2 rounded-xl bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 text-sm outline-none placeholder-slate-400 dark:placeholder-slate-500" />
                                 </div>
                               </div>
 

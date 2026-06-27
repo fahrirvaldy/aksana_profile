@@ -37,10 +37,25 @@ ChartJS.register(
   Legend
 );
 
+interface GrowthData {
+  leads: number;
+  conversion: number;
+  transactions: number;
+  avgSale: number;
+  margin: number;
+}
+
 interface HistoryEntry {
   id: string;
   created_at: string;
-  data_payload: any;
+  data_payload: {
+    current: GrowthData;
+    target: GrowthData;
+    results: {
+      currRes: { profit: number };
+      targetRes: { profit: number };
+    };
+  };
 }
 
 export default function GrowthSimulator() {
@@ -53,7 +68,7 @@ export default function GrowthSimulator() {
   const [globalGrowth, setGlobalGrowth] = useState<number>(10);
 
   // Growth Factors State
-  const [current, setCurrent] = useState({
+  const [current, setCurrent] = useState<GrowthData & { marketingCost: number; fixedCosts: number }>({
     leads: 1000,
     conversion: 10,
     transactions: 2,
@@ -63,7 +78,7 @@ export default function GrowthSimulator() {
     fixedCosts: 10000000
   });
 
-  const [target, setTarget] = useState({
+  const [target, setTarget] = useState<GrowthData>({
     leads: 1100,
     conversion: 11,
     transactions: 2.2,
@@ -80,7 +95,7 @@ export default function GrowthSimulator() {
       .order('created_at', { ascending: false })
       .limit(3);
 
-    if (!error && data) setHistory(data as any);
+    if (!error && data) setHistory(data as HistoryEntry[]);
   }, []);
 
   useEffect(() => {
@@ -112,7 +127,7 @@ export default function GrowthSimulator() {
   };
 
   // Calculations Logic
-  const calculateResult = (data: any) => {
+  const calculateResult = (data: GrowthData) => {
     const customers = data.leads * (data.conversion / 100);
     const revenue = customers * data.transactions * data.avgSale;
     const profit = revenue * (data.margin / 100);
@@ -237,7 +252,7 @@ export default function GrowthSimulator() {
                     <td className="py-4">
                       <input 
                         type="number" 
-                        value={(current as any)[item.key]} 
+                        value={current[item.key as keyof GrowthData]} 
                         onChange={(e) => setCurrent({...current, [item.key]: Number(e.target.value)})}
                         className="w-24 bg-transparent border-none font-bold outline-none text-slate-700"
                       />
@@ -245,7 +260,7 @@ export default function GrowthSimulator() {
                     <td className="py-4">
                       <input 
                         type="number" 
-                        value={(target as any)[item.key]} 
+                        value={target[item.key as keyof GrowthData]} 
                         onChange={(e) => setTarget({...target, [item.key]: Number(e.target.value)})}
                         className="w-24 bg-slate-50 dark:bg-slate-800 rounded-lg px-2 py-1 font-bold outline-none text-slate-950 dark:text-slate-50"
                       />

@@ -1,5 +1,6 @@
 "use client";
 
+import { User } from "@supabase/supabase-js";
 import React, { useState, useMemo, useEffect, useRef } from "react";
 import { 
   Package, 
@@ -47,7 +48,7 @@ export interface ProductionData {
 }
 
 interface ProductionTargetSimulatorProps {
-  user?: { id: string; [key: string]: unknown };
+  user?: User;
   onSave?: (data: ProductionData) => void;
   isSyncing?: boolean;
   initialData?: ProductionData;
@@ -113,11 +114,7 @@ export default function ProductionTargetSimulator({
 
   // --- Core Mathematics ---
   const results = useMemo(() => {
-    // Parse sales input: handle dots as thousand separators and commas as delimiters or decimals
-    // For simplicity, if there are commas, we assume they are delimiters first.
-    // If there's only one block with a comma, it might be a decimal.
-    // But UMKM usually uses comma for list and dot for thousand.
-    const parts = salesInput.split(/[,\n]/).map(s => s.trim()).filter(s => s !== "");
+    const parts = salesInput.split(/[,]/).map(s => s.trim()).filter(s => s !== "");
     const salesArray = parts.map(s => {
       const clean = s.replace(/\./g, "").replace(/,/g, ".");
       return parseFloat(clean);

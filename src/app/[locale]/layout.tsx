@@ -6,9 +6,13 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations } from 'next-intl/server';
-import { routing } from '@/i18n/routing';
 import { notFound } from 'next/navigation';
 import { PageTransition } from "@/components/PageTransition";
+
+
+// Define the supported locales
+const locales: readonly string[] = ['en', 'id'];
+
 
 const inter = Inter({
   subsets: ["latin"],
@@ -44,7 +48,7 @@ export default async function RootLayout({
   const { locale } = await params;
 
   // Ensure that the incoming `locale` is valid
-  if (!routing.locales.includes(locale as any)) {
+  if (!locales.includes(locale)) {
     notFound();
   }
 

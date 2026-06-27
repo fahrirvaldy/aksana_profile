@@ -1,5 +1,6 @@
 "use client";
 
+import { User } from "@supabase/supabase-js";
 import React, { useState } from "react";
 import { 
   FileSignature, 
@@ -26,7 +27,7 @@ interface SOPData {
 }
 
 interface SOPGeneratorProps {
-  user?: { id: string; [key: string]: unknown };
+  user?: User;
   onSave?: (data: SOPData) => void;
   isSyncing?: boolean;
   initialData?: SOPData;

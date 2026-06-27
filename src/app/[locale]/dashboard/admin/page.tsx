@@ -30,6 +30,20 @@ export default function AdminPage() {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
 
+  const fetchLeads = async () => {
+    setIsLoading(true);
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('id, full_name, email, phone_number, business_challenge, created_at')
+      .eq('role', 'guest')
+      .order('created_at', { ascending: false });
+
+    if (!error && data) {
+      setLeads(data as Lead[]);
+    }
+    setIsLoading(false);
+  };
+
   useEffect(() => {
     const checkAdmin = async () => {
       const { data: { session } } = await supabase.auth.getSession();
@@ -56,20 +70,6 @@ export default function AdminPage() {
 
     checkAdmin();
   }, [router]);
-
-  const fetchLeads = async () => {
-    setIsLoading(true);
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('id, full_name, email, phone_number, business_challenge, created_at')
-      .eq('role', 'guest')
-      .order('created_at', { ascending: false });
-
-    if (!error && data) {
-      setLeads(data as Lead[]);
-    }
-    setIsLoading(false);
-  };
 
   const filteredLeads = leads.filter(lead => 
     lead.full_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||

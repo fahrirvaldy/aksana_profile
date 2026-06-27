@@ -45,9 +45,13 @@ export default function KontakPage() {
       // Handle Success
       setSuccessMessage(t('successMessage'));
       setFormData({ name: "", email: "", message: "" });
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Handle Graceful Failure
-      setFormError(error.message || t('errorMessage'));
+      let message = t('errorMessage');
+      if (error instanceof Error) {
+        message = error.message;
+      }
+      setFormError(message);
     } finally {
       setIsLoading(false);
     }

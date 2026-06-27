@@ -1,5 +1,6 @@
 'use client';
 
+import { User } from "@supabase/supabase-js";
 import React, { useState, useMemo, useEffect, useRef } from "react";
 import { 
   Clock, 
@@ -86,7 +87,7 @@ export interface L10Data {
 }
 
 interface L10MeetingProps {
-  user?: { id: string; [key: string]: unknown };
+  user?: User;
   onSave?: (data: L10Data) => void;
   isSyncing?: boolean;
   initialData?: L10Data;
@@ -475,7 +476,7 @@ const L10PDFDocument = ({ data, attendees, averageRating }: { data: L10Data; att
 
       <View style={{ flexDirection: "column", gap: 12 }}>
         {/* Block 1: Identify */}
-        <View style={pdfStyles.section} wrap={false}>
+        <View style={pdfStyles.section}>
           <Text style={pdfStyles.sectionTitle}>1. Issues Identified</Text>
           {(data.idsSession?.issues || []).map((issue) => (
             <View key={issue.id} style={{ marginBottom: 6, flexDirection: "row", alignItems: "flex-start" }}>
@@ -492,15 +493,15 @@ const L10PDFDocument = ({ data, attendees, averageRating }: { data: L10Data; att
         </View>
 
         {/* Block 2: Discuss */}
-        <View style={pdfStyles.section} wrap={false}>
+        <View style={pdfStyles.section}>
           <Text style={pdfStyles.sectionTitle}>2. Discussion Notes</Text>
-          <Text style={[pdfStyles.textArea, { minHeight: 120 }]}>{data.idsSession.notes || "Tidak ada catatan diskusi khusus."}</Text>
+          <Text style={pdfStyles.textArea}>{data.idsSession.notes || "Tidak ada catatan diskusi khusus."}</Text>
         </View>
 
         {/* Block 3: Solve */}
-        <View style={pdfStyles.section} wrap={false}>
+        <View style={pdfStyles.section}>
           <Text style={pdfStyles.sectionTitle}>3. Solutions & Execution</Text>
-          <Text style={[pdfStyles.textArea, { minHeight: 120, borderLeft: "4pt solid #7e22ce", backgroundColor: "#faf5ff" }]}>
+          <Text style={[pdfStyles.textArea, { borderLeft: "4pt solid #7e22ce", backgroundColor: "#faf5ff" }]}>
             {data.idsSession.solutions || "Tidak ada item solusi yang dihasilkan."}
           </Text>
         </View>

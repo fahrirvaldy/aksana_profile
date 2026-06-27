@@ -1,5 +1,6 @@
 "use client";
 
+import { User } from "@supabase/supabase-js";
 import React, { useState, useMemo, useEffect } from "react";
 import { 
   Megaphone, 
@@ -31,7 +32,7 @@ export interface CacLtvData {
 }
 
 interface CacLtvCalculatorProps {
-  user?: { id: string; [key: string]: unknown };
+  user?: User;
   onSave?: (data: CacLtvData) => void;
   isSyncing?: boolean;
   initialData?: CacLtvData;
