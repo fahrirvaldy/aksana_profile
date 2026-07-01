@@ -62,7 +62,7 @@ export default async function RootLayout({
         <ThemeProvider>
           <NextIntlClientProvider messages={messages}>
             <Navbar />
-            <main className="flex-grow pt-20 md:pt-24 min-h-screen">
+            <main className="flex-grow pt-20 flex flex-col items-stretch">
               <PageTransition>
                 {children}
               </PageTransition>

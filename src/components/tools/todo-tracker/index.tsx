@@ -141,7 +141,7 @@ export default function ToDoTracker({ user, onSave, isSyncing, initialData }: To
   };
 
   return (
-    <div className="max-w-5xl mx-auto space-y-8 animate-in fade-in duration-700">
+    <div className="w-full space-y-8 animate-in fade-in duration-700">
       <div ref={captureRef} className={`${isExporting ? 'p-12 bg-white dark:bg-[#1E1E1E] rounded-xl border border-slate-200 dark:border-slate-800' : ''}`}>
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 md:p-8 mb-12">

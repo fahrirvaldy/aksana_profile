@@ -248,7 +248,7 @@ export default function CashflowCalculator({ user, onSave, isSyncing, initialDat
   };
 
   return (
-    <div className="max-w-6xl mx-auto space-y-8 animate-in fade-in duration-700">
+    <div className="w-full space-y-8 animate-in fade-in duration-700">
       {/* Navigation Tabs */}
       <div className="flex justify-center p-1 bg-white dark:bg-[#1E1E1E] rounded-2xl w-fit mx-auto shadow-inner border border-slate-200 dark:border-slate-800">
         {(['input', 'dashboard', 'report'] as TabType[]).map((tab) => (

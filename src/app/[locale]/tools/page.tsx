@@ -237,7 +237,7 @@ export default function ToolsPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-8 pt-4 pb-20 min-h-screen font-[family-name:var(--font-inter)]">
+    <div className="w-full max-w-none px-4 md:px-8 xl:px-12 py-4 min-h-[calc(100vh-64px)] flex flex-col items-stretch font-[family-name:var(--font-inter)]">
       <div className={`mb-16 space-y-4 relative transition-all duration-500 ${activeTool ? 'opacity-0 h-0 overflow-hidden mb-0' : 'opacity-100'}`}>
         <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-center font-[family-name:var(--font-plus-jakarta)] text-slate-950 dark:text-slate-50">{t('title')}</h1>
         <p className="text-slate-700 dark:text-slate-400 text-center max-w-2xl mx-auto text-lg font-normal">
@@ -274,7 +274,7 @@ export default function ToolsPage() {
           <motion.div 
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="mb-12"
+            className="mb-4"
           >
             <button 
               onClick={() => {

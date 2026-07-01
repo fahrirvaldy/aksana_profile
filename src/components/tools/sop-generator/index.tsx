@@ -128,7 +128,7 @@ export default function SOPGenerator({ onSave, isSyncing, initialData }: SOPGene
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in duration-700">
+    <div className="w-full space-y-8 animate-in fade-in duration-700">
       {/* Progress Header */}
       <div className="flex justify-between items-center px-4">
         {[1, 2, 3, 4].map((s) => (
