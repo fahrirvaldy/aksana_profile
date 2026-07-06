@@ -20,7 +20,8 @@ import {
   X,
   Loader2,
   Trophy,
-  Download
+  Download,
+  Cloud
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
@@ -734,10 +735,10 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
             <p className="text-black font-normal">Kehadiran & Kabar Baik (5 Menit)</p>
           </div>
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-1 sm:grid-cols-2 gap-6 flex-1 min-h-0 overflow-hidden pb-4">
-          <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col shadow-sm">
+        <div className="grid grid-cols-1 lg:grid-cols-1 sm:grid-cols-2 gap-6 pb-4">
+          <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col shadow-sm min-h-[550px]">
             <h3 className="text-xl font-bold flex items-center gap-2 mb-4 text-black dark:text-slate-200"><Users size={20} className="text-blue-500" /> Daftar Hadir</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 overflow-y-auto pr-1 custom-scrollbar">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pr-1">
               {attendees.map((role, i) => (
                 <label key={i} className={`cursor-pointer transition-all rounded-xl p-4 flex items-center gap-3 border ${data.attendance[i] ? 'bg-blue-500/10 border-blue-500/30' : 'bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/80'}`}>
                   <input 
@@ -751,9 +752,9 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
               ))}
             </div>
           </div>
-          <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col shadow-sm">
+          <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col shadow-sm min-h-[550px]">
             <h3 className="text-xl font-bold flex items-center gap-2 mb-4 text-black dark:text-slate-200"><MessageSquare size={20} className="text-emerald-500" /> Good News</h3>
-            <div className="space-y-4 flex-1 overflow-y-auto pr-1 custom-scrollbar">
+            <div className="space-y-4 pr-1">
               {['owner', 'integrator', 'team'].map((pic) => (
                 <div key={pic} className="space-y-1">
                   <label className="text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-300 px-1">{pic}</label>
@@ -783,8 +784,8 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
             <h2 className="text-4xl font-bold text-black dark:text-white mb-1">Scorecard: {division}</h2>
             <p className="text-black font-normal">Review KPI Mingguan</p>
           </div>
-          <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col flex-1 min-h-0 overflow-hidden pb-6 shadow-sm">
-            <div className="overflow-y-auto flex-1 custom-scrollbar">
+          <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col pb-6 shadow-sm min-h-[550px]">
+            <div className="">
               <table className="w-full border-separate border-spacing-y-2 shadow-sm">
                 <thead>
                   <tr className="text-left text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 dark:text-slate-300">
@@ -869,8 +870,8 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
             <h2 className="text-4xl font-bold text-black dark:text-white mb-1">Rock Review</h2>
             <p className="text-black font-normal">Prioritas Strategis 90 Hari</p>
           </div>
-          <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col flex-1 min-h-0 overflow-hidden pb-6 shadow-sm">
-            <div className="overflow-y-auto flex-1 custom-scrollbar">
+          <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col pb-6 shadow-sm min-h-[550px]">
+            <div className="">
               <table className="w-full border-separate border-spacing-y-2 shadow-sm">
                 <thead>
                   <tr className="text-left text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 dark:text-slate-300">
@@ -928,11 +929,11 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
           <h2 className="text-4xl font-bold text-black dark:text-white mb-1">Headlines</h2>
           <p className="text-black font-normal">Berita Penting Rapat</p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-1 sm:grid-cols-2 gap-6 flex-1 min-h-0 overflow-hidden pb-4">
+        <div className="grid grid-cols-1 md:grid-cols-1 sm:grid-cols-2 gap-6 pb-4">
           {['customer', 'internal'].map(type => (
-            <div key={type} className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col space-y-4 shadow-sm">
+            <div key={type} className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col space-y-4 shadow-sm min-h-[550px]">
               <h3 className={`text-xl font-bold flex items-center gap-2 ${type === 'customer' ? 'text-blue-500' : 'text-emerald-500'}`}><FileText size={20} /> {type === 'customer' ? 'Customer Headlines' : 'Internal Headlines'}</h3>
-              <div className="flex-1 overflow-y-auto space-y-3 pr-1 custom-scrollbar">
+              <div className="space-y-3 pr-1">
                 {(data.headlines[type as keyof typeof data.headlines] || []).map((h, i) => (
                   <div key={i} className="flex gap-3 items-center group bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 p-3 rounded-xl focus-within:ring-2 focus-within:ring-blue-500/20 shadow-sm">
                     <span className="text-sm font-black text-slate-600 dark:text-slate-300 w-4">{i + 1}.</span>
@@ -958,8 +959,8 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
           <h2 className="text-4xl font-bold text-black dark:text-white mb-1">To-Do List</h2>
           <p className="text-black font-normal">Review Minggu Lalu & Action Plan</p>
         </div>
-        <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col flex-1 min-h-0 overflow-hidden pb-6 shadow-sm">
-          <div className="flex-1 overflow-y-auto space-y-3 pr-1 custom-scrollbar">
+        <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col pb-6 shadow-sm min-h-[550px]">
+          <div className="space-y-3 pr-1">
             {data.todoList.map((todo, i) => (
               <div key={todo.id} className="flex items-center gap-4 p-4 bg-white dark:bg-[#1E1E1E] rounded-xl group border border-slate-200 dark:border-slate-800 transition-all hover:bg-slate-50 dark:hover:bg-slate-800/60 shadow-sm">
                 <button onClick={() => {
@@ -1037,7 +1038,7 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
         </div>
 
         {/* Tab Content */}
-        <div className="flex-1 min-h-0 overflow-hidden pb-4">
+        <div className="pb-4">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeIdsStep}
@@ -1048,9 +1049,9 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
               className="h-full"
             >
               {activeIdsStep === 'identify' && (
-                <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col overflow-hidden shadow-sm h-full">
+                <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col shadow-sm h-full min-h-[550px]">
                   <h3 className="text-base font-black border-b border-slate-200 dark:border-slate-800 pb-4 text-blue-500 uppercase tracking-wider flex-shrink-0 shadow-sm">1. Identify (Issues)</h3>
-                  <div className="flex-1 overflow-y-auto space-y-3 mt-5 pr-1 custom-scrollbar">
+                  <div className="space-y-3 mt-5 pr-1">
                     {(data.idsSession?.issues || []).map((issue, i) => (
                       <div key={issue.id} className={`flex items-start gap-3 p-4 rounded-2xl group border transition-all h-auto ${issue.isResolved ? 'bg-slate-50 dark:bg-slate-800/20 border-slate-200 dark:border-slate-800 opacity-50' : 'bg-white dark:bg-[#1E1E1E] border-slate-200 dark:border-slate-800 shadow-sm'}`}>
                         <input type="checkbox" checked={issue.isResolved} onChange={(e) => handleIssueCheck(i, e.target.checked)} className="mt-1.5 w-5 h-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer" />
@@ -1075,7 +1076,7 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
                 </div>
               )}
               {activeIdsStep === 'discuss' && (
-                <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col shadow-sm h-full">
+                <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col shadow-sm h-full min-h-[550px]">
                   <h3 className="text-base font-black border-b border-slate-200 dark:border-slate-800 pb-4 text-emerald-500 uppercase tracking-wider flex-shrink-0 shadow-sm">2. Discuss (Notes)</h3>
                   <AutoResizeTextarea
                     rows={2}
@@ -1087,7 +1088,7 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
                 </div>
               )}
               {activeIdsStep === 'solve' && (
-                <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col shadow-sm h-full">
+                <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col shadow-sm h-full min-h-[550px]">
                   <h3 className="text-base font-black border-b border-slate-200 dark:border-slate-800 pb-4 text-purple-500 uppercase tracking-wider flex-shrink-0 shadow-sm">3. Solve (Action Items)</h3>
                   <AutoResizeTextarea
                     rows={2}
@@ -1105,13 +1106,13 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
     );
 
     if (currentSlide === 6 + data.config.divisions.length) return (
-      <div className="flex flex-col items-center justify-center h-full text-center space-y-10 overflow-hidden">
+      <div className="flex flex-col items-center justify-center h-full text-center space-y-10">
         <div className="space-y-2 flex-shrink-0"><h2 className="text-5xl font-black text-black dark:text-white">Conclude</h2><p className="text-black font-bold italic tracking-wide">"Seberapa efektif rapat ini bagi pencapaian visi?" (1 - 10)</p></div>
         <div className="space-y-1 flex-shrink-0 relative">
           <motion.div initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="text-[12rem] font-black leading-none tracking-tighter text-blue-600 drop-shadow-2xl">{averageRating}</motion.div>
           <p className="text-sm font-bold text-black uppercase tracking-[0.4em]">Composite Quality Score</p>
         </div>
-        <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 p-10 rounded-xl max-w-full w-full flex flex-wrap justify-center gap-6 overflow-y-auto max-h-[250px] custom-scrollbar backdrop-blur-sm shadow-sm">
+        <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 p-10 rounded-xl max-w-full w-full flex flex-wrap justify-center gap-6 max-h-[250px] custom-scrollbar backdrop-blur-sm shadow-sm">
           {attendees.map((role, i) => data.attendance[i] ? (
             <div key={i} className="flex flex-col items-center gap-2.5 w-28">
               <label className="text-[10px] font-black text-slate-600 dark:text-slate-300 uppercase tracking-widest truncate w-full text-center" title={role}>{role}</label>
@@ -1147,7 +1148,7 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
   };
 
   return (
-    <div className="relative w-full flex flex-col bg-white dark:bg-slate-950 p-1 select-none">
+    <div className="relative min-h-[calc(100vh-140px)] w-full flex flex-col bg-white dark:bg-slate-950 p-1 select-none">
       {/* Top Navigation & Status */}
       <div className="flex justify-between items-center p-8 z-40 flex-shrink-0">
         <div className="flex items-center gap-5">
@@ -1168,15 +1169,20 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
             {isExporting ? "GENERATING PDF..." : "EXPORT L10 REPORT"}
           </button>
 
-          {isSyncing && (
-            <div className="flex items-center gap-2 px-5 py-2.5 bg-blue-500/10 rounded-full text-blue-600 text-xs font-black animate-pulse border border-blue-500/20 shadow-sm"><Loader2 size={14} className="animate-spin" />SYNCING...</div>
-          )}
+          {/* Premium Cloud Status Indicator */}
+          <div title={isSyncing ? "Menyimpan data..." : "Semua perubahan disimpan"} className="flex items-center justify-center w-12 h-12 rounded-full bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 shadow-sm">
+            {isSyncing ? (
+              <Loader2 size={16} className="animate-spin text-blue-500" />
+            ) : (
+              <Cloud size={16} className="text-emerald-600" />
+            )}
+          </div>
         </div>
         <button onClick={() => setShowSetup(true)} className="p-4 rounded-3xl bg-white dark:bg-slate-900 shadow-lg border border-slate-200 dark:border-slate-800 text-black dark:text-slate-100 hover:text-blue-500 hover:rotate-90 transition-all duration-700 active:scale-90"><Settings size={24} /></button>
       </div>
 
       {/* Slide Canvas */}
-      <div className="flex-1 px-4 md:px-6 xl:px-8 pb-12 pt-4 relative">
+      <div className="flex-1 px-4 md:px-6 xl:px-8 pb-12 pt-4 relative overflow-visible">
         <div className="w-full h-full bg-transparent flex flex-col">
           <AnimatePresence mode="wait">
             <motion.div key={currentSlide} initial={{ opacity: 0, y: 20, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: -20, scale: 0.98 }} transition={{ type: "spring", stiffness: 100, damping: 20 }} className="h-full w-full">

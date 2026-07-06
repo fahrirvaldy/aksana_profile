@@ -251,14 +251,14 @@ export default function ToolsPage() {
                 <motion.div 
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-950 dark:text-slate-50 font-mono text-sm font-bold border border-slate-200 dark:border-slate-700 shadow-sm"
+                  title={isSyncing ? "Sinkronisasi..." : "Data tersimpan di Cloud"}
+                  className="flex items-center justify-center w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm"
                 >
                   {isSyncing ? (
                     <RefreshCcw size={16} className="text-blue-500 animate-spin" />
                   ) : (
-                    <Cloud size={16} className="text-blue-500" />
+                    <Cloud size={16} className="text-emerald-600" />
                   )}
-                  {t('cloudSyncActive')}
                 </motion.div>
               ) : (
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-950 dark:text-slate-50 font-mono text-sm font-bold border border-slate-200 dark:border-slate-700 shadow-sm">
