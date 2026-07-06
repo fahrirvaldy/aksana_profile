@@ -3,7 +3,7 @@ import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import ThemeProvider from "@/components/ThemeProvider";
 import { Navbar } from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
+import ConditionalFooter from "@/components/layout/ConditionalFooter";
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
@@ -67,7 +67,7 @@ export default async function RootLayout({
                 {children}
               </PageTransition>
             </main>
-            <Footer />
+            <ConditionalFooter />
           </NextIntlClientProvider>
         </ThemeProvider>
       </body>

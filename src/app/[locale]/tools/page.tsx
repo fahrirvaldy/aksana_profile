@@ -237,44 +237,46 @@ export default function ToolsPage() {
   }
 
   return (
-    <div className="w-full max-w-none px-4 md:px-8 xl:px-12 py-4 min-h-[calc(100vh-64px)] flex flex-col items-stretch font-[family-name:var(--font-inter)]">
-      <div className={`mb-16 space-y-4 relative transition-all duration-500 ${activeTool ? 'opacity-0 h-0 overflow-hidden mb-0' : 'opacity-100'}`}>
-        <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-center font-[family-name:var(--font-plus-jakarta)] text-slate-950 dark:text-slate-50">{t('title')}</h1>
-        <p className="text-slate-700 dark:text-slate-400 text-center max-w-2xl mx-auto text-lg font-normal">
-          {t('subtitle')}
-        </p>
-        
-        {hasAccess && (
-          <div className="flex justify-center pt-4 gap-4">
-            {user ? (
-              <motion.div 
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-950 dark:text-slate-50 font-mono text-sm font-bold border border-slate-200 dark:border-slate-700 shadow-sm"
-              >
-                {isSyncing ? (
-                  <RefreshCcw size={16} className="text-blue-500 animate-spin" />
-                ) : (
-                  <Cloud size={16} className="text-blue-500" />
-                )}
-                {t('cloudSyncActive')}
-              </motion.div>
-            ) : (
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-950 dark:text-slate-50 font-mono text-sm font-bold border border-slate-200 dark:border-slate-700 shadow-sm">
-                <Clock size={16} className="text-slate-700" />
-                {t('accessTimeLeft', { time: formatTime(timeLeft) })}
-              </div>
-            )}
-          </div>
-        )}
-      </div>
+    <div className={`w-full max-w-none px-4 md:px-8 xl:px-12 flex flex-col items-stretch font-[family-name:var(--font-inter)] min-h-[calc(100vh-64px)] ${activeTool ? 'pt-4 pb-12' : 'py-12'}`}>
+      {!activeTool && (
+        <div className="mb-12 space-y-4 relative">
+          <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-center font-[family-name:var(--font-plus-jakarta)] text-slate-950 dark:text-slate-50">{t('title')}</h1>
+          <p className="text-slate-700 dark:text-slate-400 text-center max-w-2xl mx-auto text-lg font-normal">
+            {t('subtitle')}
+          </p>
+          
+          {hasAccess && (
+            <div className="flex justify-center pt-4 gap-4">
+              {user ? (
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-950 dark:text-slate-50 font-mono text-sm font-bold border border-slate-200 dark:border-slate-700 shadow-sm"
+                >
+                  {isSyncing ? (
+                    <RefreshCcw size={16} className="text-blue-500 animate-spin" />
+                  ) : (
+                    <Cloud size={16} className="text-blue-500" />
+                  )}
+                  {t('cloudSyncActive')}
+                </motion.div>
+              ) : (
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-950 dark:text-slate-50 font-mono text-sm font-bold border border-slate-200 dark:border-slate-700 shadow-sm">
+                  <Clock size={16} className="text-slate-700" />
+                  {t('accessTimeLeft', { time: formatTime(timeLeft) })}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
 
       <div className="relative">
         {activeTool && (
           <motion.div 
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="mb-4"
+            className="mb-6"
           >
             <button 
               onClick={() => {
