@@ -1111,7 +1111,7 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
           <motion.div initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="text-[12rem] font-black leading-none tracking-tighter text-blue-600 drop-shadow-2xl">{averageRating}</motion.div>
           <p className="text-sm font-bold text-black uppercase tracking-[0.4em]">Composite Quality Score</p>
         </div>
-        <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 p-10 rounded-xl max-w-5xl w-full flex flex-wrap justify-center gap-6 overflow-y-auto max-h-[250px] custom-scrollbar backdrop-blur-sm shadow-sm">
+        <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 p-10 rounded-xl max-w-full w-full flex flex-wrap justify-center gap-6 overflow-y-auto max-h-[250px] custom-scrollbar backdrop-blur-sm shadow-sm">
           {attendees.map((role, i) => data.attendance[i] ? (
             <div key={i} className="flex flex-col items-center gap-2.5 w-28">
               <label className="text-[10px] font-black text-slate-600 dark:text-slate-300 uppercase tracking-widest truncate w-full text-center" title={role}>{role}</label>
@@ -1147,7 +1147,7 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
   };
 
   return (
-    <div className="relative h-full w-full flex flex-col bg-white dark:bg-slate-950 p-1 select-none overflow-hidden">
+    <div className="relative w-full flex flex-col bg-white dark:bg-slate-950 p-1 select-none">
       {/* Top Navigation & Status */}
       <div className="flex justify-between items-center p-8 z-40 flex-shrink-0">
         <div className="flex items-center gap-5">
@@ -1176,7 +1176,7 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
       </div>
 
       {/* Slide Canvas */}
-      <div className="flex-1 px-16 pb-12 pt-4 relative overflow-hidden min-h-0">
+      <div className="flex-1 px-4 md:px-6 xl:px-8 pb-12 pt-4 relative">
         <div className="w-full h-full bg-transparent flex flex-col">
           <AnimatePresence mode="wait">
             <motion.div key={currentSlide} initial={{ opacity: 0, y: 20, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: -20, scale: 0.98 }} transition={{ type: "spring", stiffness: 100, damping: 20 }} className="h-full w-full">
@@ -1187,9 +1187,9 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
       </div>
 
       {/* Navigation Controls */}
-      <div className="absolute bottom-12 right-20 flex gap-4 z-40">
-        <button onClick={prevSlide} disabled={currentSlide === 0} className="w-16 h-16 rounded-3xl bg-white dark:bg-slate-900/90 backdrop-blur-md border border-slate-200 dark:border-slate-800 flex items-center justify-center text-black dark:text-slate-100 hover:text-blue-600 disabled:opacity-20 disabled:cursor-not-allowed transition-all active:scale-90 shadow-sm"><ChevronLeft size={32} /></button>
-        <button onClick={nextSlide} disabled={currentSlide === totalSlides - 1} className="w-16 h-16 rounded-3xl bg-white dark:bg-slate-900/90 backdrop-blur-md border border-slate-200 dark:border-slate-800 flex items-center justify-center text-black dark:text-slate-100 hover:text-blue-600 disabled:opacity-20 disabled:cursor-not-allowed transition-all active:scale-90 shadow-sm"><ChevronRight size={32} /></button>
+      <div className="fixed bottom-6 right-8 flex items-center gap-3 z-[100] bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200 dark:border-slate-800/80 p-3 rounded-2xl shadow-xl aksana-glass">
+        <button onClick={prevSlide} disabled={currentSlide === 0} className="w-12 h-12 rounded-xl flex items-center justify-center text-slate-700 dark:text-slate-200 hover:bg-slate-500/10 disabled:opacity-30 transition-colors active:scale-90"><ChevronLeft size={24} /></button>
+        <button onClick={nextSlide} disabled={currentSlide === totalSlides - 1} className="w-12 h-12 rounded-xl flex items-center justify-center text-slate-700 dark:text-slate-200 hover:bg-slate-500/10 disabled:opacity-30 transition-colors active:scale-90"><ChevronRight size={24} /></button>
       </div>
 
       {/* Setup Modal */}
