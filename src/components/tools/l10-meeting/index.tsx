@@ -14,14 +14,15 @@ import {
   Plus, 
   RefreshCw, 
   CheckCircle2,
-  Users,
-  MessageSquare,
   FileText,
   X,
   Loader2,
   Trophy,
   Download,
-  Cloud
+  Cloud,
+  FileSpreadsheet,
+  Layers,
+  HelpCircle
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
@@ -63,6 +64,34 @@ export interface IDSIssue {
   isResolved: boolean;
 }
 
+export interface ChainRow {
+  effect: string;
+  cause: string;
+}
+
+export interface IDSTheme {
+  topic: string;
+  currentCond: string;
+  desiredCond: string;
+  analysis: {
+    man: string;
+    method: string;
+    machine: string;
+    material: string;
+    environment: string;
+  };
+  chain: ChainRow[];
+  rootCause: string;
+  plan: {
+    what: string;
+    who: string;
+    when: string;
+    where: string;
+    why: string;
+    cost: string;
+  };
+}
+
 export interface L10Data {
   config: L10Config;
   meetingDate: string;
@@ -81,7 +110,7 @@ export interface L10Data {
   todoList: TodoItem[];
   idsSession: {
     issues: IDSIssue[];
-    notes: string;
+    themes: IDSTheme[]; // Menggantikan variabel notes string lama
     solutions: string;
   };
   ratings: Record<number, number | string>;
@@ -125,7 +154,7 @@ const AutoResizeTextarea = ({
     if (textareaRef.current) {
       adjustHeight(textareaRef.current);
     }
-  }, [value]); // Keep for initial render and programmatic changes
+  }, [value]);
 
   const handleInput = (e: React.FormEvent<HTMLTextAreaElement>) => {
     adjustHeight(e.currentTarget);
@@ -146,11 +175,22 @@ const AutoResizeTextarea = ({
   );
 };
 
-// --- Default Data ---
+// --- Pembuat Template Tema Kosong Baku ---
+const generateDefaultTheme = (index: number): IDSTheme => ({
+  topic: `Tema Diskusi Masalah ${index}`,
+  currentCond: "",
+  desiredCond: "",
+  analysis: { man: "", method: "", machine: "", material: "", environment: "" },
+  chain: Array(5).fill(null).map(() => ({ effect: "", cause: "" })),
+  rootCause: "",
+  plan: { what: "", who: "", when: "", where: "", why: "", cost: "" }
+});
+
+// --- Default Data Baru Bersinkronisasi ---
 const DEFAULT_DATA: L10Data = {
   config: {
     companyName: "Aksana Business Lab",
-    divisions: ["Marketing", "Sales", "Operation", "Finance"], // Bentuk array awal baku
+    divisions: ["Marketing", "Sales", "Operation", "Finance"],
     rocks: [""]
   },
   meetingDate: new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }),
@@ -160,143 +200,96 @@ const DEFAULT_DATA: L10Data = {
   rocksStatus: [],
   headlines: { customer: [""], internal: [""] },
   todoList: [],
-  idsSession: { issues: [], notes: "", solutions: "" },
+  idsSession: {
+    issues: [],
+    themes: [generateDefaultTheme(1), generateDefaultTheme(2), generateDefaultTheme(3)],
+    solutions: ""
+  },
   ratings: {}
 };
 
 // ============================================================================
 // 📄 ARCHITECTURE: @react-pdf/renderer Layout Definition Matrix
-// Optimized for OKLCH/LAB Color Fidelity (Hex Mapping)
+// Optimized for Structured 5M Fishbone Metrics Report Presentation
 // ============================================================================
 const pdfStyles = StyleSheet.create({
   page: { 
-    padding: 40, 
+    padding: 30, 
     backgroundColor: "#fbfcfd", 
-    fontSize: 10, 
+    fontSize: 9, 
     color: "#1e293b", 
     fontFamily: "Helvetica" 
   },
   header: { 
-    borderBottom: "3pt solid #3b82f6", 
-    paddingBottom: 12, 
-    marginBottom: 24,
+    borderBottom: "2pt solid #3b82f6", 
+    paddingBottom: 8, 
+    marginBottom: 16,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-end"
   },
-  headerLeft: {
-    flex: 1
-  },
-  title: { 
-    fontSize: 22, 
-    fontWeight: "bold", 
-    color: "#0f172a", 
-    letterSpacing: -0.5
-  },
-  subtitle: { 
-    fontSize: 11, 
-    color: "#3b82f6", 
-    marginTop: 2, 
-    textTransform: "uppercase",
-    fontWeight: "bold",
-    letterSpacing: 1
-  },
-  metaDate: { 
-    fontSize: 9, 
-    color: "#64748b", 
-    marginTop: 4 
-  },
+  headerLeft: { flex: 1 },
+  title: { fontSize: 18, fontWeight: "bold", color: "#0f172a", letterSpacing: -0.5 },
+  subtitle: { fontSize: 10, color: "#3b82f6", marginTop: 2, textTransform: "uppercase", fontWeight: "bold", letterSpacing: 0.5 },
+  metaDate: { fontSize: 8, color: "#64748b", marginTop: 2 },
   section: { 
-    marginBottom: 24, 
-    padding: 24, 
+    marginBottom: 14, 
+    padding: 14, 
     backgroundColor: "#ffffff", 
-    borderRadius: 12,
+    borderRadius: 8,
     border: "1pt solid #e2e8f0"
   },
   sectionTitle: { 
-    fontSize: 13, 
+    fontSize: 11, 
     fontWeight: "bold", 
-    marginBottom: 12, 
+    marginBottom: 8, 
     color: "#0f172a", 
     borderBottom: "1pt solid #f1f5f9", 
-    paddingBottom: 6,
+    paddingBottom: 4,
     textTransform: "uppercase",
     letterSpacing: 0.5
   },
   row: { 
     flexDirection: "row", 
     borderBottom: "1pt solid #f1f5f9", 
-    paddingVertical: 12, 
-    paddingHorizontal: 8, 
+    paddingVertical: 8, 
+    paddingHorizontal: 4, 
     alignItems: "center" 
   },
   tableHeader: { 
     flexDirection: "row", 
     backgroundColor: "#f8fafc", 
-    padding: 8, 
-    borderRadius: 6,
-    marginBottom: 4
+    padding: 6, 
+    borderRadius: 4,
+    marginBottom: 3
   },
-  tableHeaderLabel: {
-    fontSize: 8,
-    fontWeight: "bold",
-    color: "#64748b",
-    textTransform: "uppercase",
-    letterSpacing: 0.5
-  },
-  cellCol1: { width: "35%", paddingHorizontal: 4 },
-  cellCol2: { width: "20%", paddingHorizontal: 4 },
-  cellCol3: { width: "15%", paddingHorizontal: 4 },
-  cellCol4: { width: "15%", paddingHorizontal: 4 },
-  cellCol5: { width: "15%", paddingHorizontal: 4 },
-  
-  badge: { 
-    paddingHorizontal: 8, 
-    paddingVertical: 3, 
-    borderRadius: 99, 
-    fontSize: 7, 
-    fontWeight: "bold", 
-    textAlign: "center",
-    textTransform: "uppercase"
-  },
-  badgeOn: { 
-    backgroundColor: "#dcfce7", 
-    color: "#15803d" 
-  },
-  badgeOff: { 
-    backgroundColor: "#fee2e2", 
-    color: "#b91c1c" 
-  },
-  badgeInfo: { 
-    backgroundColor: "#f3e8ff", 
-    color: "#7e22ce" 
-  },
-  
+  tableHeaderLabel: { fontSize: 8, fontWeight: "bold", color: "#64748b", textTransform: "uppercase" },
+  cellCol1: { width: "35%", paddingHorizontal: 2 },
+  cellCol2: { width: "20%", paddingHorizontal: 2 },
+  cellCol3: { width: "15%", paddingHorizontal: 2 },
+  cellCol4: { width: "15%", paddingHorizontal: 2 },
+  cellCol5: { width: "15%", paddingHorizontal: 2 },
+  badge: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: 10, fontSize: 7, fontWeight: "bold", textAlign: "center", textTransform: "uppercase" },
+  badgeOn: { backgroundColor: "#dcfce7", color: "#15803d" },
+  badgeOff: { backgroundColor: "#fee2e2", color: "#b91c1c" },
   textBold: { fontWeight: "bold", color: "#334155" },
   textArea: { 
-    marginTop: 8, 
-    padding: 10, 
+    marginTop: 4, 
+    padding: 6, 
     backgroundColor: "#f8fafc", 
-    borderRadius: 8, 
-    minHeight: 50, 
-    fontSize: 9, 
-    lineHeight: 1.5,
+    borderRadius: 4, 
+    minHeight: 30, 
+    fontSize: 8, 
+    lineHeight: 1.4,
     color: "#475569",
     border: "0.5pt solid #e2e8f0"
   },
-  ratingCircle: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: "#3b82f6",
-    color: "#ffffff",
-    justifyContent: "center",
-    alignItems: "center"
-  },
-  ratingValue: {
-    fontSize: 24,
-    fontWeight: "bold"
-  }
+  ratingCircle: { width: 45, height: 45, borderRadius: 22.5, backgroundColor: "#3b82f6", color: "#ffffff", justifyContent: "center", alignItems: "center" },
+  ratingValue: { fontSize: 16, fontWeight: "bold" },
+  grid2Col: { flexDirection: "row", gap: 10, marginBottom: 8 },
+  grid5Col: { flexDirection: "row", gap: 6, marginBottom: 8 },
+  colBlock: { flex: 1 },
+  fishboneLabel: { fontSize: 7, fontWeight: "bold", color: "#475569", textTransform: "uppercase", marginBottom: 2 }
 });
 
 const L10PDFDocument = ({ data, attendees, averageRating }: { data: L10Data; attendees: string[]; averageRating: string }) => (
@@ -311,56 +304,56 @@ const L10PDFDocument = ({ data, attendees, averageRating }: { data: L10Data; att
         </View>
         <View style={pdfStyles.ratingCircle}>
           <Text style={pdfStyles.ratingValue}>{averageRating}</Text>
-          <Text style={{ fontSize: 6, fontWeight: "bold" }}>RATING</Text>
+          <Text style={{ fontSize: 5, fontWeight: "bold" }}>RATING</Text>
         </View>
       </View>
 
       <View style={pdfStyles.section}>
         <Text style={pdfStyles.sectionTitle}>Attendance & Team Pulse</Text>
-        <View style={{ flexDirection: "row", marginBottom: 16 }}>
+        <View style={{ flexDirection: "row", marginBottom: 10 }}>
           <View style={{ flex: 1 }}>
-            <Text style={[pdfStyles.textBold, { marginBottom: 4 }]}>Peserta Hadir:</Text>
-            <Text style={{ color: "#64748b", fontSize: 9 }}>
+            <Text style={[pdfStyles.textBold, { marginBottom: 2 }]}>Peserta Hadir:</Text>
+            <Text style={{ color: "#64748b", fontSize: 8 }}>
               {attendees.filter((_, idx) => data.attendance[idx]).join(", ") || "Tidak ada data kehadiran."}
             </Text>
           </View>
         </View>
         
-        <View style={{ flexDirection: "row", gap: 12 }}>
+        <View style={{ flexDirection: "row", gap: 10 }}>
           <View style={{ flex: 1 }}>
             <Text style={pdfStyles.textBold}>Kabar Syukur (Owner):</Text>
-            <Text style={pdfStyles.textArea}>{data.goodNews.owner || "Tidak ada kabar syukur terekam."}</Text>
+            <Text style={pdfStyles.textArea}>{data.goodNews.owner || "-"}</Text>
           </View>
           <View style={{ flex: 1 }}>
             <Text style={pdfStyles.textBold}>Kabar Syukur (Integrator):</Text>
-            <Text style={pdfStyles.textArea}>{data.goodNews.integrator || "Tidak ada kabar syukur terekam."}</Text>
+            <Text style={pdfStyles.textArea}>{data.goodNews.integrator || "-"}</Text>
           </View>
           <View style={{ flex: 1 }}>
             <Text style={pdfStyles.textBold}>Kabar Syukur (Team):</Text>
-            <Text style={pdfStyles.textArea}>{data.goodNews.team || "Tidak ada kabar syukur terekam."}</Text>
+            <Text style={pdfStyles.textArea}>{data.goodNews.team || "-"}</Text>
           </View>
         </View>
       </View>
 
-      <View style={{ flexDirection: "row", gap: 12 }}>
+      <View style={{ flexDirection: "row", gap: 10 }}>
         <View style={[pdfStyles.section, { flex: 1 }]}>
           <Text style={pdfStyles.sectionTitle}>Customer Headlines</Text>
           {(data.headlines.customer || []).filter(h => h.trim()).length > 0 ? (
             data.headlines.customer.map((h, idx) => h.trim() && (
-              <Text key={idx} style={{ paddingVertical: 4, fontSize: 9, color: "#475569" }}>• {h}</Text>
+              <Text key={idx} style={{ paddingVertical: 2, fontSize: 8, color: "#475569" }}>• {h}</Text>
             ))
           ) : (
-            <Text style={{ fontSize: 9, color: "#94a3b8", fontStyle: "italic" }}>Tidak ada headline pelangga...</Text>
+            <Text style={{ fontSize: 8, color: "#94a3b8", fontStyle: "italic" }}>Tidak ada headline pelanggan.</Text>
           )}
         </View>
         <View style={[pdfStyles.section, { flex: 1 }]}>
           <Text style={pdfStyles.sectionTitle}>Internal Headlines</Text>
           {(data.headlines.internal || []).filter(h => h.trim()).length > 0 ? (
             data.headlines.internal.map((h, idx) => h.trim() && (
-              <Text key={idx} style={{ paddingVertical: 4, fontSize: 9, color: "#475569" }}>• {h}</Text>
+              <Text key={idx} style={{ paddingVertical: 2, fontSize: 8, color: "#475569" }}>• {h}</Text>
             ))
           ) : (
-            <Text style={{ fontSize: 9, color: "#94a3b8", fontStyle: "italic" }}>Tidak ada headline internal...</Text>
+            <Text style={{ fontSize: 8, color: "#94a3b8", fontStyle: "italic" }}>Tidak ada headline internal.</Text>
           )}
         </View>
       </View>
@@ -389,14 +382,14 @@ const L10PDFDocument = ({ data, attendees, averageRating }: { data: L10Data; att
               <View style={pdfStyles.cellCol5}><Text style={pdfStyles.tableHeaderLabel}>Status</Text></View>
             </View>
             {kpis.length === 0 ? (
-              <Text style={{ padding: 10, color: "#94a3b8", fontStyle: "italic", fontSize: 9 }}>Tidak ada data KPI untuk divisi ini.</Text>
+              <Text style={{ padding: 6, color: "#94a3b8", fontStyle: "italic", fontSize: 8 }}>Tidak ada data KPI untuk divisi ini.</Text>
             ) : (
               kpis.map((k, idx) => (
                 <View key={idx} style={pdfStyles.row}>
                   <View style={pdfStyles.cellCol1}><Text style={{ fontWeight: "bold" }}>{k.kpi}</Text></View>
                   <View style={pdfStyles.cellCol2}><Text>{k.target}</Text></View>
                   <View style={pdfStyles.cellCol3}><Text style={{ color: "#3b82f6", fontWeight: "bold" }}>{k.realisasi}</Text></View>
-                  <View style={pdfStyles.cellCol4}><Text style={{ textTransform: "uppercase", fontSize: 8 }}>{k.jenis}</Text></View>
+                  <View style={pdfStyles.cellCol4}><Text style={{ textTransform: "uppercase", fontSize: 7 }}>{k.jenis}</Text></View>
                   <View style={pdfStyles.cellCol5}>
                     <Text style={[pdfStyles.badge, k.status === 'on' ? pdfStyles.badgeOn : pdfStyles.badgeOff]}>
                       {k.status === 'on' ? "ON TRACK" : "OFF TRACK"}
@@ -432,13 +425,13 @@ const L10PDFDocument = ({ data, attendees, averageRating }: { data: L10Data; att
           return (
             <View key={i} style={pdfStyles.row}>
               <View style={{ width: "20%" }}><Text style={{ fontWeight: "bold" }}>{status.pic || "Unassigned"}</Text></View>
-              <View style={{ width: "45%" }}><Text>{rock || "No description provided."}</Text></View>
+              <View style={{ width: "45%" }}><Text>{rock || "No description."}</Text></View>
               <View style={{ width: "15%" }}>
                 <Text style={[pdfStyles.badge, status.status === 'on' ? pdfStyles.badgeOn : pdfStyles.badgeOff]}>
                   {status.status === 'on' ? "ON TRACK" : "OFF TRACK"}
                 </Text>
               </View>
-              <View style={{ width: "20%" }}><Text style={{ fontSize: 8, color: "#64748b" }}>{status.notes || "-"}</Text></View>
+              <View style={{ width: "20%" }}><Text style={{ fontSize: 7, color: "#64748b" }}>{status.notes || "-"}</Text></View>
             </View>
           );
         })}
@@ -452,7 +445,7 @@ const L10PDFDocument = ({ data, attendees, averageRating }: { data: L10Data; att
           <View style={{ width: "25%" }}><Text style={pdfStyles.tableHeaderLabel}>Owner</Text></View>
         </View>
         {data.todoList.length === 0 ? (
-          <Text style={{ padding: 10, color: "#94a3b8", fontStyle: "italic", fontSize: 9 }}>Tidak ada tugas yang terekam.</Text>
+          <Text style={{ padding: 6, color: "#94a3b8", fontStyle: "italic", fontSize: 8 }}>Tidak ada tugas yang terekam.</Text>
         ) : (
           data.todoList.map((todo) => (
             <View key={todo.id} style={pdfStyles.row}>
@@ -473,46 +466,92 @@ const L10PDFDocument = ({ data, attendees, averageRating }: { data: L10Data; att
       </View>
     </Page>
 
-    {/* PAGE 4: IDS RESOLUTIONS */}
+    {/* PAGE 4: ARSITEKTUR STRUKTUR BARU - FISHBONE & 5W1H METRICS */}
     <Page size="A4" orientation="landscape" style={pdfStyles.page}>
       <View style={pdfStyles.header}>
         <View style={pdfStyles.headerLeft}>
-          <Text style={pdfStyles.title}>IDS SESSION RESOLUTIONS</Text>
-          <Text style={pdfStyles.subtitle}>Identify, Discuss, Solve</Text>
+          <Text style={pdfStyles.title}>IDS DISCUSS: FISHBONE & 5W1H ANALYSIS</Text>
+          <Text style={pdfStyles.subtitle}>Sistem Manajemen Mutu Korporat</Text>
         </View>
       </View>
 
-      <View style={{ flexDirection: "column", gap: 12 }}>
-        {/* Block 1: Identify */}
-        <View style={pdfStyles.section}>
-          <Text style={pdfStyles.sectionTitle}>1. Issues Identified</Text>
-          {(data.idsSession?.issues || []).map((issue) => (
-            <View key={issue.id} style={{ marginBottom: 6, flexDirection: "row", alignItems: "flex-start" }}>
-              <Text style={{ width: 15, fontSize: 8, color: "#3b82f6", fontWeight: "bold" }}>{issue.isResolved ? "✓" : "•"}</Text>
-              <View style={{ flex: 1, paddingLeft: 8 }}>
-                <Text style={{ fontSize: 9, fontWeight: "bold", color: "#64748b", textTransform: "uppercase", marginBottom: 1 }}>[{issue.source}]</Text>
-                <Text style={{ fontSize: 10, color: issue.isResolved ? "#94a3b8" : "#1e293b" }}>{issue.text}</Text>
+      {(data.idsSession?.themes || []).map((theme, tIdx) => (
+        <View key={tIdx} style={pdfStyles.section} wrap={false}>
+          <Text style={[pdfStyles.sectionTitle, { color: "#7e22ce", borderColor: "#e9d5ff" }]}>
+            {theme.topic || `Tema Analisis Masalah ${tIdx + 1}`}
+          </Text>
+
+          {/* Kondisi Sekarang vs Diinginkan */}
+          <View style={pdfStyles.grid2Col}>
+            <View style={pdfStyles.colBlock}>
+              <Text style={pdfStyles.textBold}>1. Kondisi Sekarang:</Text>
+              <Text style={pdfStyles.textArea}>{theme.currentCond || "-"}</Text>
+            </View>
+            <View style={pdfStyles.colBlock}>
+              <Text style={pdfStyles.textBold}>2. Kondisi Diinginkan:</Text>
+              <Text style={pdfStyles.textArea}>{theme.desiredCond || "-"}</Text>
+            </View>
+          </View>
+
+          {/* Analisis Fishbone 5M */}
+          <Text style={[pdfStyles.textBold, { marginTop: 4, marginBottom: 2 }]}>3. Analisis Kondisi Lapangan (Fishbone 5M):</Text>
+          <View style={pdfStyles.grid5Col}>
+            <View style={pdfStyles.colBlock}>
+              <Text style={pdfStyles.fishboneLabel}>Man</Text>
+              <Text style={pdfStyles.textArea}>{theme.analysis.man || "-"}</Text>
+            </View>
+            <View style={pdfStyles.colBlock}>
+              <Text style={pdfStyles.fishboneLabel}>Method</Text>
+              <Text style={pdfStyles.textArea}>{theme.analysis.method || "-"}</Text>
+            </View>
+            <View style={pdfStyles.colBlock}>
+              <Text style={pdfStyles.fishboneLabel}>Machine</Text>
+              <Text style={pdfStyles.textArea}>{theme.analysis.machine || "-"}</Text>
+            </View>
+            <View style={pdfStyles.colBlock}>
+              <Text style={pdfStyles.fishboneLabel}>Material</Text>
+              <Text style={pdfStyles.textArea}>{theme.analysis.material || "-"}</Text>
+            </View>
+            <View style={pdfStyles.colBlock}>
+              <Text style={pdfStyles.fishboneLabel}>Environment</Text>
+              <Text style={pdfStyles.textArea}>{theme.analysis.environment || "-"}</Text>
+            </View>
+          </View>
+
+          {/* Rantai Sebab Akibat & Akar Masalah */}
+          <View style={pdfStyles.grid2Col}>
+            <View style={pdfStyles.colBlock}>
+              <Text style={pdfStyles.textBold}>4. Analisis Sebab Akibat (5-Why Chain):</Text>
+              {(theme.chain || []).map((c, cIdx) => (
+                <Text key={cIdx} style={{ fontSize: 8, color: "#475569", marginVertical: 1 }}>
+                  • {c.effect || "[Kosong]"} karena {c.cause || "[Kosong]"}
+                </Text>
+              ))}
+              <Text style={[pdfStyles.textBold, { marginTop: 4, color: "#b91c1c" }]}>
+                Akar Masalah Utama: <Text style={{ fontWeight: "normal", color: "#1e293b" }}>{theme.rootCause || "-"}</Text>
+              </Text>
+            </View>
+
+            {/* Rencana Perbaikan 5W1H */}
+            <View style={pdfStyles.colBlock}>
+              <Text style={pdfStyles.textBold}>5. Rencana Perbaikan (5W+1H Metrics):</Text>
+              <View style={{ backgroundColor: "#faf5ff", padding: 6, borderRadius: 4, marginTop: 2, borderLeft: "2pt solid #7e22ce" }}>
+                <Text style={{ fontSize: 8 }}><Text style={{ fontWeight: "bold" }}>What (Tindakan):</Text> {theme.plan.what || "-"}</Text>
+                <Text style={{ fontSize: 8 }}><Text style={{ fontWeight: "bold" }}>Who (PIC):</Text> {theme.plan.who || "-"}</Text>
+                <Text style={{ fontSize: 8 }}><Text style={{ fontWeight: "bold" }}>When (Tenggat):</Text> {theme.plan.when || "-"}</Text>
+                <Text style={{ fontSize: 8 }}><Text style={{ fontWeight: "bold" }}>Where (Lokasi):</Text> {theme.plan.where || "-"}</Text>
+                <Text style={{ fontSize: 8 }}><Text style={{ fontWeight: "bold" }}>Why (Urgensi):</Text> {theme.plan.why || "-"}</Text>
+                <Text style={{ fontSize: 8, color: "#7e22ce", fontWeight: "bold", marginTop: 2 }}>Cost (Biaya): {theme.plan.cost || "-"}</Text>
               </View>
             </View>
-          ))}
-          {(!data.idsSession?.issues || data.idsSession.issues.length === 0) && (
-            <Text style={{ fontSize: 9, color: "#94a3b8", fontStyle: "italic" }}>Tidak ada isu yang diidentifikasi.</Text>
-          )}
+          </View>
         </View>
+      ))}
 
-        {/* Block 2: Discuss */}
-        <View style={pdfStyles.section}>
-          <Text style={pdfStyles.sectionTitle}>2. Discussion Notes</Text>
-          <Text style={pdfStyles.textArea}>{data.idsSession.notes || "Tidak ada catatan diskusi khusus."}</Text>
-        </View>
-
-        {/* Block 3: Solve */}
-        <View style={pdfStyles.section}>
-          <Text style={pdfStyles.sectionTitle}>3. Solutions & Execution</Text>
-          <Text style={[pdfStyles.textArea, { borderLeft: "4pt solid #7e22ce", backgroundColor: "#faf5ff" }]}>
-            {data.idsSession.solutions || "Tidak ada item solusi yang dihasilkan."}
-          </Text>
-        </View>
+      {/* Bagian Akhir Solusi Global */}
+      <View style={pdfStyles.section} wrap={false}>
+        <Text style={pdfStyles.sectionTitle}>Keputusan / Solusi Final Rapat</Text>
+        <Text style={pdfStyles.textArea}>{data.idsSession.solutions || "Tidak ada item solusi spesifik."}</Text>
       </View>
     </Page>
   </Document>
@@ -528,17 +567,29 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
     ? [t("slides.start.owner"), t("slides.start.integrator"), ...data.config.divisions] 
     : [t("slides.start.owner"), t("slides.start.integrator"), "Marketing", "Sales", "Operation", "Finance", "HRD", "Product", "R&D"];
 
-  const [data, setData] = useState<L10Data>(initialData || DEFAULT_DATA);
+  const [data, setData] = useState<L10Data>(() => {
+    if (initialData) {
+      // Pastikan struktur themes baru siap digunakan jika meload data lama
+      const merged = { ...initialData };
+      if (!merged.idsSession) merged.idsSession = { issues: [], themes: [], solutions: "" };
+      if (!merged.idsSession.themes || merged.idsSession.themes.length === 0) {
+        merged.idsSession.themes = [generateDefaultTheme(1), generateDefaultTheme(2), generateDefaultTheme(3)];
+      }
+      return merged as L10Data;
+    }
+    return DEFAULT_DATA;
+  });
+
   const [currentSlide, setCurrentSlide] = useState(0);
   const [showSetup, setShowSetup] = useState(!initialData);
+  const [activeThemeTab, setActiveThemeTab] = useState<number>(0); // State Tab Pengendali Tema Baru
   
   const [timeLeft, setTimeLeft] = useState(5400); // 90 minutes
   const [isTimerRunning, setIsTimerRunning] = useState(false);
   const timerEndTimeRef = useRef<number | null>(null);
-
   const [isExporting, setIsExporting] = useState(false);
   
-  // Sync data with parent component
+  // Sinkronisasi data mutakhir ke komponen induk
   useEffect(() => {
     const timer = setTimeout(() => {
       if (onSave) onSave(data);
@@ -546,7 +597,7 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
     return () => clearTimeout(timer);
   }, [data, onSave]);
 
-  // Timer logic
+  // Logika jam interval presisi tinggi
   useEffect(() => {
     let intervalId: NodeJS.Timeout;
     if (isTimerRunning) {
@@ -579,20 +630,14 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
 
   const updateData = (path: string, value: any) => {
     setData(prev => {
-      // Fungsi rekursif pembantu untuk memperbarui state secara aman (immutable)
       const setDeep = (obj: any, pathKeys: string[], val: any): any => {
         if (pathKeys.length === 0) return val;
         
         const [currentKey, ...remainingKeys] = pathKeys;
         const isArray = Array.isArray(obj);
-        
-        // Salin struktur data saat ini (array atau objek)
         const cloned = isArray ? [...(obj || [])] : { ...(obj || {}) };
-        
-        // Ambil indeks/key saat ini
         const targetKey = isArray ? parseInt(currentKey, 10) : currentKey;
         
-        // Rekursi masuk lebih dalam ke nested objek
         cloned[targetKey] = setDeep(cloned[targetKey], remainingKeys, val);
         return cloned;
       };
@@ -605,14 +650,14 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
   const attendees = useMemo(() => getAttendees(), [data.config.divisions, t]);
 
   const averageRating = useMemo(() => {
-    const attendees = data.config.divisions.length > 0 
+    const listRoles = data.config.divisions.length > 0 
       ? ["Owner", "Integrator", ...data.config.divisions] 
       : ["Owner", "Integrator", "Marketing", "Sales", "Operation", "Finance", "HRD", "Product", "R&D"];
 
     let totalScore = 0;
     let activeCount = 0;
 
-    attendees.forEach((_, idx) => {
+    listRoles.forEach((_, idx) => {
       if (data.attendance && data.attendance[idx] === true) {
         const scoreRaw = data.ratings ? data.ratings[idx] : undefined;
         const ratingValue = scoreRaw !== undefined && scoreRaw !== "" ? parseFloat(String(scoreRaw)) : 0;
@@ -632,7 +677,7 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
     const existingTexts = new Set(issuesList.map(i => i.text.toLowerCase()));
     const newIssues: IDSIssue[] = [];
 
-    // Pull from Scorecards
+    // Tarik target dari KPI Scorecard yang 'off'
     Object.entries(data.scorecards).forEach(([div, kpis]) => {
       kpis.forEach(k => {
         if (k.status === 'off' && !existingTexts.has(k.kpi.toLowerCase())) {
@@ -646,7 +691,7 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
       });
     });
 
-    // Pull from Rocks
+    // Tarik prioritas dari 90-Day Rocks yang 'off'
     data.rocksStatus.forEach((r, i) => {
       const rockText = data.config.rocks[i];
       if (r.status === 'off' && rockText && !existingTexts.has(rockText.toLowerCase())) {
@@ -669,13 +714,11 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
     const issuesList = [...(data.idsSession?.issues || [])];
     if (issuesList[index]) {
       issuesList[index].isResolved = checked;
-      // Move resolved issues to the bottom
       const sortedIssues = issuesList.sort((a, b) => Number(a.isResolved) - Number(b.isResolved));
       updateData('idsSession.issues', sortedIssues);
     }
   };
 
-  // --- PDF EXPORT ENGINE: @react-pdf/renderer Implementation ---
   const handleExportPDF = async () => {
     if (isExporting) return;
     setIsExporting(true);
@@ -691,14 +734,14 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
       const downloadUrl = URL.createObjectURL(docBlob);
       const link = document.createElement("a");
       link.href = downloadUrl;
-      link.download = `L10_Report_${data.config.companyName.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`;
+      link.download = `L10_Quality_Report_${data.config.companyName.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
       URL.revokeObjectURL(downloadUrl);
     } catch (error) {
       console.error("PDF Export Error:", error);
-      alert("Gagal mengekspor PDF. Pastikan data valid.");
+      alert("Gagal mengekspor berkas laporan L10.");
     } finally {
       setIsExporting(false);
     }
@@ -728,52 +771,48 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
 
     if (currentSlide === 1) return (
       <div className="space-y-6 flex-1 flex flex-col">
-        <div className="flex justify-between items-end">
-          <div>
-            <h2 className="text-4xl font-bold text-black dark:text-white mb-1">Daftar Hadir</h2>
-            <p className="text-black font-normal">Pastikan semua peserta terdata (5 Menit Total)</p>
-          </div>
+        <div>
+          <h2 className="text-4xl font-bold text-black dark:text-white mb-1">Daftar Hadir</h2>
+          <p className="text-black font-normal">Pastikan semua peserta terdata (5 Menit Total)</p>
         </div>
         <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col shadow-sm flex-1 w-full">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pr-1 flex-1">
-              {attendees.map((role, i) => (
-                <label key={i} className={`cursor-pointer transition-all rounded-xl p-4 flex items-center gap-3 border ${data.attendance[i] ? 'bg-blue-500/10 border-blue-500/30' : 'bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/80'}`}>
-                  <input 
-                    type="checkbox" 
-                    checked={data.attendance[i] || false}
-                    onChange={(e) => updateData(`attendance.${i}`, e.target.checked)}
-                    className="w-5 h-5 rounded-lg bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 text-blue-600 focus:ring-blue-500"
-                  />
-                  <span className={`font-bold text-sm truncate ${data.attendance[i] ? 'text-blue-700 dark:text-blue-300' : 'text-black dark:text-[#EEEEEE]'}`}>{role}</span>
-                </label>
-              ))}
-            </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pr-1 flex-1">
+            {attendees.map((role, i) => (
+              <label key={i} className={`cursor-pointer transition-all rounded-xl p-4 flex items-center gap-3 border ${data.attendance[i] ? 'bg-blue-500/10 border-blue-500/30' : 'bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/80'}`}>
+                <input 
+                  type="checkbox" 
+                  checked={data.attendance[i] || false}
+                  onChange={(e) => updateData(`attendance.${i}`, e.target.checked)}
+                  className="w-5 h-5 rounded-lg bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 text-blue-600 focus:ring-blue-500"
+                />
+                <span className={`font-bold text-sm truncate ${data.attendance[i] ? 'text-blue-700 dark:text-blue-300' : 'text-black dark:text-[#EEEEEE]'}`}>{role}</span>
+              </label>
+            ))}
+          </div>
         </div>
       </div>
     );
 
     if (currentSlide === 2) return (
       <div className="space-y-6 flex-1 flex flex-col">
-        <div className="flex justify-between items-end">
-          <div>
-            <h2 className="text-4xl font-bold text-black dark:text-white mb-1">Good News</h2>
-            <p className="text-black font-normal">Bagikan kabar baik personal & profesional</p>
-          </div>
+        <div>
+          <h2 className="text-4xl font-bold text-black dark:text-white mb-1">Good News</h2>
+          <p className="text-black font-normal">Bagikan kabar baik personal & profesional</p>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 w-full h-auto items-start pb-6">
-            {['owner', 'integrator', 'team'].map((pic) => (
-                <div key={pic} className="w-full h-auto min-h-[12rem] flex flex-col p-5 rounded-xl bg-white text-black border border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 focus-within:ring-2 focus-within:ring-emerald-500 transition-all shadow-sm">
-                    <label className="text-base font-black uppercase tracking-widest text-slate-600 dark:text-slate-300 px-1 text-center mb-2">{pic}</label>
-                    <AutoResizeTextarea 
-                      value={data.goodNews[pic as keyof typeof data.goodNews]}
-                      onChange={(e) => updateData(`goodNews.${pic}`, e.target.value)}
-                      placeholder={`Kabar baik dari ${pic}...`}
-                      className="w-full h-auto bg-transparent text-black dark:text-[#EEEEEE] focus:ring-0 outline-none font-medium text-sm placeholder-slate-400 dark:placeholder-slate-500 mt-2 resize-none overflow-hidden"
-                    />
-                </div>
-            ))}
+          {['owner', 'integrator', 'team'].map((pic) => (
+            <div key={pic} className="w-full h-auto min-h-[12rem] flex flex-col p-5 rounded-xl bg-white text-black border border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 focus-within:ring-2 focus-within:ring-emerald-500 transition-all shadow-sm">
+              <label className="text-base font-black uppercase tracking-widest text-slate-600 dark:text-slate-300 px-1 text-center mb-2">{pic}</label>
+              <AutoResizeTextarea 
+                value={data.goodNews[pic as keyof typeof data.goodNews]}
+                onChange={(e) => updateData(`goodNews.${pic}`, e.target.value)}
+                placeholder={`Kabar baik dari ${pic}...`}
+                className="w-full h-auto bg-transparent text-black dark:text-[#EEEEEE] focus:ring-0 outline-none font-medium text-sm placeholder-slate-400 dark:placeholder-slate-500 mt-2 resize-none overflow-hidden"
+              />
+            </div>
+          ))}
         </div>
-    </div>
+      </div>
     );
 
     const divisionIndex = currentSlide - 3;
@@ -933,7 +972,7 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
           <h2 className="text-4xl font-bold text-black dark:text-white mb-1">Headlines</h2>
           <p className="text-black font-normal">Berita Penting Rapat</p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-1 sm:grid-cols-2 gap-6 pb-4 flex-1">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pb-4 flex-1">
           {['customer', 'internal'].map(type => (
             <div key={type} className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col space-y-4 shadow-sm flex-1">
               <h3 className={`text-xl font-bold flex items-center gap-2 ${type === 'customer' ? 'text-blue-500' : 'text-emerald-500'}`}><FileText size={20} /> {type === 'customer' ? 'Customer Headlines' : 'Internal Headlines'}</h3>
@@ -1031,21 +1070,155 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
       </div>
     );
 
-    if (currentSlide === 7 + data.config.divisions.length) return (
-      <div className="space-y-6 flex-1 flex flex-col h-auto w-full">
-        <div><h2 className="text-4xl font-bold text-black dark:text-white mb-1">IDS Session</h2><p className="text-black font-normal">2. Discuss (Notes)</p></div>
-        <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col shadow-sm h-auto min-h-[28rem] w-full">
-          <h3 className="text-base font-black border-b border-slate-200 dark:border-slate-800 pb-4 text-emerald-500 uppercase tracking-wider shadow-sm">Catatan Diskusi Penting</h3>
-          <AutoResizeTextarea
-            rows={6}
-            value={data.idsSession.notes}
-            onChange={(e) => updateData('idsSession.notes', e.target.value)}
-            placeholder="Tulis jalannya diskusi penting di sini... (Kolom ini akan melar ke bawah otomatis seiring bertambahnya teks)"
-            className="w-full h-auto bg-transparent text-black dark:text-[#EEEEEE] focus:ring-0 outline-none text-base font-medium leading-relaxed mt-5 resize-none overflow-hidden"
-          />
+    // ============================================================================
+    // ⚙️ REFACTORING SLIDE 7: FISHBONE & 5W1H QUALITY MATRIX ENGINE (DISCUSS)
+    // ============================================================================
+    if (currentSlide === 7 + data.config.divisions.length) {
+      const currentTheme = data.idsSession.themes[activeThemeTab] || generateDefaultTheme(activeThemeTab + 1);
+
+      return (
+        <div className="space-y-4 flex-1 flex flex-col h-full w-full">
+          <div className="flex justify-between items-center flex-shrink-0">
+            <div>
+              <h2 className="text-3xl font-black text-black dark:text-white mb-0.5">IDS: 2. Discuss Matrix</h2>
+              <p className="text-sm font-bold text-purple-600 dark:text-purple-400">Analisis Akar Masalah (Fishbone / Ishikawa 5M & Rencana 5W+1H)</p>
+            </div>
+            {/* Tab Pengendali 3 Tema */}
+            <div className="flex bg-slate-100 dark:bg-slate-900 p-1 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-inner">
+              {[0, 1, 2].map((idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => setActiveThemeTab(idx)}
+                  className={`px-6 py-2.5 rounded-xl text-xs font-black transition-all ${
+                    activeThemeTab === idx 
+                      ? 'bg-white dark:bg-slate-800 text-purple-600 dark:text-purple-400 shadow-md scale-105' 
+                      : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+                  }`}
+                >
+                  <span className="flex items-center gap-1.5"><Layers size={14} /> Tema {idx + 1}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-2xl p-6 flex flex-col shadow-xl flex-1 overflow-y-auto max-h-[70vh] custom-scrollbar gap-5">
+            {/* Isian Judul Tema */}
+            <div className="bg-slate-50 dark:bg-slate-900/40 p-4 rounded-xl border border-slate-100 dark:border-slate-800/80">
+              <label className="text-[10px] font-black text-purple-500 uppercase tracking-widest block mb-1">Judul Topik / Masalah Tema {activeThemeTab + 1}</label>
+              <AutoResizeTextarea
+                value={currentTheme.topic}
+                onChange={(e) => updateData(`idsSession.themes.${activeThemeTab}.topic`, e.target.value)}
+                placeholder="Tuliskan nama topik/isu besar yang sedang dibahas di sini..."
+                className="bg-transparent font-black text-lg text-black dark:text-[#EEEEEE] outline-none focus:ring-0 border-none p-0"
+              />
+            </div>
+
+            {/* 1 & 2: Kondisi Sekarang vs Diinginkan */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="p-4 border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-[#1E1E1E] focus-within:ring-2 focus-within:ring-blue-500/20 transition-all">
+                <label className="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-widest block mb-2">1. Kondisi Sekarang (Current State)</label>
+                <AutoResizeTextarea
+                  rows={2}
+                  value={currentTheme.currentCond}
+                  onChange={(e) => updateData(`idsSession.themes.${activeThemeTab}.currentCond`, e.target.value)}
+                  placeholder="Bagaimana realita buruk atau hambatan di lapangan saat ini?"
+                  className="bg-transparent text-sm font-semibold text-black dark:text-[#EEEEEE] outline-none focus:ring-0 border-none p-0"
+                />
+              </div>
+              <div className="p-4 border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-[#1E1E1E] focus-within:ring-2 focus-within:ring-emerald-500/20 transition-all">
+                <label className="text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-widest block mb-2">2. Kondisi Diinginkan (Goal State)</label>
+                <AutoResizeTextarea
+                  rows={2}
+                  value={currentTheme.desiredCond}
+                  onChange={(e) => updateData(`idsSession.themes.${activeThemeTab}.desiredCond`, e.target.value)}
+                  placeholder="Target pencapaian ideal atau standar kuantitas yang ingin dituju?"
+                  className="bg-transparent text-sm font-semibold text-black dark:text-[#EEEEEE] outline-none focus:ring-0 border-none p-0"
+                />
+              </div>
+            </div>
+
+            {/* 3: Analisa Kondisi Lapangan (Fishbone 5M) */}
+            <div className="space-y-2">
+              <label className="text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-wider flex items-center gap-1"><FileSpreadsheet size={16} className="text-purple-500"/> 3. Analisa Kondisi yang Ada (Kerangka Diagram Fishbone 5M)</label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+                {['man', 'method', 'machine', 'material', 'environment'].map((mField) => (
+                  <div key={mField} className="p-3 border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50/50 dark:bg-slate-900/20 focus-within:bg-white dark:focus-within:bg-[#1E1E1E] focus-within:ring-2 focus-within:ring-purple-500/30 transition-all">
+                    <label className="text-[10px] font-extrabold text-slate-500 dark:text-slate-400 uppercase block mb-1">{mField}</label>
+                    <AutoResizeTextarea
+                      rows={2}
+                      value={currentTheme.analysis[mField as keyof typeof currentTheme.analysis] || ""}
+                      onChange={(e) => updateData(`idsSession.themes.${activeThemeTab}.analysis.${mField}`, e.target.value)}
+                      placeholder={`Faktor ${mField}...`}
+                      className="bg-transparent text-xs font-bold text-black dark:text-[#EEEEEE] outline-none focus:ring-0 border-none p-0 placeholder-slate-400"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* 4: Analisa Sebab Akibat (Rantai 5-Whys) */}
+            <div className="p-5 border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-[#1E1E1E] space-y-3">
+              <label className="text-xs font-black text-rose-600 dark:text-rose-400 uppercase tracking-wider flex items-center gap-1"><HelpCircle size={16}/> 4. Analisa Sebab Akibat (5-Why Chain Analysis)</label>
+              <div className="space-y-2">
+                {(currentTheme.chain || Array(5).fill({effect: "", cause: ""})).map((item, cIdx) => (
+                  <div key={cIdx} className="flex items-center gap-3 bg-slate-50 dark:bg-slate-900/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-800/60">
+                    <span className="text-xs font-black text-slate-400 w-5">{cIdx + 1}.</span>
+                    <AutoResizeTextarea
+                      value={item.effect}
+                      onChange={(e) => updateData(`idsSession.themes.${activeThemeTab}.chain.${cIdx}.effect`, e.target.value)}
+                      placeholder="Akibat / Gejala Masalah"
+                      className="flex-1 bg-transparent text-xs font-bold text-black dark:text-[#EEEEEE] outline-none focus:ring-0 border-none p-0"
+                    />
+                    <span className="text-xs font-black text-rose-500 uppercase px-2">karena</span>
+                    <AutoResizeTextarea
+                      value={item.cause}
+                      onChange={(e) => updateData(`idsSession.themes.${activeThemeTab}.chain.${cIdx}.cause`, e.target.value)}
+                      placeholder="Sebab / Pemicu Masalah"
+                      className="flex-1 bg-transparent text-xs font-bold text-black dark:text-[#EEEEEE] outline-none focus:ring-0 border-none p-0"
+                    />
+                  </div>
+                ))}
+              </div>
+              <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center gap-3">
+                <span className="text-xs font-black text-rose-600 dark:text-rose-400 uppercase whitespace-nowrap">Akar Masalahnya Adalah:</span>
+                <AutoResizeTextarea
+                  value={currentTheme.rootCause}
+                  onChange={(e) => updateData(`idsSession.themes.${activeThemeTab}.rootCause`, e.target.value)}
+                  placeholder="Tulis kesimpulan akar masalah terdalam (Root Cause) hasil telaah 5-Why di atas..."
+                  className="flex-1 bg-transparent text-sm font-black text-black dark:text-[#EEEEEE] border-b-2 border-dashed border-rose-400 focus:border-rose-600 outline-none focus:ring-0 p-0 pb-0.5"
+                />
+              </div>
+            </div>
+
+            {/* 5: Rencana Perbaikan (5W+1H) */}
+            <div className="p-5 border border-purple-200 dark:border-purple-900 rounded-xl bg-purple-50/10 dark:bg-purple-950/10 space-y-3">
+              <label className="text-xs font-black text-purple-600 dark:text-purple-400 uppercase tracking-wider block">5. Rencana Perbaikan (Action Plan 5W+1H Matrix)</label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {[
+                  { field: 'what', label: 'Apa yang akan dilakukan? (What)', color: 'focus-within:ring-purple-500/30' },
+                  { field: 'who', label: 'Siapa yang bertugas? (Who)', color: 'focus-within:ring-blue-500/30' },
+                  { field: 'when', label: 'Kapan akan selesai? (When)', color: 'focus-within:ring-orange-500/30' },
+                  { field: 'where', label: 'Dimana dikerjakan? (Where)', color: 'focus-within:ring-slate-500/30' },
+                  { field: 'why', label: 'Kenapa harus dilakukan? (Why)', color: 'focus-within:ring-rose-500/30' },
+                  { field: 'cost', label: 'Berapa biayanya? (Cost)', color: 'focus-within:ring-emerald-500/30' }
+                ].map((pItem) => (
+                  <div key={pItem.field} className={`p-3 bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl transition-all ${pItem.color}`}>
+                    <label className="text-[10px] font-black text-slate-500 dark:text-slate-400 block mb-1.5 uppercase tracking-wide">{pItem.label}</label>
+                    <AutoResizeTextarea
+                      value={currentTheme.plan[pItem.field as keyof typeof currentTheme.plan] || ""}
+                      onChange={(e) => updateData(`idsSession.themes.${activeThemeTab}.plan.${pItem.field}`, e.target.value)}
+                      placeholder="Isian deskripsi..."
+                      className="bg-transparent text-xs font-black text-black dark:text-[#EEEEEE] outline-none focus:ring-0 border-none p-0"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-    );
+      );
+    }
 
     if (currentSlide === 8 + data.config.divisions.length) return (
       <div className="space-y-6 flex-1 flex flex-col h-auto w-full">
@@ -1056,7 +1229,7 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
             rows={6}
             value={data.idsSession.solutions}
             onChange={(e) => updateData('idsSession.solutions', e.target.value)}
-            placeholder="Apa keputusan akhir atau solusi konkritnya? Tulis di sini... (Kolom ini akan melar ke bawah otomatis)"
+            placeholder="Apa keputusan akhir atau solusi konkritnya? Tulis di sini..."
             className="w-full h-auto bg-transparent text-black dark:text-[#EEEEEE] focus:ring-0 outline-none text-base font-bold leading-relaxed mt-5 resize-none overflow-hidden"
           />
         </div>
@@ -1079,7 +1252,6 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
                 value={data.ratings?.[i] !== undefined ? String(data.ratings[i]) : ""}
                 onChange={(e) => {
                   const val = e.target.value;
-                  // Only allow numbers and decimal point
                   if (val === "" || /^[0-9]*\.?[0-9]*$/.test(val)) {
                     const numVal = parseFloat(val);
                     if (val === "" || (numVal >= 0 && numVal <= 10)) {
@@ -1110,7 +1282,7 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
       {/* Top Navigation & Status */}
       <div className="flex justify-between items-center p-8 z-40 flex-shrink-0">
         <div className="flex items-center gap-5">
-          <div className={`bg-white dark:bg-slate-900/80 backdrop-blur-xl px-8 py-3.5 rounded-3xl flex items-center gap-5 shadow-lg border border-black dark:border-slate-800/50 dark:border-slate-800/50 ${timeLeft < 300 ? 'bg-rose-500/10 text-rose-600' : 'text-blue-600 dark:text-blue-400'}`}>
+          <div className={`bg-white dark:bg-slate-900/80 backdrop-blur-xl px-8 py-3.5 rounded-3xl flex items-center gap-5 shadow-lg border border-black dark:border-slate-800/50 ${timeLeft < 300 ? 'bg-rose-500/10 text-rose-600' : 'text-blue-600 dark:text-blue-400'}`}>
             <Clock size={24} /><span className="text-3xl font-black font-mono tracking-tighter">{formatTime(timeLeft)}</span>
             <div className="flex gap-4 border-l border-black dark:border-slate-800 pl-5 shadow-sm">
               <button onClick={() => setIsTimerRunning(!isTimerRunning)} className="hover:scale-110 transition-transform active:scale-95 text-black dark:text-slate-300">{isTimerRunning ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" />}</button>
@@ -1127,13 +1299,8 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
             {isExporting ? "GENERATING PDF..." : "EXPORT L10 REPORT"}
           </button>
 
-          {/* Premium Cloud Status Indicator */}
           <div title={isSyncing ? "Menyimpan data..." : "Semua perubahan disimpan"} className="flex items-center justify-center w-12 h-12 rounded-full bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 shadow-sm">
-            {isSyncing ? (
-              <Loader2 size={16} className="animate-spin text-blue-500" />
-            ) : (
-              <Cloud size={16} className="text-emerald-600" />
-            )}
+            {isSyncing ? <Loader2 size={16} className="animate-spin text-blue-500" /> : <Cloud size={16} className="text-emerald-600" />}
           </div>
         </div>
         <button onClick={() => setShowSetup(true)} className="p-4 rounded-3xl bg-white dark:bg-slate-900 shadow-lg border border-slate-200 dark:border-slate-800 text-black dark:text-slate-100 hover:text-blue-500 hover:rotate-90 transition-all duration-700 active:scale-90"><Settings size={24} /></button>
@@ -1193,11 +1360,9 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
                             onClick={() => {
                               const newDivisions = data.config.divisions.filter((_, idx) => idx !== i);
                               updateData('config.divisions', newDivisions);
-                              
-                              // Opsional: Bersihkan data kpi atau rating terkait indeks ini jika diperlukan
                               if (data.ratings) {
                                 const newRatings = { ...data.ratings };
-                                delete newRatings[i + 2]; // +2 Menyesuaikan offset Owner & Integrator
+                                delete newRatings[i + 2];
                                 updateData('ratings', newRatings);
                               }
                             }}
