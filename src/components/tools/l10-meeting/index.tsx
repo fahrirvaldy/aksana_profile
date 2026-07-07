@@ -574,7 +574,7 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const totalSlides = 7 + data.config.divisions.length;
+  const totalSlides = 8 + data.config.divisions.length;
   const nextSlide = () => setCurrentSlide(prev => Math.min(prev + 1, totalSlides - 1));
   const prevSlide = () => setCurrentSlide(prev => Math.max(prev - 1, 0));
 
@@ -728,17 +728,15 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
     );
 
     if (currentSlide === 1) return (
-      <div className="space-y-6 h-full flex flex-col">
+      <div className="space-y-6 flex-1 flex flex-col">
         <div className="flex justify-between items-end">
           <div>
-            <h2 className="text-4xl font-bold text-black dark:text-white mb-1">Segmen Awal</h2>
-            <p className="text-black font-normal">Kehadiran & Kabar Baik (5 Menit)</p>
+            <h2 className="text-4xl font-bold text-black dark:text-white mb-1">Daftar Hadir</h2>
+            <p className="text-black font-normal">Pastikan semua peserta terdata (5 Menit Total)</p>
           </div>
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-1 sm:grid-cols-2 gap-6 pb-4">
-          <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col shadow-sm min-h-[550px]">
-            <h3 className="text-xl font-bold flex items-center gap-2 mb-4 text-black dark:text-slate-200"><Users size={20} className="text-blue-500" /> Daftar Hadir</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pr-1">
+        <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col shadow-sm flex-1 w-full">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pr-1 flex-1">
               {attendees.map((role, i) => (
                 <label key={i} className={`cursor-pointer transition-all rounded-xl p-4 flex items-center gap-3 border ${data.attendance[i] ? 'bg-blue-500/10 border-blue-500/30' : 'bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/80'}`}>
                   <input 
@@ -751,41 +749,48 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
                 </label>
               ))}
             </div>
-          </div>
-          <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col shadow-sm min-h-[550px]">
-            <h3 className="text-xl font-bold flex items-center gap-2 mb-4 text-black dark:text-slate-200"><MessageSquare size={20} className="text-emerald-500" /> Good News</h3>
-            <div className="space-y-4 pr-1">
-              {['owner', 'integrator', 'team'].map((pic) => (
-                <div key={pic} className="space-y-1">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-300 px-1">{pic}</label>
-                  <AutoResizeTextarea 
-                    value={data.goodNews[pic as keyof typeof data.goodNews]}
-                    onChange={(e) => updateData(`goodNews.${pic}`, e.target.value)}
-                    placeholder={`Kabar baik dari ${pic}...`}
-                    className="w-full p-4 rounded-xl bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 focus:ring-2 focus:ring-emerald-500 outline-none min-h-[5rem] font-medium text-sm transition-shadow placeholder-slate-400 dark:placeholder-slate-500"
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
       </div>
     );
 
-    const divisionIndex = currentSlide - 2;
+    if (currentSlide === 2) return (
+      <div className="space-y-6 flex-1 flex flex-col">
+        <div className="flex justify-between items-end">
+          <div>
+            <h2 className="text-4xl font-bold text-black dark:text-white mb-1">Good News</h2>
+            <p className="text-black font-normal">Bagikan kabar baik personal & profesional</p>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 w-full h-auto items-start pb-6">
+            {['owner', 'integrator', 'team'].map((pic) => (
+                <div key={pic} className="w-full h-auto min-h-[12rem] flex flex-col p-5 rounded-xl bg-white text-black border border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 focus-within:ring-2 focus-within:ring-emerald-500 transition-all shadow-sm">
+                    <label className="text-base font-black uppercase tracking-widest text-slate-600 dark:text-slate-300 px-1 text-center mb-2">{pic}</label>
+                    <AutoResizeTextarea 
+                      value={data.goodNews[pic as keyof typeof data.goodNews]}
+                      onChange={(e) => updateData(`goodNews.${pic}`, e.target.value)}
+                      placeholder={`Kabar baik dari ${pic}...`}
+                      className="w-full h-auto bg-transparent text-black dark:text-[#EEEEEE] focus:ring-0 outline-none font-medium text-sm placeholder-slate-400 dark:placeholder-slate-500 mt-2 resize-none overflow-hidden"
+                    />
+                </div>
+            ))}
+        </div>
+    </div>
+    );
+
+    const divisionIndex = currentSlide - 3;
     if (divisionIndex >= 0 && divisionIndex < data.config.divisions.length) {
       const division = data.config.divisions[divisionIndex];
       const divId = division.toLowerCase().replace(/[^a-z0-9]/g, '-');
       const kpis = data.scorecards[divId] || [];
 
       return (
-        <div className="space-y-6 h-full flex flex-col">
+        <div className="space-y-6 flex-1 flex flex-col">
           <div>
             <h2 className="text-4xl font-bold text-black dark:text-white mb-1">Scorecard: {division}</h2>
             <p className="text-black font-normal">Review KPI Mingguan</p>
           </div>
-          <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col pb-6 shadow-sm min-h-[550px]">
-            <div className="">
+          <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col pb-6 shadow-sm flex-1">
+            <div className="flex-1">
               <table className="w-full border-separate border-spacing-y-2 shadow-sm">
                 <thead>
                   <tr className="text-left text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 dark:text-slate-300">
@@ -861,17 +866,17 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
       );
     }
 
-    const rockReviewSlideIndex = 2 + data.config.divisions.length;
+    const rockReviewSlideIndex = 3 + data.config.divisions.length;
     if (currentSlide === rockReviewSlideIndex) {
       const rocks = data.config.rocks;
       return (
-        <div className="space-y-6 h-full flex flex-col">
+        <div className="space-y-6 flex-1 flex flex-col">
           <div>
             <h2 className="text-4xl font-bold text-black dark:text-white mb-1">Rock Review</h2>
             <p className="text-black font-normal">Prioritas Strategis 90 Hari</p>
           </div>
-          <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col pb-6 shadow-sm min-h-[550px]">
-            <div className="">
+          <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col pb-6 shadow-sm flex-1">
+            <div className="flex-1">
               <table className="w-full border-separate border-spacing-y-2 shadow-sm">
                 <thead>
                   <tr className="text-left text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 dark:text-slate-300">
@@ -923,15 +928,15 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
       );
     }
 
-    if (currentSlide === 3 + data.config.divisions.length) return (
-      <div className="space-y-6 h-full flex flex-col">
+    if (currentSlide === 4 + data.config.divisions.length) return (
+      <div className="space-y-6 flex-1 flex flex-col">
         <div>
           <h2 className="text-4xl font-bold text-black dark:text-white mb-1">Headlines</h2>
           <p className="text-black font-normal">Berita Penting Rapat</p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-1 sm:grid-cols-2 gap-6 pb-4">
+        <div className="grid grid-cols-1 md:grid-cols-1 sm:grid-cols-2 gap-6 pb-4 flex-1">
           {['customer', 'internal'].map(type => (
-            <div key={type} className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col space-y-4 shadow-sm min-h-[550px]">
+            <div key={type} className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col space-y-4 shadow-sm flex-1">
               <h3 className={`text-xl font-bold flex items-center gap-2 ${type === 'customer' ? 'text-blue-500' : 'text-emerald-500'}`}><FileText size={20} /> {type === 'customer' ? 'Customer Headlines' : 'Internal Headlines'}</h3>
               <div className="space-y-3 pr-1">
                 {(data.headlines[type as keyof typeof data.headlines] || []).map((h, i) => (
@@ -953,14 +958,14 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
       </div>
     );
 
-    if (currentSlide === 4 + data.config.divisions.length) return (
-      <div className="space-y-6 h-full flex flex-col">
+    if (currentSlide === 5 + data.config.divisions.length) return (
+      <div className="space-y-6 flex-1 flex flex-col">
         <div>
           <h2 className="text-4xl font-bold text-black dark:text-white mb-1">To-Do List</h2>
           <p className="text-black font-normal">Review Minggu Lalu & Action Plan</p>
         </div>
-        <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col pb-6 shadow-sm min-h-[550px]">
-          <div className="space-y-3 pr-1">
+        <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col pb-6 shadow-sm flex-1">
+          <div className="space-y-3 pr-1 flex-1">
             {data.todoList.map((todo, i) => (
               <div key={todo.id} className="flex items-center gap-4 p-4 bg-white dark:bg-[#1E1E1E] rounded-xl group border border-slate-200 dark:border-slate-800 transition-all hover:bg-slate-50 dark:hover:bg-slate-800/60 shadow-sm">
                 <button onClick={() => {
@@ -994,8 +999,8 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
       </div>
     );
 
-    if (currentSlide === 5 + data.config.divisions.length) return (
-      <div className="space-y-6 h-full flex flex-col">
+    if (currentSlide === 6 + data.config.divisions.length) return (
+      <div className="space-y-6 flex-1 flex flex-col">
         <div className="flex justify-between items-center flex-shrink-0">
           <div><h2 className="text-4xl font-bold text-black dark:text-white mb-1">IDS Session</h2><p className="text-black font-normal">Identify, Discuss, Solve (60 Menit)</p></div>
           <button onClick={pullOffTrackData} className="flex items-center gap-2 px-6 py-3 bg-rose-500 hover:bg-rose-600 text-white rounded-2xl font-bold transition-all active:scale-95 text-sm shadow-sm"><RefreshCw size={18} /> Tarik Data Off-Track</button>
@@ -1038,7 +1043,7 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
         </div>
 
         {/* Tab Content */}
-        <div className="pb-4">
+        <div className="pb-4 flex-1 flex flex-col">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeIdsStep}
@@ -1046,12 +1051,12 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -15 }}
               transition={{ duration: 0.2 }}
-              className="h-full"
+              className="flex-grow flex flex-col w-full h-full"
             >
               {activeIdsStep === 'identify' && (
-                <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col shadow-sm h-full min-h-[550px]">
+                <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col shadow-sm flex-1">
                   <h3 className="text-base font-black border-b border-slate-200 dark:border-slate-800 pb-4 text-blue-500 uppercase tracking-wider flex-shrink-0 shadow-sm">1. Identify (Issues)</h3>
-                  <div className="space-y-3 mt-5 pr-1">
+                  <div className="space-y-3 mt-5 pr-1 flex-1">
                     {(data.idsSession?.issues || []).map((issue, i) => (
                       <div key={issue.id} className={`flex items-start gap-3 p-4 rounded-2xl group border transition-all h-auto ${issue.isResolved ? 'bg-slate-50 dark:bg-slate-800/20 border-slate-200 dark:border-slate-800 opacity-50' : 'bg-white dark:bg-[#1E1E1E] border-slate-200 dark:border-slate-800 shadow-sm'}`}>
                         <input type="checkbox" checked={issue.isResolved} onChange={(e) => handleIssueCheck(i, e.target.checked)} className="mt-1.5 w-5 h-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer" />
@@ -1076,26 +1081,26 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
                 </div>
               )}
               {activeIdsStep === 'discuss' && (
-                <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col shadow-sm h-full min-h-[550px]">
+                <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col shadow-sm flex-1">
                   <h3 className="text-base font-black border-b border-slate-200 dark:border-slate-800 pb-4 text-emerald-500 uppercase tracking-wider flex-shrink-0 shadow-sm">2. Discuss (Notes)</h3>
                   <AutoResizeTextarea
                     rows={2}
                     value={data.idsSession.notes}
                     onChange={(e) => updateData('idsSession.notes', e.target.value)}
                     placeholder="Tulis catatan diskusi penting di sini..."
-                    className="w-full h-auto min-h-[44px] resize-none overflow-hidden break-words whitespace-pre-wrap bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 p-4 rounded-xl mt-5 focus:ring-2 focus:ring-emerald-500 outline-none text-base font-medium leading-relaxed custom-scrollbar placeholder-slate-400 dark:placeholder-slate-500"
+                    className="w-full flex-1 min-h-[44px] resize-none overflow-hidden break-words whitespace-pre-wrap bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 p-4 rounded-xl mt-5 focus:ring-2 focus:ring-emerald-500 outline-none text-base font-medium leading-relaxed custom-scrollbar placeholder-slate-400 dark:placeholder-slate-500"
                   />
                 </div>
               )}
               {activeIdsStep === 'solve' && (
-                <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col shadow-sm h-full min-h-[550px]">
+                <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col shadow-sm flex-1">
                   <h3 className="text-base font-black border-b border-slate-200 dark:border-slate-800 pb-4 text-purple-500 uppercase tracking-wider flex-shrink-0 shadow-sm">3. Solve (Action Items)</h3>
                   <AutoResizeTextarea
                     rows={2}
                     value={data.idsSession.solutions}
                     onChange={(e) => updateData('idsSession.solutions', e.target.value)}
                     placeholder="Apa solusi finalnya? Masukkan ke To-Do List jika perlu..."
-                    className="w-full h-auto min-h-[44px] resize-none overflow-hidden break-words whitespace-pre-wrap bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 p-4 rounded-xl mt-5 focus:ring-2 focus:ring-purple-500 outline-none text-base font-bold leading-relaxed custom-scrollbar placeholder-slate-400 dark:placeholder-slate-500"
+                    className="w-full flex-1 min-h-[44px] resize-none overflow-hidden break-words whitespace-pre-wrap bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 p-4 rounded-xl mt-5 focus:ring-2 focus:ring-purple-500 outline-none text-base font-bold leading-relaxed custom-scrollbar placeholder-slate-400 dark:placeholder-slate-500"
                   />
                 </div>
               )}
@@ -1105,7 +1110,7 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
       </div>
     );
 
-    if (currentSlide === 6 + data.config.divisions.length) return (
+    if (currentSlide === 7 + data.config.divisions.length) return (
       <div className="flex flex-col items-center justify-center h-full text-center space-y-10">
         <div className="space-y-2 flex-shrink-0"><h2 className="text-5xl font-black text-black dark:text-white">Conclude</h2><p className="text-black font-bold italic tracking-wide">"Seberapa efektif rapat ini bagi pencapaian visi?" (1 - 10)</p></div>
         <div className="space-y-1 flex-shrink-0 relative">
@@ -1182,10 +1187,10 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
       </div>
 
       {/* Slide Canvas */}
-      <div className="flex-1 px-4 md:px-6 xl:px-8 pb-12 pt-4 relative overflow-visible">
-        <div className="w-full h-full bg-transparent flex flex-col">
+      <div className="flex-1 px-4 md:px-6 xl:px-8 pb-12 pt-4 relative overflow-visible flex flex-col">
+        <div className="flex-grow flex flex-col w-full h-full bg-transparent">
           <AnimatePresence mode="wait">
-            <motion.div key={currentSlide} initial={{ opacity: 0, y: 20, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: -20, scale: 0.98 }} transition={{ type: "spring", stiffness: 100, damping: 20 }} className="h-full w-full">
+            <motion.div key={currentSlide} initial={{ opacity: 0, y: 20, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: -20, scale: 0.98 }} transition={{ type: "spring", stiffness: 100, damping: 20 }} className="flex-grow flex flex-col w-full h-full">
               {renderSlide()}
             </motion.div>
           </AnimatePresence>
