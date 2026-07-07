@@ -537,8 +537,7 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
   const timerEndTimeRef = useRef<number | null>(null);
 
   const [isExporting, setIsExporting] = useState(false);
-  const [activeIdsStep, setActiveIdsStep] = useState<'identify' | 'discuss' | 'solve'>('identify');
-
+  
   // Sync data with parent component
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -574,7 +573,7 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const totalSlides = 8 + data.config.divisions.length;
+  const totalSlides = 10 + data.config.divisions.length;
   const nextSlide = () => setCurrentSlide(prev => Math.min(prev + 1, totalSlides - 1));
   const prevSlide = () => setCurrentSlide(prev => Math.max(prev - 1, 0));
 
@@ -1002,115 +1001,69 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
     if (currentSlide === 6 + data.config.divisions.length) return (
       <div className="space-y-6 flex-1 flex flex-col">
         <div className="flex justify-between items-center flex-shrink-0">
-          <div><h2 className="text-4xl font-bold text-black dark:text-white mb-1">IDS Session</h2><p className="text-black font-normal">Identify, Discuss, Solve (60 Menit)</p></div>
+          <div><h2 className="text-4xl font-bold text-black dark:text-white mb-1">IDS: 1. Identify</h2><p className="text-black font-normal">Daftar Isu dan Masalah (60 Menit Total)</p></div>
           <button onClick={pullOffTrackData} className="flex items-center gap-2 px-6 py-3 bg-rose-500 hover:bg-rose-600 text-white rounded-2xl font-bold transition-all active:scale-95 text-sm shadow-sm"><RefreshCw size={18} /> Tarik Data Off-Track</button>
         </div>
-
-        {/* Tab Navigation */}
-        <div className="flex-shrink-0 border-b border-slate-200 dark:border-slate-800">
-          <nav className="-mb-px flex space-x-6" aria-label="Tabs">
-            <button
-              onClick={() => setActiveIdsStep('identify')}
-              className={`whitespace-nowrap py-4 px-1 border-b-2 font-bold text-base transition-all
-                ${activeIdsStep === 'identify'
-                  ? 'border-blue-500 text-blue-600'
-                  : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300 dark:text-slate-400 dark:hover:text-slate-200'}
-              `}
-            >
-              1. Identify
-            </button>
-            <button
-              onClick={() => setActiveIdsStep('discuss')}
-              className={`whitespace-nowrap py-4 px-1 border-b-2 font-bold text-base transition-all
-                ${activeIdsStep === 'discuss'
-                  ? 'border-emerald-500 text-emerald-600'
-                  : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300 dark:text-slate-400 dark:hover:text-slate-200'}
-              `}
-            >
-              2. Discuss
-            </button>
-            <button
-              onClick={() => setActiveIdsStep('solve')}
-              className={`whitespace-nowrap py-4 px-1 border-b-2 font-bold text-base transition-all
-                ${activeIdsStep === 'solve'
-                  ? 'border-purple-500 text-purple-600'
-                  : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300 dark:text-slate-400 dark:hover:text-slate-200'}
-              `}
-            >
-              3. Solve / Notes
-            </button>
-          </nav>
-        </div>
-
-        {/* Tab Content */}
-        <div className="pb-4 flex-1 flex flex-col">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeIdsStep}
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -15 }}
-              transition={{ duration: 0.2 }}
-              className="flex-grow flex flex-col w-full h-full"
-            >
-              {activeIdsStep === 'identify' && (
-                <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col shadow-sm flex-1">
-                  <h3 className="text-base font-black border-b border-slate-200 dark:border-slate-800 pb-4 text-blue-500 uppercase tracking-wider flex-shrink-0 shadow-sm">1. Identify (Issues)</h3>
-                  <div className="space-y-3 mt-5 pr-1 flex-1">
-                    {(data.idsSession?.issues || []).map((issue, i) => (
-                      <div key={issue.id} className={`flex items-start gap-3 p-4 rounded-2xl group border transition-all h-auto ${issue.isResolved ? 'bg-slate-50 dark:bg-slate-800/20 border-slate-200 dark:border-slate-800 opacity-50' : 'bg-white dark:bg-[#1E1E1E] border-slate-200 dark:border-slate-800 shadow-sm'}`}>
-                        <input type="checkbox" checked={issue.isResolved} onChange={(e) => handleIssueCheck(i, e.target.checked)} className="mt-1.5 w-5 h-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer" />
-                        <div className="flex-1 min-w-0 space-y-1">
-                          <span className="inline-block px-2.5 py-1 rounded-lg text-[10px] bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 font-extrabold uppercase tracking-widest shadow-sm">{issue.source}</span>
-                          <AutoResizeTextarea
-                            rows={2}
-                            value={issue.text}
-                            onChange={(e) => {
-                              const newI = [...(data.idsSession?.issues || [])]; newI[i].text = e.target.value; updateData('idsSession.issues', newI);
-                            }}
-                            className={`w-full min-h-[44px] break-words whitespace-pre-wrap bg-transparent border-none focus:ring-0 p-0 text-sm font-bold text-black dark:text-[#EEEEEE] transition-all ${issue.isResolved ? 'line-through font-medium' : ''}`}
-                          />
-                        </div>
-                        <button onClick={() => {
-                          const newI = (data.idsSession?.issues || []).filter((_, idx) => idx !== i); updateData('idsSession.issues', newI);
-                        }} className="opacity-0 group-hover:opacity-100 text-rose-500 p-1.5 hover:bg-rose-500/10 rounded-lg transition-all flex-shrink-0"><Trash2 size={16}/></button>
-                      </div>
-                    ))}
-                    <button onClick={() => updateData('idsSession.issues', [...(data.idsSession?.issues || []), { id: `manual-${Date.now()}`, source: 'Manual', text: 'Masalah baru...', isResolved: false }])} className="w-full py-3.5 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-2xl text-slate-600 dark:text-slate-300 hover:text-blue-500 transition-all font-bold text-xs bg-white dark:bg-[#1E1E1E] shadow-sm">+ Input Masalah Baru</button>
-                  </div>
-                </div>
-              )}
-              {activeIdsStep === 'discuss' && (
-                <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col shadow-sm flex-1">
-                  <h3 className="text-base font-black border-b border-slate-200 dark:border-slate-800 pb-4 text-emerald-500 uppercase tracking-wider flex-shrink-0 shadow-sm">2. Discuss (Notes)</h3>
+        <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col shadow-sm flex-1">
+          <div className="space-y-3 pr-1 flex-1">
+            {(data.idsSession?.issues || []).map((issue, i) => (
+              <div key={issue.id} className={`flex items-start gap-3 p-4 rounded-2xl group border transition-all h-auto ${issue.isResolved ? 'bg-slate-50 dark:bg-slate-800/20 border-slate-200 dark:border-slate-800 opacity-50' : 'bg-white dark:bg-[#1E1E1E] border-slate-200 dark:border-slate-800 shadow-sm'}`}>
+                <input type="checkbox" checked={issue.isResolved} onChange={(e) => handleIssueCheck(i, e.target.checked)} className="mt-1.5 w-5 h-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer" />
+                <div className="flex-1 min-w-0 space-y-1">
+                  <span className="inline-block px-2.5 py-1 rounded-lg text-[10px] bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 font-extrabold uppercase tracking-widest shadow-sm">{issue.source}</span>
                   <AutoResizeTextarea
                     rows={2}
-                    value={data.idsSession.notes}
-                    onChange={(e) => updateData('idsSession.notes', e.target.value)}
-                    placeholder="Tulis catatan diskusi penting di sini..."
-                    className="w-full flex-1 min-h-[44px] resize-none overflow-hidden break-words whitespace-pre-wrap bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 p-4 rounded-xl mt-5 focus:ring-2 focus:ring-emerald-500 outline-none text-base font-medium leading-relaxed custom-scrollbar placeholder-slate-400 dark:placeholder-slate-500"
+                    value={issue.text}
+                    onChange={(e) => {
+                      const newI = [...(data.idsSession?.issues || [])]; newI[i].text = e.target.value; updateData('idsSession.issues', newI);
+                    }}
+                    className={`w-full min-h-[44px] break-words whitespace-pre-wrap bg-transparent border-none focus:ring-0 p-0 text-sm font-bold text-black dark:text-[#EEEEEE] transition-all ${issue.isResolved ? 'line-through font-medium' : ''}`}
                   />
                 </div>
-              )}
-              {activeIdsStep === 'solve' && (
-                <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col shadow-sm flex-1">
-                  <h3 className="text-base font-black border-b border-slate-200 dark:border-slate-800 pb-4 text-purple-500 uppercase tracking-wider flex-shrink-0 shadow-sm">3. Solve (Action Items)</h3>
-                  <AutoResizeTextarea
-                    rows={2}
-                    value={data.idsSession.solutions}
-                    onChange={(e) => updateData('idsSession.solutions', e.target.value)}
-                    placeholder="Apa solusi finalnya? Masukkan ke To-Do List jika perlu..."
-                    className="w-full flex-1 min-h-[44px] resize-none overflow-hidden break-words whitespace-pre-wrap bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 p-4 rounded-xl mt-5 focus:ring-2 focus:ring-purple-500 outline-none text-base font-bold leading-relaxed custom-scrollbar placeholder-slate-400 dark:placeholder-slate-500"
-                  />
-                </div>
-              )}
-            </motion.div>
-          </AnimatePresence>
+                <button onClick={() => {
+                  const newI = (data.idsSession?.issues || []).filter((_, idx) => idx !== i); updateData('idsSession.issues', newI);
+                }} className="opacity-0 group-hover:opacity-100 text-rose-500 p-1.5 hover:bg-rose-500/10 rounded-lg transition-all flex-shrink-0"><Trash2 size={16}/></button>
+              </div>
+            ))}
+            <button onClick={() => updateData('idsSession.issues', [...(data.idsSession?.issues || []), { id: `manual-${Date.now()}`, source: 'Manual', text: 'Masalah baru...', isResolved: false }])} className="w-full py-3.5 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-2xl text-slate-600 dark:text-slate-300 hover:text-blue-500 transition-all font-bold text-xs bg-white dark:bg-[#1E1E1E] shadow-sm">+ Input Masalah Baru</button>
+          </div>
         </div>
       </div>
     );
 
     if (currentSlide === 7 + data.config.divisions.length) return (
+      <div className="space-y-6 flex-1 flex flex-col h-auto w-full">
+        <div><h2 className="text-4xl font-bold text-black dark:text-white mb-1">IDS Session</h2><p className="text-black font-normal">2. Discuss (Notes)</p></div>
+        <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col shadow-sm h-auto min-h-[28rem] w-full">
+          <h3 className="text-base font-black border-b border-slate-200 dark:border-slate-800 pb-4 text-emerald-500 uppercase tracking-wider shadow-sm">Catatan Diskusi Penting</h3>
+          <AutoResizeTextarea
+            rows={6}
+            value={data.idsSession.notes}
+            onChange={(e) => updateData('idsSession.notes', e.target.value)}
+            placeholder="Tulis jalannya diskusi penting di sini... (Kolom ini akan melar ke bawah otomatis seiring bertambahnya teks)"
+            className="w-full h-auto bg-transparent text-black dark:text-[#EEEEEE] focus:ring-0 outline-none text-base font-medium leading-relaxed mt-5 resize-none overflow-hidden"
+          />
+        </div>
+      </div>
+    );
+
+    if (currentSlide === 8 + data.config.divisions.length) return (
+      <div className="space-y-6 flex-1 flex flex-col h-auto w-full">
+        <div><h2 className="text-4xl font-bold text-black dark:text-white mb-1">IDS Session</h2><p className="text-black font-normal">3. Solve / Resolutions</p></div>
+        <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col shadow-sm h-auto min-h-[28rem] w-full">
+          <h3 className="text-base font-black border-b border-slate-200 dark:border-slate-800 pb-4 text-purple-500 uppercase tracking-wider shadow-sm">Solusi Final & Eksekusi</h3>
+          <AutoResizeTextarea
+            rows={6}
+            value={data.idsSession.solutions}
+            onChange={(e) => updateData('idsSession.solutions', e.target.value)}
+            placeholder="Apa keputusan akhir atau solusi konkritnya? Tulis di sini... (Kolom ini akan melar ke bawah otomatis)"
+            className="w-full h-auto bg-transparent text-black dark:text-[#EEEEEE] focus:ring-0 outline-none text-base font-bold leading-relaxed mt-5 resize-none overflow-hidden"
+          />
+        </div>
+      </div>
+    );
+
+    if (currentSlide === 9 + data.config.divisions.length) return (
       <div className="flex flex-col items-center justify-center h-full text-center space-y-10">
         <div className="space-y-2 flex-shrink-0"><h2 className="text-5xl font-black text-black dark:text-white">Conclude</h2><p className="text-black font-bold italic tracking-wide">"Seberapa efektif rapat ini bagi pencapaian visi?" (1 - 10)</p></div>
         <div className="space-y-1 flex-shrink-0 relative">
