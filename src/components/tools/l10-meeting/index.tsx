@@ -581,13 +581,18 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
   });
 
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [showSetup, setShowSetup] = useState(!initialData);
+  const [showSetup, setShowSetup] = useState(false);
   const [activeThemeTab, setActiveThemeTab] = useState<number>(0); // State Tab Pengendali Tema Baru
   
   const [timeLeft, setTimeLeft] = useState(5400); // 90 minutes
   const [isTimerRunning, setIsTimerRunning] = useState(false);
   const timerEndTimeRef = useRef<number | null>(null);
   const [isExporting, setIsExporting] = useState(false);
+
+  useEffect(() => {
+    // Automatically open the setup dialog on initial load
+    setShowSetup(true);
+  }, []); // Empty dependency array ensures this runs only once
   
   // Sinkronisasi data mutakhir ke komponen induk
   useEffect(() => {
@@ -867,7 +872,7 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
                           onChange={(e) => {
                             const newKpis = [...kpis]; newKpis[i].realisasi = e.target.value; updateData(`scorecards.${divId}`, newKpis);
                           }} 
-                          className="bg-transparent text-black dark:text-[#EEEEEE] focus:ring-0 w-full font-mono text-sm text-blue-600 dark:text-blue-400 p-0 border-none" 
+                          className="bg-transparent focus:ring-0 w-full font-mono text-lg font-bold text-black dark:text-white p-0 border-none" 
                         />
                       </td>
                       <td className="p-3 text-center">
