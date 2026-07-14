@@ -240,7 +240,7 @@ const pdfStyles = StyleSheet.create({
     border: "1pt solid #e2e8f0"
   },
   sectionTitle: { 
-    fontSize: 11, 
+    fontSize: 12, 
     fontWeight: "bold", 
     marginBottom: 8, 
     color: "#0f172a", 
@@ -275,12 +275,12 @@ const pdfStyles = StyleSheet.create({
   textBold: { fontWeight: "bold", color: "#334155" },
   textArea: { 
     marginTop: 4, 
-    padding: 6, 
+    padding: 8, 
     backgroundColor: "#f8fafc", 
     borderRadius: 4, 
-    minHeight: 30, 
-    fontSize: 8, 
-    lineHeight: 1.4,
+    minHeight: 35, 
+    fontSize: 9, 
+    lineHeight: 1.5,
     color: "#475569",
     border: "0.5pt solid #e2e8f0"
   },
@@ -289,7 +289,7 @@ const pdfStyles = StyleSheet.create({
   grid2Col: { flexDirection: "row", gap: 10, marginBottom: 8 },
   grid5Col: { flexDirection: "row", gap: 6, marginBottom: 8 },
   colBlock: { flex: 1 },
-  fishboneLabel: { fontSize: 7, fontWeight: "bold", color: "#475569", textTransform: "uppercase", marginBottom: 2 }
+  fishboneLabel: { fontSize: 8, fontWeight: "bold", color: "#475569", textTransform: "uppercase", marginBottom: 2 }
 });
 
 const L10PDFDocument = ({ data, attendees, averageRating }: { data: L10Data; attendees: string[]; averageRating: string }) => (
@@ -523,11 +523,11 @@ const L10PDFDocument = ({ data, attendees, averageRating }: { data: L10Data; att
             <View style={pdfStyles.colBlock}>
               <Text style={pdfStyles.textBold}>4. Analisis Sebab Akibat (5-Why Chain):</Text>
               {(theme.chain || []).map((c, cIdx) => (
-                <Text key={cIdx} style={{ fontSize: 8, color: "#475569", marginVertical: 1 }}>
+                <Text key={cIdx} style={{ fontSize: 9, color: "#475569", marginVertical: 1 }}>
                   • {c.effect || "[Kosong]"} karena {c.cause || "[Kosong]"}
                 </Text>
               ))}
-              <Text style={[pdfStyles.textBold, { marginTop: 4, color: "#b91c1c" }]}>
+              <Text style={[pdfStyles.textBold, { marginTop: 4, color: "#1e293b" }]}>
                 Akar Masalah Utama: <Text style={{ fontWeight: "normal", color: "#1e293b" }}>{theme.rootCause || "-"}</Text>
               </Text>
             </View>
@@ -536,12 +536,12 @@ const L10PDFDocument = ({ data, attendees, averageRating }: { data: L10Data; att
             <View style={pdfStyles.colBlock}>
               <Text style={pdfStyles.textBold}>5. Rencana Perbaikan (5W+1H Metrics):</Text>
               <View style={{ backgroundColor: "#faf5ff", padding: 6, borderRadius: 4, marginTop: 2, borderLeft: "2pt solid #7e22ce" }}>
-                <Text style={{ fontSize: 8 }}><Text style={{ fontWeight: "bold" }}>What (Tindakan):</Text> {theme.plan.what || "-"}</Text>
-                <Text style={{ fontSize: 8 }}><Text style={{ fontWeight: "bold" }}>Who (PIC):</Text> {theme.plan.who || "-"}</Text>
-                <Text style={{ fontSize: 8 }}><Text style={{ fontWeight: "bold" }}>When (Tenggat):</Text> {theme.plan.when || "-"}</Text>
-                <Text style={{ fontSize: 8 }}><Text style={{ fontWeight: "bold" }}>Where (Lokasi):</Text> {theme.plan.where || "-"}</Text>
-                <Text style={{ fontSize: 8 }}><Text style={{ fontWeight: "bold" }}>Why (Urgensi):</Text> {theme.plan.why || "-"}</Text>
-                <Text style={{ fontSize: 8, color: "#7e22ce", fontWeight: "bold", marginTop: 2 }}>Cost (Biaya): {theme.plan.cost || "-"}</Text>
+                <Text style={{ fontSize: 9 }}><Text style={{ fontWeight: "bold" }}>What (Tindakan):</Text> {theme.plan.what || "-"}</Text>
+                <Text style={{ fontSize: 9 }}><Text style={{ fontWeight: "bold" }}>Who (PIC):</Text> {theme.plan.who || "-"}</Text>
+                <Text style={{ fontSize: 9 }}><Text style={{ fontWeight: "bold" }}>When (Tenggat):</Text> {theme.plan.when || "-"}</Text>
+                <Text style={{ fontSize: 9 }}><Text style={{ fontWeight: "bold" }}>Where (Lokasi):</Text> {theme.plan.where || "-"}</Text>
+                <Text style={{ fontSize: 9 }}><Text style={{ fontWeight: "bold" }}>Why (Urgensi):</Text> {theme.plan.why || "-"}</Text>
+                <Text style={{ fontSize: 9, color: "#7e22ce", fontWeight: "bold", marginTop: 2 }}>Cost (Biaya): {theme.plan.cost || "-"}</Text>
               </View>
             </View>
           </View>
@@ -1110,52 +1110,52 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
           <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-2xl p-6 flex flex-col shadow-xl flex-1 overflow-y-auto max-h-[70vh] custom-scrollbar gap-5">
             {/* Isian Judul Tema */}
             <div className="bg-slate-50 dark:bg-slate-900/40 p-4 rounded-xl border border-slate-100 dark:border-slate-800/80">
-              <label className="text-[10px] font-black text-purple-500 uppercase tracking-widest block mb-1">Judul Topik / Masalah Tema {activeThemeTab + 1}</label>
+              <label className="text-xs font-black text-purple-500 uppercase tracking-widest block mb-1">Judul Topik / Masalah Tema {activeThemeTab + 1}</label>
               <AutoResizeTextarea
                 value={currentTheme.topic}
                 onChange={(e) => updateData(`idsSession.themes.${activeThemeTab}.topic`, e.target.value)}
                 placeholder="Tuliskan nama topik/isu besar yang sedang dibahas di sini..."
-                className="bg-transparent font-black text-lg text-black dark:text-[#EEEEEE] outline-none focus:ring-0 border-none p-0"
+                className="bg-transparent font-black text-xl text-black dark:text-[#EEEEEE] outline-none focus:ring-0 border-none p-0"
               />
             </div>
 
             {/* 1 & 2: Kondisi Sekarang vs Diinginkan */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-4 border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-[#1E1E1E] focus-within:ring-2 focus-within:ring-blue-500/20 transition-all">
-                <label className="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-widest block mb-2">1. Kondisi Sekarang (Current State)</label>
+              <div className="p-4 border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-[#1E1E1E] focus-within:ring-2 focus-within:ring-slate-500/20 transition-all">
+                <label className="text-xs font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest block mb-2">1. Kondisi Sekarang (Current State)</label>
                 <AutoResizeTextarea
                   rows={2}
                   value={currentTheme.currentCond}
                   onChange={(e) => updateData(`idsSession.themes.${activeThemeTab}.currentCond`, e.target.value)}
                   placeholder="Bagaimana realita buruk atau hambatan di lapangan saat ini?"
-                  className="bg-transparent text-sm font-semibold text-black dark:text-[#EEEEEE] outline-none focus:ring-0 border-none p-0"
+                  className="bg-transparent text-base font-semibold text-black dark:text-[#EEEEEE] outline-none focus:ring-0 border-none p-0"
                 />
               </div>
-              <div className="p-4 border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-[#1E1E1E] focus-within:ring-2 focus-within:ring-emerald-500/20 transition-all">
-                <label className="text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-widest block mb-2">2. Kondisi Diinginkan (Goal State)</label>
+              <div className="p-4 border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-[#1E1E1E] focus-within:ring-2 focus-within:ring-slate-500/20 transition-all">
+                <label className="text-xs font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest block mb-2">2. Kondisi Diinginkan (Goal State)</label>
                 <AutoResizeTextarea
                   rows={2}
                   value={currentTheme.desiredCond}
                   onChange={(e) => updateData(`idsSession.themes.${activeThemeTab}.desiredCond`, e.target.value)}
                   placeholder="Target pencapaian ideal atau standar kuantitas yang ingin dituju?"
-                  className="bg-transparent text-sm font-semibold text-black dark:text-[#EEEEEE] outline-none focus:ring-0 border-none p-0"
+                  className="bg-transparent text-base font-semibold text-black dark:text-[#EEEEEE] outline-none focus:ring-0 border-none p-0"
                 />
               </div>
             </div>
 
             {/* 3: Analisa Kondisi Lapangan (Fishbone 5M) */}
             <div className="space-y-2">
-              <label className="text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-wider flex items-center gap-1"><FileSpreadsheet size={16} className="text-purple-500"/> 3. Analisa Kondisi yang Ada (Kerangka Diagram Fishbone 5M)</label>
+              <label className="text-sm font-black text-slate-700 dark:text-slate-300 uppercase tracking-wider flex items-center gap-1"><FileSpreadsheet size={16} className="text-purple-500"/> 3. Analisa Kondisi yang Ada (Kerangka Diagram Fishbone 5M)</label>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
                 {['man', 'method', 'machine', 'material', 'environment'].map((mField) => (
                   <div key={mField} className="p-3 border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50/50 dark:bg-slate-900/20 focus-within:bg-white dark:focus-within:bg-[#1E1E1E] focus-within:ring-2 focus-within:ring-purple-500/30 transition-all">
-                    <label className="text-[10px] font-extrabold text-slate-500 dark:text-slate-400 uppercase block mb-1">{mField}</label>
+                    <label className="text-xs font-extrabold text-slate-500 dark:text-slate-400 uppercase block mb-1">{mField}</label>
                     <AutoResizeTextarea
                       rows={2}
                       value={currentTheme.analysis[mField as keyof typeof currentTheme.analysis] || ""}
                       onChange={(e) => updateData(`idsSession.themes.${activeThemeTab}.analysis.${mField}`, e.target.value)}
                       placeholder={`Faktor ${mField}...`}
-                      className="bg-transparent text-xs font-bold text-black dark:text-[#EEEEEE] outline-none focus:ring-0 border-none p-0 placeholder-slate-400"
+                      className="bg-transparent text-sm font-bold text-black dark:text-[#EEEEEE] outline-none focus:ring-0 border-none p-0 placeholder-slate-400"
                     />
                   </div>
                 ))}
@@ -1164,57 +1164,57 @@ export default function L10Meeting({ onSave, isSyncing, initialData }: L10Meetin
 
             {/* 4: Analisa Sebab Akibat (Rantai 5-Whys) */}
             <div className="p-5 border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-[#1E1E1E] space-y-3">
-              <label className="text-xs font-black text-rose-600 dark:text-rose-400 uppercase tracking-wider flex items-center gap-1"><HelpCircle size={16}/> 4. Analisa Sebab Akibat (5-Why Chain Analysis)</label>
+              <label className="text-sm font-black text-slate-700 dark:text-slate-300 uppercase tracking-wider flex items-center gap-1"><HelpCircle size={16}/> 4. Analisa Sebab Akibat (5-Why Chain Analysis)</label>
               <div className="space-y-2">
                 {(currentTheme.chain || Array(5).fill({effect: "", cause: ""})).map((item, cIdx) => (
                   <div key={cIdx} className="flex items-center gap-3 bg-slate-50 dark:bg-slate-900/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-800/60">
-                    <span className="text-xs font-black text-slate-400 w-5">{cIdx + 1}.</span>
+                    <span className="text-sm font-black text-slate-400 w-5">{cIdx + 1}.</span>
                     <AutoResizeTextarea
                       value={item.effect}
                       onChange={(e) => updateData(`idsSession.themes.${activeThemeTab}.chain.${cIdx}.effect`, e.target.value)}
                       placeholder="Akibat / Gejala Masalah"
-                      className="flex-1 bg-transparent text-xs font-bold text-black dark:text-[#EEEEEE] outline-none focus:ring-0 border-none p-0"
+                      className="flex-1 bg-transparent text-sm font-bold text-black dark:text-[#EEEEEE] outline-none focus:ring-0 border-none p-0"
                     />
-                    <span className="text-xs font-black text-rose-500 uppercase px-2">karena</span>
+                    <span className="text-sm font-black text-purple-500 uppercase px-2">karena</span>
                     <AutoResizeTextarea
                       value={item.cause}
                       onChange={(e) => updateData(`idsSession.themes.${activeThemeTab}.chain.${cIdx}.cause`, e.target.value)}
                       placeholder="Sebab / Pemicu Masalah"
-                      className="flex-1 bg-transparent text-xs font-bold text-black dark:text-[#EEEEEE] outline-none focus:ring-0 border-none p-0"
+                      className="flex-1 bg-transparent text-sm font-bold text-black dark:text-[#EEEEEE] outline-none focus:ring-0 border-none p-0"
                     />
                   </div>
                 ))}
               </div>
               <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center gap-3">
-                <span className="text-xs font-black text-rose-600 dark:text-rose-400 uppercase whitespace-nowrap">Akar Masalahnya Adalah:</span>
+                <span className="text-sm font-black text-slate-700 dark:text-slate-300 uppercase whitespace-nowrap">Akar Masalahnya Adalah:</span>
                 <AutoResizeTextarea
                   value={currentTheme.rootCause}
                   onChange={(e) => updateData(`idsSession.themes.${activeThemeTab}.rootCause`, e.target.value)}
                   placeholder="Tulis kesimpulan akar masalah terdalam (Root Cause) hasil telaah 5-Why di atas..."
-                  className="flex-1 bg-transparent text-sm font-black text-black dark:text-[#EEEEEE] border-b-2 border-dashed border-rose-400 focus:border-rose-600 outline-none focus:ring-0 p-0 pb-0.5"
+                  className="flex-1 bg-transparent text-base font-black text-black dark:text-[#EEEEEE] border-b-2 border-dashed border-purple-400 focus:border-purple-600 outline-none focus:ring-0 p-0 pb-0.5"
                 />
               </div>
             </div>
 
             {/* 5: Rencana Perbaikan (5W+1H) */}
             <div className="p-5 border border-purple-200 dark:border-purple-900 rounded-xl bg-purple-50/10 dark:bg-purple-950/10 space-y-3">
-              <label className="text-xs font-black text-purple-600 dark:text-purple-400 uppercase tracking-wider block">5. Rencana Perbaikan (Action Plan 5W+1H Matrix)</label>
+              <label className="text-sm font-black text-purple-600 dark:text-purple-400 uppercase tracking-wider block">5. Rencana Perbaikan (Action Plan 5W+1H Matrix)</label>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {[
-                  { field: 'what', label: 'Apa yang akan dilakukan? (What)', color: 'focus-within:ring-purple-500/30' },
-                  { field: 'who', label: 'Siapa yang bertugas? (Who)', color: 'focus-within:ring-blue-500/30' },
-                  { field: 'when', label: 'Kapan akan selesai? (When)', color: 'focus-within:ring-orange-500/30' },
-                  { field: 'where', label: 'Dimana dikerjakan? (Where)', color: 'focus-within:ring-slate-500/30' },
-                  { field: 'why', label: 'Kenapa harus dilakukan? (Why)', color: 'focus-within:ring-rose-500/30' },
-                  { field: 'cost', label: 'Berapa biayanya? (Cost)', color: 'focus-within:ring-emerald-500/30' }
+                  { field: 'what', label: 'Apa yang akan dilakukan? (What)' },
+                  { field: 'who', label: 'Siapa yang bertugas? (Who)' },
+                  { field: 'when', label: 'Kapan akan selesai? (When)' },
+                  { field: 'where', label: 'Dimana dikerjakan? (Where)' },
+                  { field: 'why', label: 'Kenapa harus dilakukan? (Why)' },
+                  { field: 'cost', label: 'Berapa biayanya? (Cost)' }
                 ].map((pItem) => (
-                  <div key={pItem.field} className={`p-3 bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl transition-all ${pItem.color}`}>
-                    <label className="text-[10px] font-black text-slate-500 dark:text-slate-400 block mb-1.5 uppercase tracking-wide">{pItem.label}</label>
+                  <div key={pItem.field} className="p-3 bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl transition-all focus-within:ring-2 focus-within:ring-purple-500/30">
+                    <label className="text-xs font-black text-slate-500 dark:text-slate-400 block mb-1.5 uppercase tracking-wide">{pItem.label}</label>
                     <AutoResizeTextarea
                       value={currentTheme.plan[pItem.field as keyof typeof currentTheme.plan] || ""}
                       onChange={(e) => updateData(`idsSession.themes.${activeThemeTab}.plan.${pItem.field}`, e.target.value)}
                       placeholder="Isian deskripsi..."
-                      className="bg-transparent text-xs font-black text-black dark:text-[#EEEEEE] outline-none focus:ring-0 border-none p-0"
+                      className="bg-transparent text-sm font-black text-black dark:text-[#EEEEEE] outline-none focus:ring-0 border-none p-0"
                     />
                   </div>
                 ))}
