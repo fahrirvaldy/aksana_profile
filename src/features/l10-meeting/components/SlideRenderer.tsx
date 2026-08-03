@@ -14,7 +14,6 @@ interface SlideRendererProps {
   currentSlide: number;
   data: L10Data;
   updateData: (path: string, value: any) => void;
-  attendees: string[];
   pullOffTrackData: () => void;
   handleIssueCheck: (index: number, checked: boolean) => void;
   activeThemeTab: number;
@@ -22,8 +21,9 @@ interface SlideRendererProps {
   averageRating: string;
 }
 
-export const SlideRenderer = ({ currentSlide, data, updateData, attendees, pullOffTrackData, handleIssueCheck, activeThemeTab, setActiveThemeTab, averageRating }: SlideRendererProps) => {
+export const SlideRenderer = ({ currentSlide, data, updateData, pullOffTrackData, handleIssueCheck, activeThemeTab, setActiveThemeTab, averageRating }: SlideRendererProps) => {
   const t = useTranslations("Tools.L10");
+  const attendees = data.config.divisions;
 
   // SLIDE 0: Welcome
   if (currentSlide === 0) return (

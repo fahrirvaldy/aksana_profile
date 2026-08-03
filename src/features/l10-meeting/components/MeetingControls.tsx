@@ -22,12 +22,11 @@ interface MeetingControlsProps {
   isPrevDisabled: boolean;
   isNextDisabled: boolean;
   data: L10Data;
-  attendees: string[];
   averageRating: string;
 }
 
 export const MeetingControls = (
-  { t, isSyncing, handleSave, showSetup, timeLeft, isTimerRunning, toggleTimer, resetTimer, prevSlide, nextSlide, isPrevDisabled, isNextDisabled, data, attendees, averageRating }: MeetingControlsProps
+  { t, isSyncing, handleSave, showSetup, timeLeft, isTimerRunning, toggleTimer, resetTimer, prevSlide, nextSlide, isPrevDisabled, isNextDisabled, data, averageRating }: MeetingControlsProps
 ) => {
   const [isExporting, setIsExporting] = useState(false);
 
@@ -46,7 +45,6 @@ export const MeetingControls = (
       const docBlob = await pdf(
         <L10PDFDocument 
           data={data} 
-          attendees={attendees} 
           averageRating={averageRating} 
         />
       ).toBlob();

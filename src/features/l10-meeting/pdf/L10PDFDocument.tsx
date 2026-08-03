@@ -85,7 +85,7 @@ const s = StyleSheet.create({
 });
 
 
-const Sanitize = ({ children, style = {} }) => {
+const Sanitize = ({ children, style = {} }: { children: React.ReactNode, style?: object }) => {
     const cleanText = String(children || '-').replace(/[\u{0000}-\u{001F}\u{007F}-\u{009F}]/gu, "");
     return <Text style={{...s.text, ...style}}>{cleanText}</Text>;
 };

@@ -112,7 +112,7 @@ export const useL10Meeting = ({ initialData, onSave, t, initialSlide }: L10Meeti
     Object.entries(data.scorecards).forEach(([div, kpis]) => {
       kpis.forEach(k => {
         if (k.status === 'off' && !existingTexts.has(k.kpi.toLowerCase())) {
-          newIssues.push({ id: `sc-${div}-${Date.now()}-${Math.random()}`, source: div.toUpperCase(), text: k.kpi, isResolved: false });
+          newIssues.push({ id: `sc-${div}-${Date.now()}-${Math.random()}`, source: div.toUpperCase(), text: k.kpi, isResolved: false, isSelectedForDiscussion: false, votes: 0 });
         }
       });
     });
@@ -120,7 +120,7 @@ export const useL10Meeting = ({ initialData, onSave, t, initialSlide }: L10Meeti
       const rockText = data.config.rocks[i];
       if (r.status === 'off' && rockText && !existingTexts.has(rockText.toLowerCase())) {
         const picLabel = r.pic ? `ROCK - ${r.pic.toUpperCase()}` : "ROCK";
-        newIssues.push({ id: `rock-${i}-${Date.now()}-${Math.random()}`, source: picLabel, text: rockText, isResolved: false });
+        newIssues.push({ id: `rock-${i}-${Date.now()}-${Math.random()}`, source: picLabel, text: rockText, isResolved: false, isSelectedForDiscussion: false, votes: 0 });
       }
     });
     if (newIssues.length > 0) {
@@ -144,7 +144,6 @@ export const useL10Meeting = ({ initialData, onSave, t, initialSlide }: L10Meeti
     activeThemeTab, setActiveThemeTab,
     timeLeft, setTimeLeft,
     isTimerRunning, setIsTimerRunning,
-    attendees,
     averageRating,
     pullOffTrackData,
     handleIssueCheck,

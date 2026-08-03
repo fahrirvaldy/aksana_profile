@@ -13,8 +13,8 @@ import { AnimatePresence, motion } from "framer-motion";
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { user, loading } = useAuth();
-  const isLoggedIn = !loading && !!user;
+  const { user, isLoading } = useAuth();
+  const isLoggedIn = !isLoading && !!user;
   const pathname = usePathname();
   const router = useRouter();
   const t = useTranslations('Navigation');  useEffect(() => {

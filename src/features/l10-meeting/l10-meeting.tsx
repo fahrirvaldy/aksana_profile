@@ -27,8 +27,6 @@ export default function L10MeetingContainer({ user, onSave, isSyncing, initialDa
     activeThemeTab, setActiveThemeTab,
     timeLeft, setTimeLeft,
     isTimerRunning, setIsTimerRunning,
-    isExporting,
-    attendees,
     averageRating,
     pullOffTrackData,
     handleIssueCheck
@@ -56,7 +54,6 @@ export default function L10MeetingContainer({ user, onSave, isSyncing, initialDa
         isPrevDisabled={currentSlide === 0}
         isNextDisabled={currentSlide === totalSlides - 1}
         data={data}
-        attendees={attendees}
         averageRating={averageRating}
       />
 
@@ -68,7 +65,6 @@ export default function L10MeetingContainer({ user, onSave, isSyncing, initialDa
                 currentSlide={currentSlide}
                 data={data}
                 updateData={updateData}
-                attendees={attendees}
                 pullOffTrackData={pullOffTrackData}
                 handleIssueCheck={handleIssueCheck}
                 activeThemeTab={activeThemeTab}
