@@ -1,6 +1,4 @@
-"use client";
-
-import React, { useState, useEffect } from "react";
+"use client";import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { Link, usePathname, useRouter } from "@/i18n/routing";
 import aksanaLogo from "@/assets/image/logo.png";
@@ -8,46 +6,32 @@ import { ThemeToggle } from "./ThemeToggle";
 import { LanguageSwitcher } from "./layout/LanguageSwitcher";
 import { Menu, X, UserCircle, LogOut } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
-import { AnimatePresence, motion } from "framer-motion";
+import { useAuth } from "@/context/AuthContext";
 import { useTranslations } from 'next-intl';
+import { AnimatePresence, motion } from "framer-motion";
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { user, loading } = useAuth();
+  const isLoggedIn = !loading && !!user;
   const pathname = usePathname();
   const router = useRouter();
-  const t = useTranslations('Navigation');
-
-  useEffect(() => {
+  const t = useTranslations('Navigation');  useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
     window.addEventListener("scroll", handleScroll);
-    
-    const checkUser = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setIsLoggedIn(!!session);
-    };
-    checkUser();
-
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const handleLogout = async () => {
+        return () => window.removeEventListener("scroll", handleScroll);
+  }, []);  const handleLogout = async () => {
     await supabase.auth.signOut();
-    setIsLoggedIn(false);
     setMobileMenuOpen(false);
     router.push("/login");
-  };
-
-  const navLinks = [
+  };  const navLinks = [
     { name: t('services'), href: "/layanan" },
     { name: t('tools'), href: "/tools" },
     { name: t('contact'), href: "/kontak" },
-  ];
-
-  return (
+  ];  return (
     <header className="fixed top-0 w-full z-50">
       <nav className={`
         w-full h-20 transition-all duration-500
@@ -68,9 +52,7 @@ export function Navbar() {
             <span className="text-[14px] font-bold tracking-[0.4em] uppercase text-slate-950 dark:text-slate-50 hidden sm:block">
               Aksana Business Lab
             </span>
-          </Link>
-
-          {/* Menu & Aksi Sisi Kanan */}
+          </Link>          {/* Menu & Aksi Sisi Kanan */}
           <div className="flex items-center gap-6 lg:gap-10">
             {/* Menu Desktop */}
             <div className="hidden md:flex items-center gap-10">
@@ -97,17 +79,13 @@ export function Navbar() {
                   </Link>
                 );
               })}
-            </div>
-
-            <div className="flex items-center gap-4">
+            </div>            <div className="flex items-center gap-4">
               <div className="hidden items-center gap-4 md:flex">
                 <LanguageSwitcher />
                 <ThemeToggle />
               </div>
               
-              <div className="hidden md:block border-l border-black dark:border-slate-800 h-5 mx-2 shadow-sm"></div>
-
-              {isLoggedIn ? (
+              <div className="hidden md:block border-l border-black dark:border-slate-800 h-5 mx-2 shadow-sm"></div>              {isLoggedIn ? (
                 <button
                   onClick={handleLogout}
                   className="hidden md:flex items-center gap-2 px-6 py-2.5 rounded-xl bg-slate-900 dark:bg-slate-50 text-slate-50 dark:text-slate-950 text-sm font-bold uppercase tracking-widest transition-all hover:opacity-90 active:scale-95 cursor-pointer"
@@ -122,9 +100,7 @@ export function Navbar() {
                 >
                   {t('login')}
                 </Link>
-              )}
-
-              {/* Mobile Menu Toggle */}
+              )}              {/* Mobile Menu Toggle */}
               <button 
                 className="md:hidden p-2 text-slate-950 dark:text-slate-50 hover:text-slate-950 dark:hover:text-slate-50 transition-colors"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -133,9 +109,7 @@ export function Navbar() {
               </button>
             </div>
           </div>
-        </div>
-
-        {/* Mobile Menu Overlay */}
+        </div>        {/* Mobile Menu Overlay */}
         <AnimatePresence>
           {mobileMenuOpen && (
             <motion.div 

@@ -27,7 +27,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 
 interface ToolHistory {
-  tool_name: string;
+  tool_slug: string;
   saved_state: Record<string, unknown>;
 }
 
@@ -82,8 +82,8 @@ export default function DashboardPage() {
         // Fetch Tools History - Ambil semua 9 alat
         const { data: history, error: historyError } = await supabase
           .from('user_tools_history')
-          .select('tool_name, saved_state')
-          .eq('user_id', session.user.id);
+          .select('tool_slug, saved_state')
+          .eq('profile_id', session.user.id);
 
         if (historyError) throw historyError;
         setToolHistory(history || []);
@@ -105,20 +105,20 @@ export default function DashboardPage() {
     router.push("/login");
   };
 
-  const getToolData = useCallback((name: string) => {
-    return toolHistory?.find(h => h.tool_name === name)?.saved_state;
+  const getToolData = useCallback((slug: string) => {
+    return toolHistory?.find(h => h.tool_slug === slug)?.saved_state;
   }, [toolHistory]);
 
   // 1. Data Fetching (Fetch all 9 tools)
-  const cashflowData = useMemo(() => getToolData('Cashflow Analysis'), [getToolData]);
-  const growthData = useMemo(() => getToolData('Growth Simulator'), [getToolData]);
-  const sopData = useMemo(() => getToolData('SOP Generator'), [getToolData]);
-  const cacLtvData = useMemo(() => getToolData('CAC vs LTV'), [getToolData]);
-  const funnelData = useMemo(() => getToolData('Funnel Simulator'), [getToolData]);
-  const productionData = useMemo(() => getToolData('Production Target Simulator'), [getToolData]);
-  const l10Data = useMemo(() => getToolData('Template L10 Meeting'), [getToolData]);
-  const peopleData = useMemo(() => getToolData('People Analyzer'), [getToolData]);
-  const todoData = useMemo(() => getToolData('Todo Tracker'), [getToolData]);
+  const cashflowData = useMemo(() => getToolData('cashflow-calculator'), [getToolData]);
+  const growthData = useMemo(() => getToolData('growth-simulator'), [getToolData]);
+  const sopData = useMemo(() => getToolData('sop-generator'), [getToolData]);
+  const cacLtvData = useMemo(() => getToolData('cac-ltv-calculator'), [getToolData]);
+  const funnelData = useMemo(() => getToolData('funnel-simulator'), [getToolData]);
+  const productionData = useMemo(() => getToolData('production-target-simulator'), [getToolData]);
+  const l10Data = useMemo(() => getToolData('l10-meeting'), [getToolData]);
+  const peopleData = useMemo(() => getToolData('people-analyzer'), [getToolData]);
+  const todoData = useMemo(() => getToolData('todo-tracker'), [getToolData]);
 
   // 3. Implementasi: useMemo untuk kalkulasi & Optional Chaining untuk keamanan
   

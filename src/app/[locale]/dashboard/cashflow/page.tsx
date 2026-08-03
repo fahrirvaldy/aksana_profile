@@ -29,7 +29,7 @@ export default function CashflowPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  const [companyId, setCompanyId] = useState<string | null>(null);
+  const [profileId, setProfileId] = useState<string | null>(null);
   const [history, setHistory] = useState<HistoryEntry[]>([]);
 
   // Form State
@@ -37,17 +37,17 @@ export default function CashflowPage() {
   const [pengeluaran, setPengeluaran] = useState<number | "">("");
   const [pajak, setPajak] = useState<number | "">(0);
 
-  const fetchHistory = useCallback(async (cId: string) => {
+  const fetchHistory = useCallback(async (profileId: string) => {
     const { data, error } = await supabase
-      .from('tool_data_history')
-      .select('id, created_at, data_payload')
-      .eq('company_id', cId)
-      .eq('tool_id', 'cashflow-analysis')
+      .from('user_tools_history')
+      .select('id, created_at, saved_state')
+      .eq('profile_id', profileId)
+      .eq('tool_slug', 'cashflow-analysis')
       .order('created_at', { ascending: false })
       .limit(3);
 
     if (!error && data) {
-      setHistory(data as any);
+      setHistory(data.map(h => ({ ...h, data_payload: h.saved_state })) as any);
     }
   }, []);
 
@@ -59,16 +59,8 @@ export default function CashflowPage() {
         return;
       }
 
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('company_id')
-        .eq('id', session.user.id)
-        .single();
-
-      if (profile?.company_id) {
-        setCompanyId(profile.company_id);
-        await fetchHistory(profile.company_id);
-      }
+      setProfileId(session.user.id);
+      await fetchHistory(session.user.id);
       setIsLoading(false);
     };
 
@@ -84,26 +76,26 @@ export default function CashflowPage() {
   const arusKasBersih = rawPemasukan - rawPengeluaran - totalPajakVal;
 
   const handleSave = async () => {
-    if (!companyId || rawPemasukan === 0) return;
+    if (!profileId || rawPemasukan === 0) return;
     
     setIsSaving(true);
     const { error } = await supabase
-      .from('tool_data_history')
-      .insert([
+      .from('user_tools_history')
+      .upsert([
         {
-          company_id: companyId,
-          tool_id: 'cashflow-analysis',
-          data_payload: {
+          profile_id: profileId,
+          tool_slug: 'cashflow-analysis',
+          saved_state: {
             pemasukan: rawPemasukan,
             pengeluaran: rawPengeluaran,
             pajak: rawPajak,
             hasil_akhir: arusKasBersih
           }
         }
-      ]);
+      ], { onConflict: 'profile_id, tool_slug' });
 
     if (!error) {
-      await fetchHistory(companyId);
+      await fetchHistory(profileId);
     }
     setIsSaving(false);
   };

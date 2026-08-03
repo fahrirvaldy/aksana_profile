@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
 import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
-import ThemeProvider from "@/components/ThemeProvider";
+import { ThemeProvider } from "@/components/ThemeProvider";
+import { AuthProvider } from "@/context/AuthContext";
 import { Navbar } from "@/components/Navbar";
 import ConditionalFooter from "@/components/layout/ConditionalFooter";
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { PageTransition } from "@/components/PageTransition";
+import { ProfileChecker } from '@/components/layout/ProfileChecker';
 
 
 // Define the supported locales
@@ -61,13 +63,17 @@ export default async function RootLayout({
       <body className={`${inter.variable} ${plusJakartaSans.variable} font-sans antialiased min-h-screen flex flex-col bg-white text-black dark:bg-slate-950 dark:text-white`}>
         <ThemeProvider>
           <NextIntlClientProvider messages={messages}>
-            <Navbar />
-            <main className="flex-grow pt-20 flex flex-col items-stretch">
-              <PageTransition>
-                {children}
-              </PageTransition>
-            </main>
-            <ConditionalFooter />
+            <AuthProvider>
+              <ProfileChecker>
+                <Navbar />
+                <main className="flex-grow pt-20 flex flex-col items-stretch">
+                  <PageTransition>
+                    {children}
+                  </PageTransition>
+                </main>
+                <ConditionalFooter />
+              </ProfileChecker>
+            </AuthProvider>
           </NextIntlClientProvider>
         </ThemeProvider>
       </body>

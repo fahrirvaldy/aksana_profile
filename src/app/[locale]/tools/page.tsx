@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import dynamic from 'next/dynamic';
-import { supabase } from "@/lib/supabase/client";
+import { useAuth } from "@/context/AuthContext";
+import { getToolData, saveToolData } from "@/lib/supabase/tools";
 import { User } from "@supabase/supabase-js";
 import { 
   DollarSign,
@@ -28,16 +29,16 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations } from 'next-intl';
 
 // Import Kalkulator
-import CashflowCalculator from "@/components/tools/cashflow-calculator";
-import GrowthSimulator from "@/components/tools/growth-simulator";
-import SOPGenerator from "@/components/tools/sop-generator";
-import CacLtvCalculator from "@/components/tools/cac-ltv-calculator";
-import FunnelSimulator from "@/components/tools/funnel-simulator";
-import ProductionTargetSimulator from "@/components/tools/production-target-simulator";
-import L10Meeting from "@/components/tools/l10-meeting";
-import PeopleAnalyzer from "@/components/tools/people-analyzer";
+import CashflowCalculator from "@/features/cashflow-calculator/data-container";
+import GrowthSimulator from "@/features/growth-simulator/data-container";
+import SOPGenerator from "@/features/sop-generator/data-container";
+import CacLtvCalculator from "@/features/cac-ltv-calculator/data-container";
+import FunnelSimulator from "@/features/funnel-simulator/data-container";
+import ProductionTargetSimulator from "@/features/production-target-simulator/data-container";
+import L10Meeting from "@/features/l10-meeting/data-container";
+import PeopleAnalyzer from "@/features/people-analyzer/data-container";
 
-const ToDoTracker = dynamic(() => import("@/components/tools/todo-tracker"), { ssr: false });
+const ToDoTracker = dynamic(() => import("@/features/todo-tracker/data-container"), { ssr: false });
 
 const toolIcons: { [key: string]: React.ReactNode } = {
   "Cashflow Analysis": <DollarSign size={24} />,
@@ -51,20 +52,32 @@ const toolIcons: { [key: string]: React.ReactNode } = {
   "To-Do Tracker": <CheckSquare size={24} />
 };
 
+const toolNameSlugMap: { [key: string]: string } = {
+  "Cashflow Analysis": "cashflow-calculator",
+  "Growth Simulator": "growth-simulator",
+  "SOP Generator": "sop-generator",
+  "CAC vs LTV": "cac-ltv-calculator",
+  "Funnel Simulator": "funnel-simulator",
+  "Production Target Simulator": "production-target-simulator",
+  "Template L10 Meeting": "l10-meeting",
+  "People Analyzer": "people-analyzer",
+  "To-Do Tracker": "todo-tracker"
+};
+
 export default function ToolsPage() {
   const t = useTranslations('ToolsPage');
   const tools = t.raw('tools') as { name: string; description: string; status: string; action: string }[];
 
-  const [user, setUser] = useState<User | null>(null);
-  const [isLoadingAuth, setIsLoadingAuth] = useState(true);
+  const { user, isLoading: isLoadingAuth } = useAuth();
   const [hasAccess, setHasAccess] = useState(false);
   const [timeLeft, setTimeLeft] = useState(300); // 5 menit
   const [isTimeUp, setIsTimeUp] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
-  const [activeTool, setActiveTool] = useState<string | null>(null);
-  const [savedToolData, setSavedToolData] = useState<Record<string, unknown> | null>(null);
+  const [activeToolSlug, setActiveToolSlug] = useState<string | null>(null);
+  const [initialData, setInitialData] = useState<any | null>(null);
+  const [isLoadingData, setIsLoadingData] = useState(false);
 
   const [formData, setFormData] = useState({
     nama: "",
@@ -74,21 +87,84 @@ export default function ToolsPage() {
     tantangan: ""
   });
 
-  // 1. Logika Autentikasi
-  useEffect(() => {
-    const checkUser = async () => {
-      setIsLoadingAuth(true);
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (user) {
-        setUser(user);
-        setHasAccess(true); // Bypass formulir untuk Partner
-      }
-      setIsLoadingAuth(false);
-    };
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { id, value } = e.target;
+    setFormData(prev => ({ ...prev, [id]: value }));
+  };
 
-    checkUser();
-  }, []);
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setFormError(null);
+
+    // Validasi sederhana
+    for (const key in formData) {
+      if (formData[key as keyof typeof formData].trim() === "") {
+        setFormError(t('form.errorAllFields'));
+        return;
+      }
+    }
+
+    setIsSubmitting(true);
+    
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1500));
+
+    // Kirim data (contoh)
+    console.log("Form submitted:", formData);
+
+    setIsSubmitting(false);
+    setHasAccess(true);
+  };
+
+  const formatTime = (seconds: number) => {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+  };
+
+  // Grant access to logged-in users
+  useEffect(() => {
+    if (user) {
+      setHasAccess(true);
+    }
+  }, [user]);
+
+  // Data fetching logic for tools
+  useEffect(() => {
+    const fetchToolData = async () => {
+      if (activeToolSlug && user) {
+        setIsLoadingData(true);
+        setInitialData(null); // Clear previous data
+        try {
+          const data = await getToolData(user, activeToolSlug);
+          setInitialData(data);
+        } catch (error) {
+          console.error("Failed to fetch tool data:", error);
+        } finally {
+          setIsLoadingData(false);
+        }
+      } else {
+        setInitialData(null);
+      }
+    };
+    fetchToolData();
+  }, [activeToolSlug, user]);
+
+  const handleSave = useCallback(async (data: any) => {
+    if (!user || !activeToolSlug) return;
+
+    console.log("--- DEBUG: Saving tool data ---");
+    console.log("User Object:", user);
+    console.log("Tool Slug:", activeToolSlug);
+    console.log("Data Payload:", data);
+    console.log("---------------------------------");
+
+    setIsSyncing(true);
+    await saveToolData(user, activeToolSlug, data);
+    // Add a small delay to give a feeling of synchronization
+    setTimeout(() => setIsSyncing(false), 500);
+  }, [user, activeToolSlug]);
+
 
   // Timer Logic (Hanya untuk Guest)
   useEffect(() => {
@@ -105,112 +181,14 @@ export default function ToolsPage() {
     return () => clearInterval(timer);
   }, [hasAccess, timeLeft, user]);
 
-  // 2. Logika Simpan Data (History)
-  const saveToolState = async (toolName: string, stateData: Record<string, unknown>) => {
-    if (!user) {
-      alert(t('sessionEndAlert'));
-      return;
-    }
 
-    setIsSyncing(true);
-    try {
-      const { error } = await supabase
-        .from('user_tools_history')
-        .upsert({
-          user_id: user.id,
-          tool_name: toolName,
-          saved_state: stateData,
-          updated_at: new Date().toISOString(),
-        }, {
-          onConflict: 'user_id,tool_name'
-        });
-
-      if (error) throw error;
-      console.log('Successfully saved tool state to cloud.');
-    } catch (error) {
-      console.error('Error saving tool state:', error);
-    } finally {
-      setTimeout(() => setIsSyncing(false), 800); // Simulasi visual sync
-    }
-  };
-
-  // 3. Logika Ambil Data (Load)
-  const loadToolState = async (toolName: string) => {
-    if (!user) return null;
-
-    try {
-      const { data, error } = await supabase
-        .from('user_tools_history')
-        .select('saved_state')
-        .eq('user_id', user.id)
-        .eq('tool_name', toolName)
-        .maybeSingle();
-
-      if (error) throw error;
-      return data?.saved_state || null;
-    } catch (error) {
-      console.error('Error loading tool state:', error);
-      return null;
-    }
-  };
-
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-  };
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { id, value } = e.target;
-    setFormData(prev => ({ ...prev, [id]: value }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setFormError(null);
-
-    try {
-      const { error } = await supabase
-        .from('tool_data_history')
-        .insert([
-          { 
-            nama: formData.nama, 
-            whatsapp: formData.whatsapp,
-            nama_bisnis: formData.namaBisnis,
-            bidang_bisnis: formData.sektor,
-            tantangan_utama: formData.tantangan
-          }
-        ]);
-
-      if (error) throw error;
-      setHasAccess(true);
-    } catch (error) {
-      console.error('Supabase Error:', error);
-      const errorMessage = error instanceof Error ? error.message : t('form.genericError');
-      setFormError(errorMessage);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleToolClick = async (toolName: string, status: string) => {
+  const handleToolClick = (toolName: string, status: string) => {
     if (status === "Pro") {
       alert(t('proToolAlert'));
       return;
     }
-    
-    // Load state jika Pro sebelum membuka alat
-    if (user) {
-      setIsSyncing(true);
-      const savedData = await loadToolState(toolName);
-      setSavedToolData(savedData);
-      setIsSyncing(false);
-    } else {
-      setSavedToolData(null);
-    }
-
-    setActiveTool(toolName);
+    const slug = toolNameSlugMap[toolName];
+    setActiveToolSlug(slug);
   };
 
   const containerVariants = {
@@ -228,6 +206,50 @@ export default function ToolsPage() {
     visible: { opacity: 1, y: 0 }
   };
 
+  const renderActiveTool = () => {
+    if (isLoadingData) {
+      return (
+        <div className="flex items-center justify-center h-96">
+          <Loader2 className="animate-spin text-slate-700" size={40} />
+        </div>
+      );
+    }
+
+    const commonProps = {
+      user,
+      initialData,
+      isSyncing,
+      onSave: handleSave,
+    };
+
+    // We need to find the key (the name) from the slug value for the switch
+    const activeToolName = Object.keys(toolNameSlugMap).find(name => toolNameSlugMap[name] === activeToolSlug);
+
+    switch (activeToolName) {
+      case "Cashflow Analysis":
+        return <CashflowCalculator {...commonProps} />;
+      case "Growth Simulator":
+        return <GrowthSimulator {...commonProps} />;
+      case "SOP Generator":
+        return <SOPGenerator {...commonProps} />;
+      case "CAC vs LTV":
+        return <CacLtvCalculator {...commonProps} />;
+      case "Funnel Simulator":
+        return <FunnelSimulator {...commonProps} />;
+      case "Production Target Simulator":
+        return <ProductionTargetSimulator {...commonProps} />;
+      case "Template L10 Meeting":
+        return <L10Meeting {...commonProps} />;
+      case "People Analyzer":
+        return <PeopleAnalyzer {...commonProps} />;
+      case "To-Do Tracker":
+        return <ToDoTracker {...commonProps} />;
+      default:
+        return null;
+    }
+  };
+
+
   if (isLoadingAuth) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -237,8 +259,8 @@ export default function ToolsPage() {
   }
 
   return (
-    <div className={`w-full max-w-none px-4 md:px-8 xl:px-12 flex flex-col items-stretch font-[family-name:var(--font-inter)] min-h-[calc(100vh-64px)] ${activeTool ? 'pt-4 pb-12' : 'py-12'}`}>
-      {!activeTool && (
+    <div className={`w-full max-w-none px-4 md:px-8 xl:px-12 flex flex-col items-stretch font-[family-name:var(--font-inter)] min-h-[calc(100vh-64px)] ${activeToolSlug ? 'pt-4 pb-12' : 'py-12'}`}>
+      {!activeToolSlug && (
         <div className="mb-12 space-y-4 relative">
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-center font-[family-name:var(--font-plus-jakarta)] text-slate-950 dark:text-slate-50">{t('title')}</h1>
           <p className="text-slate-700 dark:text-slate-400 text-center max-w-2xl mx-auto text-lg font-normal">
@@ -272,17 +294,16 @@ export default function ToolsPage() {
       )}
 
       <div className="relative">
-        {activeTool && (
+        {activeToolSlug && (
           <motion.div 
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             className="mb-6"
           >
             <button 
-              onClick={() => {
-                setActiveTool(null);
-                setSavedToolData(null);
-              }}
+            onClick={() => {
+              setActiveToolSlug(null);
+            }}
               className="inline-flex items-center gap-2 text-slate-950 dark:text-[#EEEEEE] hover:text-slate-950 dark:hover:text-slate-50 font-bold transition-colors group px-4 py-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800"
               >
               <ChevronLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
@@ -292,86 +313,15 @@ export default function ToolsPage() {
         )}
 
         <AnimatePresence mode="wait">
-          {activeTool ? (
+          {activeToolSlug ? (
             <motion.div
-              key={activeTool}
+              key={activeToolSlug}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.5 }}
             >
-              {activeTool === "Cashflow Analysis" && (
-                <CashflowCalculator 
-                  user={user ?? undefined}
-                  initialData={savedToolData as any}
-                  onSave={(data) => saveToolState("Cashflow Analysis", data as any)} 
-                  isSyncing={isSyncing} 
-                />
-              )}
-              {activeTool === "Growth Simulator" && (
-                <GrowthSimulator 
-                  user={user ?? undefined}
-                  initialData={savedToolData as any}
-                  onSave={(data) => saveToolState("Growth Simulator", data as any)} 
-                  isSyncing={isSyncing} 
-                />
-              )}
-              {activeTool === "SOP Generator" && (
-                <SOPGenerator 
-                  user={user ?? undefined}
-                  initialData={savedToolData as any}
-                  onSave={(data) => saveToolState("SOP Generator", data as any)} 
-                  isSyncing={isSyncing} 
-                />
-              )}
-              {activeTool === "CAC vs LTV" && (
-                <CacLtvCalculator 
-                  user={user ?? undefined}
-                  initialData={savedToolData as any}
-                  onSave={(data) => saveToolState("CAC vs LTV", data as any)} 
-                  isSyncing={isSyncing} 
-                />
-              )}
-              {activeTool === "Funnel Simulator" && (
-                <FunnelSimulator 
-                  user={user ?? undefined}
-                  initialData={savedToolData as any}
-                  onSave={(data) => saveToolState("Funnel Simulator", data as any)} 
-                  isSyncing={isSyncing} 
-                />
-              )}
-              {activeTool === "Production Target Simulator" && (
-                <ProductionTargetSimulator 
-                  user={user ?? undefined}
-                  initialData={savedToolData as any}
-                  onSave={(data) => saveToolState("Production Target Simulator", data as any)} 
-                  isSyncing={isSyncing} 
-                />
-              )}
-              {activeTool === "Template L10 Meeting" && (
-                <L10Meeting 
-                  user={user ?? undefined}
-                  initialData={savedToolData as any}
-                  onSave={(data) => saveToolState("Template L10 Meeting", data as any)} 
-                  isSyncing={isSyncing} 
-                />
-              )}
-              {activeTool === "People Analyzer" && (
-                <PeopleAnalyzer 
-                  user={user ?? undefined}
-                  initialData={savedToolData as any}
-                  onSave={(data) => saveToolState("People Analyzer", data as any)} 
-                  isSyncing={isSyncing} 
-                />
-              )}
-              {activeTool === "To-Do Tracker" && (
-                <ToDoTracker 
-                  user={user ?? undefined}
-                  initialData={savedToolData as any}
-                  onSave={(data) => saveToolState("To-Do Tracker", data as any)} 
-                  isSyncing={isSyncing} 
-                />
-              )}
+              {renderActiveTool()}
             </motion.div>
           ) : (
             <>

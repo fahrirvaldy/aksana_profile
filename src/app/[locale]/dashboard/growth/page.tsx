@@ -63,7 +63,7 @@ export default function GrowthSimulator() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [companyId, setCompanyId] = useState<string | null>(null);
+  const [profileId, setProfileId] = useState<string | null>(null);
   const [history, setHistory] = useState<HistoryEntry[]>([]);
   const [globalGrowth, setGlobalGrowth] = useState<number>(10);
 
@@ -86,16 +86,16 @@ export default function GrowthSimulator() {
     margin: 27.5
   });
 
-  const fetchHistory = useCallback(async (cId: string) => {
+  const fetchHistory = useCallback(async (profileId: string) => {
     const { data, error } = await supabase
-      .from('tool_data_history')
-      .select('id, created_at, data_payload')
-      .eq('company_id', cId)
-      .eq('tool_id', 'growth-simulator')
+      .from('user_tools_history')
+      .select('id, created_at, saved_state')
+      .eq('profile_id', profileId)
+      .eq('tool_slug', 'growth-simulator')
       .order('created_at', { ascending: false })
       .limit(3);
 
-    if (!error && data) setHistory(data as HistoryEntry[]);
+    if (!error && data) setHistory(data.map(h => ({ ...h, data_payload: h.saved_state })) as HistoryEntry[]);
   }, []);
 
   useEffect(() => {
@@ -105,11 +105,8 @@ export default function GrowthSimulator() {
         router.push("/login");
         return;
       }
-      const { data: profile } = await supabase.from('profiles').select('company_id').eq('id', session.user.id).single();
-      if (profile?.company_id) {
-        setCompanyId(profile.company_id);
-        await fetchHistory(profile.company_id);
-      }
+      setProfileId(session.user.id);
+      await fetchHistory(session.user.id);
       setIsLoading(false);
     };
     initPage();
@@ -159,27 +156,27 @@ export default function GrowthSimulator() {
   };
 
   const handleSave = async () => {
-    if (!companyId) return;
+    if (!profileId) return;
     setIsSaving(true);
-    const { error } = await supabase.from('tool_data_history').insert([{
-      company_id: companyId,
-      tool_id: 'growth-simulator',
-      data_payload: { current, target, results: { currRes, targetRes } }
-    }]);
-    if (!error) await fetchHistory(companyId);
+    const { error } = await supabase.from('user_tools_history').upsert([{
+      profile_id: profileId,
+      tool_slug: 'growth-simulator',
+      saved_state: { current, target, results: { currRes, targetRes } }
+    }], { onConflict: 'profile_id, tool_slug' });
+    if (!error) await fetchHistory(profileId);
     setIsSaving(false);
   };
 
   const handleDeleteHistory = async () => {
-    if (!companyId || history.length === 0) return;
+    if (!profileId || history.length === 0) return;
 
     if (window.confirm("Apakah Anda yakin ingin menghapus seluruh riwayat untuk Growth Simulator? Tindakan ini tidak dapat diurungkan.")) {
         setIsDeleting(true);
         const { error } = await supabase
-            .from('tool_data_history')
+            .from('user_tools_history')
             .delete()
-            .eq('company_id', companyId)
-            .eq('tool_id', 'growth-simulator');
+            .eq('profile_id', profileId)
+            .eq('tool_slug', 'growth-simulator');
 
         if (!error) {
             setHistory([]);
