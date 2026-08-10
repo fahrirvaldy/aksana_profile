@@ -8,7 +8,9 @@ export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = React.useState(false);
 
-  React.useEffect(() => setMounted(true), []);
+  React.useEffect(() => {
+    setTimeout(() => setMounted(true), 0);
+  }, []);
 
   return (
     <button

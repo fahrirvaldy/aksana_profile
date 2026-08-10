@@ -2,18 +2,17 @@
 
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { useTranslations } from "next-intl";
 import { L10Data } from "../types";
 import { AutoResizeTextarea } from "./AutoResizeTextarea";
 import { generateDefaultTheme } from "../constants";
 import { 
-  Trophy, FileText, Plus, Trash2, CheckCircle2, RefreshCw, Layers, HelpCircle, FileSpreadsheet
+  Trophy, FileText, Plus, Trash2, CheckCircle2, RefreshCw, Layers, HelpCircle, FileSpreadsheet, Minus
 } from "lucide-react";
 
 interface SlideRendererProps {
   currentSlide: number;
   data: L10Data;
-  updateData: (path: string, value: any) => void;
+  updateData: <T,>(path: string, value: T) => void;
   pullOffTrackData: () => void;
   handleIssueCheck: (index: number, checked: boolean) => void;
   activeThemeTab: number;
@@ -22,8 +21,8 @@ interface SlideRendererProps {
 }
 
 export const SlideRenderer = ({ currentSlide, data, updateData, pullOffTrackData, handleIssueCheck, activeThemeTab, setActiveThemeTab, averageRating }: SlideRendererProps) => {
-  const t = useTranslations("Tools.L10");
   const attendees = data.config.divisions;
+  const [isVotingMode, setIsVotingMode] = useState(false);
 
   // SLIDE 0: Welcome
   if (currentSlide === 0) return (
@@ -191,7 +190,6 @@ export const SlideRenderer = ({ currentSlide, data, updateData, pullOffTrackData
   );
 
     if (currentSlide === 6 + scorecardDivisions.length) {
-    const [isVotingMode, setIsVotingMode] = useState(false);
     const selectedIssues = data.idsSession?.issues.filter(issue => issue.isSelectedForDiscussion) || [];
 
     if (isVotingMode) {
@@ -200,14 +198,24 @@ export const SlideRenderer = ({ currentSlide, data, updateData, pullOffTrackData
           <div><h2 className="text-4xl font-bold text-black dark:text-white mb-1">IDS: 1. Vote</h2><p className="text-black font-normal">Vote untuk masalah yang paling penting untuk diselesaikan</p></div>
           <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 rounded-xl p-8 flex flex-col shadow-sm flex-1">
             <div className="space-y-3 pr-1 flex-1">
-              {selectedIssues.sort((a, b) => b.votes - a.votes).map((issue, i) => (
+              {selectedIssues.sort((a, b) => b.votes - a.votes).map((issue) => (
                 <div key={issue.id} className={`flex items-center gap-3 p-4 rounded-2xl group border transition-all h-auto bg-white dark:bg-[#1E1E1E] border-slate-200 dark:border-slate-800 shadow-sm'}`}>
                   <div className="flex-1 min-w-0 space-y-1">
                     <span className="inline-block px-2.5 py-1 rounded-lg text-[10px] bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 font-extrabold uppercase tracking-widest shadow-sm">{issue.source}</span>
                     <p className={`w-full min-h-[44px] break-words whitespace-pre-wrap bg-transparent border-none focus:ring-0 p-0 text-sm font-bold text-black dark:text-[#EEEEEE] transition-all`}>{issue.text}</p>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-2xl font-black text-blue-500">{issue.votes || 0}</span>
+                    <button onClick={() => {
+                      const newIssues = [...data.idsSession.issues];
+                      const targetIndex = newIssues.findIndex(item => item.id === issue.id);
+                      if(targetIndex !== -1) {
+                        const currentVotes = newIssues[targetIndex].votes || 0;
+                        const updatedIssue = { ...newIssues[targetIndex], votes: Math.max(0, currentVotes - 1) };
+                        newIssues[targetIndex] = updatedIssue;
+                        updateData('idsSession.issues', newIssues);
+                      }
+                    }} className="p-3 bg-slate-200 hover:bg-slate-300 text-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-white rounded-xl transition-all active:scale-95"><Minus size={16}/></button>
+                    <span className="text-2xl font-black text-blue-500 w-8 text-center">{issue.votes || 0}</span>
                     <button onClick={() => {
                       const newIssues = [...data.idsSession.issues];
                       const targetIndex = newIssues.findIndex(item => item.id === issue.id);
@@ -292,7 +300,7 @@ export const SlideRenderer = ({ currentSlide, data, updateData, pullOffTrackData
 
   if (currentSlide === 9 + scorecardDivisions.length) return (
       <div className="flex flex-col items-center justify-center h-full text-center space-y-10">
-          <div className="space-y-2 flex-shrink-0"><h2 className="text-5xl font-black text-black dark:text-white">Conclude</h2><p className="text-black font-bold italic tracking-wide">"Seberapa efektif rapat ini bagi pencapaian visi?" (1 - 10)</p></div>
+          <div className="space-y-2 flex-shrink-0"><h2 className="text-5xl font-black text-black dark:text-white">Conclude</h2><p className="text-black font-bold italic tracking-wide">&quot;Seberapa efektif rapat ini bagi pencapaian visi?&quot; (1 - 10)</p></div>
           <div className="space-y-1 flex-shrink-0 relative"><motion.div initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="text-[12rem] font-black leading-none tracking-tighter text-blue-600 drop-shadow-2xl">{averageRating}</motion.div><p className="text-sm font-bold text-black uppercase tracking-[0.4em]">Composite Quality Score</p></div>
           <div className="bg-white dark:bg-[#1E1E1E] border border-slate-200 dark:border-slate-800 p-10 rounded-xl max-w-full w-full flex flex-wrap justify-center gap-6 max-h-[250px] custom-scrollbar backdrop-blur-sm shadow-sm">
               {attendees.map((role, i) => data.attendance[i] ? (<div key={i} className="flex flex-col items-center gap-2.5 w-28"><label className="text-[10px] font-black text-slate-600 dark:text-slate-300 uppercase tracking-widest truncate w-full text-center" title={role}>{role}</label><AutoResizeTextarea placeholder="0" value={data.ratings?.[i] !== undefined ? String(data.ratings[i]) : ""} onChange={(e) => { const val = e.target.value.replace(',', '.'); if (val === "" || /^[0-9]*\.?[0-9]*$/.test(val)) { const numVal = parseFloat(val); if (val === "" || (numVal >= 0 && numVal <= 10)) { updateData(`ratings.${i}`, val); } } }} disabled={!data.attendance?.[i]} className={`w-24 px-4 py-3 rounded-xl border font-bold text-center text-lg outline-none transition-all ${data.attendance?.[i] ? "bg-white text-black border-slate-200 dark:bg-[#1E1E1E] dark:text-[#EEEEEE] dark:border-slate-700 focus:ring-4 focus:ring-blue-500/10" : "bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-800 text-slate-400 cursor-not-allowed"}`} /></div>) : null)}

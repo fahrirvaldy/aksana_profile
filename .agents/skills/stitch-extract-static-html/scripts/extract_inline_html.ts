@@ -29,7 +29,7 @@
 
 import * as parser from '@babel/parser';
 import traverse from '@babel/traverse';
-import generate from '@babel/generator';
+
 import fs from 'node:fs';
 import path from 'node:path';
 import https from 'node:https';
@@ -663,7 +663,7 @@ function jsxToHtml(jsxSource: string): string | null {
   return renderNode(returnedJSX);
 }
 
-function renderNode(node: any): string {
+function renderNode(node: Node): string {
   if (!node) return '';
 
   switch (node.type) {
@@ -682,7 +682,7 @@ function renderNode(node: any): string {
   }
 }
 
-function renderExpression(expr: any): string {
+function renderExpression(expr: Node): string {
   if (!expr) return '';
   switch (expr.type) {
     case 'JSXEmptyExpression':
@@ -693,14 +693,14 @@ function renderExpression(expr: any): string {
       return String(expr.value);
     case 'TemplateLiteral':
       // Flatten template literals — just join the quasis
-      return expr.quasis.map((q: any) => q.value.raw).join('');
+      return expr.quasis.map((q: { value: { raw: string; }; }) => q.value.raw).join('');
     default:
       console.warn(`  WARN: Unhandled JSX expression of type "${expr.type}" inside child node.`);
       return '';
   }
 }
 
-function renderElement(node: any): string {
+function renderElement(node: JSXElement): string {
   const tagName = getTagName(node.openingElement);
 
   // Skip <Link> — render children in a <div>
@@ -731,7 +731,7 @@ function renderElement(node: any): string {
   return `<${tagName}${attrs}>${children}</${tagName}>`;
 }
 
-function getTagName(openingElement: any): string {
+function getTagName(openingElement: JSXOpeningElement): string {
   if (openingElement.name.type === 'JSXIdentifier') {
     return openingElement.name.name;
   }
@@ -741,7 +741,7 @@ function getTagName(openingElement: any): string {
   return 'div';
 }
 
-function renderAttributes(attrs: any[], tagName: string): string {
+function renderAttributes(attrs: (JSXAttribute | JSXSpreadAttribute)[]): string {
   if (!attrs || attrs.length === 0) return '';
 
   const parts: string[] = [];
@@ -780,7 +780,7 @@ function renderAttributes(attrs: any[], tagName: string): string {
       } else if (expr.type === 'NumericLiteral') {
         parts.push(`${name}="${expr.value}"`);
       } else if (expr.type === 'TemplateLiteral') {
-        const val = expr.quasis.map((q: any) => q.value.raw).join('');
+        const val = expr.quasis.map((q: { value: { raw: string; }; }) => q.value.raw).join('');
         parts.push(`${name}="${val}"`);
       } else {
         console.warn(`  WARN: Unhandled JSX expression of type "${expr.type}" inside attribute "${name}".`);
@@ -791,7 +791,7 @@ function renderAttributes(attrs: any[], tagName: string): string {
   return parts.length > 0 ? ' ' + parts.join(' ') : '';
 }
 
-function renderStyleObject(objExpr: any): string {
+function renderStyleObject(objExpr: ObjectExpression): string {
   const pairs: string[] = [];
   for (const prop of objExpr.properties) {
     if (prop.type !== 'ObjectProperty') continue;
@@ -802,7 +802,7 @@ function renderStyleObject(objExpr: any): string {
     let val: string | undefined;
     if (prop.value.type === 'StringLiteral') val = prop.value.value;
     else if (prop.value.type === 'NumericLiteral') val = prop.value.value === 0 ? '0' : `${prop.value.value}px`;
-    else if (prop.value.type === 'TemplateLiteral') val = prop.value.quasis.map((q: any) => q.value.raw).join('');
+    else if (prop.value.type === 'TemplateLiteral') val = prop.value.quasis.map((q: { value: { raw: string; }; }) => q.value.raw).join('');
     else continue;
 
     pairs.push(`${cssKey}: ${val}`);

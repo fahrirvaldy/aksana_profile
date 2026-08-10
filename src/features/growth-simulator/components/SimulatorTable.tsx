@@ -7,13 +7,13 @@ import { Metrics } from "../types";
 import { formatValue } from '../utils/formatters';
 
 interface SimulatorTableProps {
-  t: (key: string, params?: any) => string;
+    t: (key: string, params?: Record<string, any>) => string;
   currency: 'IDR' | 'USD';
   current: Metrics;
   setCurrent: (m: Metrics) => void;
   target: Metrics;
   setTarget: (m: Metrics) => void;
-  handleSave: (data: any) => void;
+  handleSave: (data: { current?: Metrics; target?: Metrics }) => void;
   currentDerived: { customers: number };
   targetDerived: { customers: number };
 }

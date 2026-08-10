@@ -5,7 +5,7 @@ import { BrainCircuit, AlertCircle, CheckCircle2 } from "lucide-react";
 import { PeriodType } from "../types";
 
 interface ReportTabProps {
-  t: (key: string, params?: any) => string;
+    t: any;
   metrics: {
     avgNetFlow: number;
     opsRatio: number;

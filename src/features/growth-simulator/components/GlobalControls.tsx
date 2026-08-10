@@ -4,14 +4,14 @@
 import { Zap, RefreshCcw } from "lucide-react";
 
 interface GlobalControlsProps {
-  t: (key: string, params?: any) => string;
+    t: (key: string, params?: Record<string, any>) => string;
   currency: 'IDR' | 'USD';
   setCurrency: (c: 'IDR' | 'USD') => void;
   period: 'Bulan' | 'Tahun';
   setPeriod: (p: 'Bulan' | 'Tahun') => void;
   globalGrowth: number;
   applyGlobalGrowth: (val: number) => void;
-  handleSave: (data: any) => void;
+  handleSave: (data: { currency?: 'IDR' | 'USD'; period?: 'Bulan' | 'Tahun' }) => void;
 }
 
 export const GlobalControls = (

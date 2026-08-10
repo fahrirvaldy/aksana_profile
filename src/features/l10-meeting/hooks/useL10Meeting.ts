@@ -8,11 +8,10 @@ import { DEFAULT_DATA, generateDefaultTheme } from "../constants";
 interface L10MeetingProps {
   initialData?: L10Data;
   onSave?: (data: L10Data) => void;
-  t: (key: string, params?: any) => string;
   initialSlide?: number;
 }
 
-export const useL10Meeting = ({ initialData, onSave, t, initialSlide }: L10MeetingProps) => {
+export const useL10Meeting = ({ initialData, onSave, initialSlide }: L10MeetingProps) => {
   const [data, setData] = useState<L10Data>(() => {
     if (initialData) {
       const merged = { ...initialData };
@@ -36,11 +35,11 @@ export const useL10Meeting = ({ initialData, onSave, t, initialSlide }: L10Meeti
     localStorage.setItem('l10-meeting-data', JSON.stringify({ data, currentSlide }));
   }, [data, currentSlide]);
 
-  useEffect(() => {
-    if (!initialData) {
-      setShowSetup(true);
-    }
-  }, [initialData]);
+  // useEffect(() => {
+  //   if (!initialData) {
+  //       setTimeout(() => setShowSetup(true), 0);
+  //   }
+  // }, [initialData]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -67,7 +66,7 @@ export const useL10Meeting = ({ initialData, onSave, t, initialSlide }: L10Meeti
       }, 250);
     }
     return () => { if (intervalId) clearInterval(intervalId); };
-  }, [isTimerRunning]);
+  }, [isTimerRunning, timeLeft]);
 
   const attendees = useMemo(() => {
     return ['Owner', 'Integrator', ...data.config.divisions];
@@ -89,19 +88,20 @@ export const useL10Meeting = ({ initialData, onSave, t, initialSlide }: L10Meeti
     return activeCount > 0 ? (totalScore / activeCount).toFixed(1) : "0.0";
   }, [data, attendees]);
 
-  const updateData = (path: string, value: any) => {
+  const updateData = <T,>(path: string, value: T) => {
     setData(prev => {
-      const setDeep = (obj: any, pathKeys: string[], val: any): any => {
-        if (pathKeys.length === 0) return val;
+      const setDeep = <T,>(obj: Record<string, T> | T[], pathKeys: string[], val: T): Record<string, T> | T[] => {
+        if (pathKeys.length === 0) return val as Record<string, T> | T[];
         const [currentKey, ...remainingKeys] = pathKeys;
         const isArray = Array.isArray(obj);
         const cloned = isArray ? [...(obj || [])] : { ...(obj || {}) };
         const targetKey = isArray ? parseInt(currentKey, 10) : currentKey;
-        cloned[targetKey] = setDeep(cloned[targetKey], remainingKeys, val);
+         
+        (cloned as Record<string, any>)[targetKey] = setDeep((cloned as Record<string, any>)[targetKey], remainingKeys, val);
         return cloned;
       };
       const keys = path.split('.');
-      return setDeep(prev, keys, value);
+      return setDeep(prev, keys, value) as L10Data;
     });
   };
 
@@ -137,6 +137,23 @@ export const useL10Meeting = ({ initialData, onSave, t, initialSlide }: L10Meeti
     }
   };
 
+  const prioritizeAndSetThemes = () => {
+    const issues = data.idsSession?.issues || [];
+    if (issues.length === 0) return;
+
+    const sortedIssues = [...issues].sort((a, b) => b.votes - a.votes);
+
+    const newThemes = [...(data.idsSession.themes || [])].map((theme, index) => {
+      if (sortedIssues[index]) {
+        return { ...theme, topic: sortedIssues[index].text };
+      }
+      // Reset to default if there's no issue for this slot
+      return { ...theme, topic: `Discussion Theme ${index + 1}` };
+    });
+
+    updateData('idsSession.themes', newThemes);
+  };
+
   return {
     data, updateData,
     currentSlide, setCurrentSlide,
@@ -147,5 +164,6 @@ export const useL10Meeting = ({ initialData, onSave, t, initialSlide }: L10Meeti
     averageRating,
     pullOffTrackData,
     handleIssueCheck,
+    prioritizeAndSetThemes,
   };
 };

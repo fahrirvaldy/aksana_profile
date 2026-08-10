@@ -85,10 +85,7 @@ const s = StyleSheet.create({
 });
 
 
-const Sanitize = ({ children, style = {} }: { children: React.ReactNode, style?: object }) => {
-    const cleanText = String(children || '-').replace(/[\u{0000}-\u{001F}\u{007F}-\u{009F}]/gu, "");
-    return <Text style={{...s.text, ...style}}>{cleanText}</Text>;
-};
+
 
 interface L10PDFDocumentProps {
     data: L10Data;
@@ -110,7 +107,7 @@ const L10PDFDocument: React.FC<L10PDFDocumentProps> = ({ data, averageRating }) 
                 </View>
             </View>
 
-            <View style={s.section} wrap={false}> 
+            <View style={s.section}> 
                 <Text style={s.sectionTitle}>Headlines</Text>
                 <View style={s.row}>
                     <View style={s.col_50}>
@@ -127,7 +124,7 @@ const L10PDFDocument: React.FC<L10PDFDocumentProps> = ({ data, averageRating }) 
             <View style={s.section} break>
                 <Text style={s.sectionTitle}>To-Do List</Text>
                 {data.todoList.map((todo) => (
-                    <View key={todo.id} style={s.card} wrap={false}>
+                    <View key={todo.id} style={s.card}>
                         <View style={s.row}>
                             <View style={s.col_75}>
                                 <Text style={{...s.text, textDecoration: todo.isDone ? 'line-through' : 'none'}}>{todo.text}</Text>
@@ -146,7 +143,7 @@ const L10PDFDocument: React.FC<L10PDFDocumentProps> = ({ data, averageRating }) 
         <Page size="A4" style={s.page}>
             <Text style={s.sectionTitle}>Rock Review</Text>
             {data.config.rocks.map((rock, i) => (
-                <View key={i} style={s.card} wrap={false}>
+                <View key={i} style={s.card}>
                     <Text style={s.textBold}>{rock}</Text>
                     <View style={s.row}>
                         <View style={s.col_50}>
@@ -166,7 +163,7 @@ const L10PDFDocument: React.FC<L10PDFDocumentProps> = ({ data, averageRating }) 
         <Page size="A4" style={s.page}>
             <Text style={s.sectionTitle}>IDS - Issues List</Text>
              {data.idsSession.issues.map((issue) => (
-                <View key={issue.id} style={s.card} wrap={false}>
+                <View key={issue.id} style={s.card}>
                     <View style={s.row}>
                         <View style={s.col_75}>
                             <Text style={s.text}>{issue.text}</Text>
@@ -187,7 +184,7 @@ const L10PDFDocument: React.FC<L10PDFDocumentProps> = ({ data, averageRating }) 
             <Page key={tIdx} size="A4" style={s.page}>
                 <Text style={s.sectionTitle}>IDS Analysis: {theme.topic || `Tema #${tIdx + 1}`}</Text>
 
-                <View style={s.card} wrap={false}>
+                <View style={s.card}>
                     <Text style={s.textBold}>Kondisi Sekarang:</Text>
                     <Text style={s.text}>{theme.currentCond}</Text>
                     <Text style={{...s.textBold, marginTop: 10}}>Kondisi Diinginkan:</Text>
@@ -195,7 +192,7 @@ const L10PDFDocument: React.FC<L10PDFDocumentProps> = ({ data, averageRating }) 
                 </View>
 
                 <Text style={{...s.sectionTitle, marginTop: 15}}>Fishbone (5M)</Text>
-                <View style={s.card} wrap={false}>
+                <View style={s.card}>
                     <Text style={s.textBold}>Man:</Text><Text style={s.text}>{theme.analysis.man}</Text>
                     <Text style={{...s.textBold, marginTop: 8}}>Method:</Text><Text style={s.text}>{theme.analysis.method}</Text>
                     <Text style={{...s.textBold, marginTop: 8}}>Machine:</Text><Text style={s.text}>{theme.analysis.machine}</Text>
@@ -203,7 +200,7 @@ const L10PDFDocument: React.FC<L10PDFDocumentProps> = ({ data, averageRating }) 
                     <Text style={{...s.textBold, marginTop: 8}}>Environment:</Text><Text style={s.text}>{theme.analysis.environment}</Text>
                 </View>
 
-                <View style={s.card} wrap={false} break>
+                <View style={s.card} break>
                     <Text style={s.sectionTitle}>5-Why & Action Plan</Text>
                     <Text style={s.textBold}>Akar Masalah:</Text>
                     <Text style={s.text}>{theme.rootCause}</Text>

@@ -6,7 +6,7 @@ import { Filter, Layout, CheckCircle2, Circle, User as UserIcon, Calendar, Trash
 import { Todo } from "../types";
 
 interface TaskListProps {
-  t: (key: string, params?: any) => string;
+  t: (key: string, params?: Record<string, any>) => string;
   stats: { total: number };
   isExporting: boolean;
   filterOwner: string;

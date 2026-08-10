@@ -9,7 +9,6 @@ import {
   History as HistoryIcon, 
   TrendingUp, 
   TrendingDown, 
-  DollarSign,
   ArrowLeft
 } from "lucide-react";
 import Link from "next/link";
@@ -47,7 +46,7 @@ export default function CashflowPage() {
       .limit(3);
 
     if (!error && data) {
-      setHistory(data.map(h => ({ ...h, data_payload: h.saved_state })) as any);
+      setHistory(data.map((h: { id: string; created_at: string; saved_state: Record<string, unknown>; }) => ({ ...h, data_payload: h.saved_state as { pemasukan: number; pengeluaran: number; pajak: number; hasil_akhir: number; } })));
     }
   }, []);
 

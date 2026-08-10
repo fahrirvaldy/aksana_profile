@@ -18,7 +18,9 @@ export const useTodoTracker = ({ initialData, onSave }: UseTodoTrackerProps) => 
 
   useEffect(() => {
     if (initialData?.todos) {
-      setTodos(initialData.todos);
+      setTimeout(() => {
+        setTodos(initialData.todos || []);
+      }, 0);
     }
   }, [initialData]);
 

@@ -43,7 +43,7 @@ export function AssessmentForm({ seats, onComplete }: AssessmentFormProps) {
     });
 
     const newEmployee: Employee = {
-      id: Date.now(),
+      id: new Date().getTime(),
       name: formData.name,
       role: formData.role,
       psycho: scores

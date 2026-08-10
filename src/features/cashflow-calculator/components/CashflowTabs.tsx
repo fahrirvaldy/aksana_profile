@@ -7,7 +7,7 @@ import { TabType } from "../types";
 interface CashflowTabsProps {
   activeTab: TabType;
   setActiveTab: (tab: TabType) => void;
-  t: (key: string) => string;
+    t: any;
 }
 
 export const CashflowTabs = ({ activeTab, setActiveTab, t }: CashflowTabsProps) => {

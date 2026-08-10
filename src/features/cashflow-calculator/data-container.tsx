@@ -23,7 +23,7 @@ export default function CashflowDataContainer({ user }: Props) {
       if (user) {
         setIsLoading(true);
         const data = await getToolData(user, TOOL_ID);
-        setInitialData(data || {});
+        setInitialData(data as unknown as CashflowCalculatorInitialData | undefined);
         setIsLoading(false);
       }
     };
@@ -33,7 +33,7 @@ export default function CashflowDataContainer({ user }: Props) {
   const handleSave = async (data: CashflowCalculatorInitialData) => {
     if (user) {
       setIsSyncing(true);
-      await saveToolData(user, TOOL_ID, data);
+      await saveToolData(user, TOOL_ID, data as unknown as Record<string, unknown>);
       setIsSyncing(false);
     }
   };

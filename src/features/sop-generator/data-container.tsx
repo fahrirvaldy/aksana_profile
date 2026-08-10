@@ -23,7 +23,7 @@ export default function SOPDataContainer({ user }: Props) {
       if (user) {
         setIsLoading(true);
         const data = await getToolData(user, TOOL_ID);
-        setInitialData(data || {});
+        setInitialData(data as SOPData || undefined);
         setIsLoading(false);
       }
     };

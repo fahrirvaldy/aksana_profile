@@ -6,9 +6,10 @@ import { Bar } from 'react-chartjs-2';
 import { ChartData, ChartOptions } from 'chart.js';
 import { TrendingUp, Save, Loader2, Info } from "lucide-react";
 import { formatValue } from "../utils/formatters";
+import { Metrics } from "../types";
 
 interface ResultsPanelProps {
-  t: (key: string, params?: any) => string;
+    t: (key: string, params?: Record<string, any>) => string;
   currency: 'IDR' | 'USD';
   currentProfit: number;
   targetProfit: number;
@@ -16,9 +17,9 @@ interface ResultsPanelProps {
   isSyncing?: boolean;
   user?: User;
   handleSave: () => void;
-  calculateDerived: (m: any) => any;
-  current: any;
-  target: any;
+  calculateDerived: (m: Metrics) => { profit: number; revenue: number; customers: number; };
+  current: Metrics;
+  target: Metrics;
 }
 
 export const ResultsPanel = (

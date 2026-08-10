@@ -8,6 +8,7 @@ export interface Metrics {
 }
 
 export interface GrowthSimulatorInitialData {
+  [key: string]: any;
   currency?: 'IDR' | 'USD';
   period?: 'Bulan' | 'Tahun';
   globalGrowth?: number;

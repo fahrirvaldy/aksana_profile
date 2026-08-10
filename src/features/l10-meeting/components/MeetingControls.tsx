@@ -23,10 +23,12 @@ interface MeetingControlsProps {
   isNextDisabled: boolean;
   data: L10Data;
   averageRating: string;
+  currentSlide: number;
+  prioritizeAndSetThemes: () => void;
 }
 
 export const MeetingControls = (
-  { t, isSyncing, handleSave, showSetup, timeLeft, isTimerRunning, toggleTimer, resetTimer, prevSlide, nextSlide, isPrevDisabled, isNextDisabled, data, averageRating }: MeetingControlsProps
+  { t, isSyncing, handleSave, showSetup, timeLeft, isTimerRunning, toggleTimer, resetTimer, prevSlide, nextSlide, isPrevDisabled, isNextDisabled, data, averageRating, currentSlide, prioritizeAndSetThemes }: MeetingControlsProps
 ) => {
   const [isExporting, setIsExporting] = useState(false);
 
@@ -58,10 +60,23 @@ export const MeetingControls = (
       URL.revokeObjectURL(url);
     } catch (error) {
       console.error("PDF Export Error:", error);
-      alert("Gagal mengekspor PDF.");
+      alert(t("errors.pdfExport"));
     } finally {
       setIsExporting(false);
     }
+  };
+
+  const handleNextClick = () => {
+    const nonScorecardRoles = ['ceo', 'owner', 'integrator'];
+    const scorecardDivisions = data.config.divisions.filter(
+      division => !nonScorecardRoles.includes(division.toLowerCase())
+    );
+    const idsVoteSlideIndex = 6 + scorecardDivisions.length;
+
+    if (currentSlide === idsVoteSlideIndex) {
+      prioritizeAndSetThemes();
+    }
+    nextSlide();
   };
 
   const formatTime = (seconds: number) => {
@@ -84,15 +99,15 @@ export const MeetingControls = (
           </div>
           <button onClick={handleExportPDF} disabled={isExporting} className="flex items-center gap-3 px-6 py-4 bg-slate-900 dark:bg-white text-white dark:text-slate-950 rounded-3xl font-black hover:scale-105 transition-all text-xs active:scale-95 disabled:opacity-50 disabled:grayscale shadow-md">
             {isExporting ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />}
-            {isExporting ? "GENERATING PDF..." : "EXPORT L10 REPORT"}
+            {isExporting ? t("exportingPDF") : t("exportReport")}
           </button>
-          <div title={isSyncing ? "Menyimpan..." : "Disimpan"} className="flex items-center justify-center w-12 h-12 rounded-full bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 shadow-sm">
+          <div title={isSyncing ? t("saving") : t("saved")} className="flex items-center justify-center w-12 h-12 rounded-full bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 shadow-sm">
             {isSyncing ? <Loader2 size={16} className="animate-spin text-blue-500" /> : <Cloud size={16} className="text-emerald-600" />}
           </div>
 
           {handleSave && (
             <button onClick={handleSave} disabled={isSyncing} className="flex items-center gap-3 px-6 py-4 bg-white dark:bg-slate-900 rounded-3xl font-black hover:scale-105 transition-all text-xs active:scale-95 shadow-md border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200">
-              SIMPAN MANUAL
+              {t("saveManual")}
             </button>
           )}
 
@@ -103,7 +118,7 @@ export const MeetingControls = (
       {/* Bottom Controls */}
       <div className="fixed bottom-6 right-8 flex items-center gap-3 z-[100] bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200 dark:border-slate-800/80 p-3 rounded-2xl shadow-xl aksana-glass">
         <button onClick={prevSlide} disabled={isPrevDisabled} className="w-12 h-12 rounded-xl flex items-center justify-center text-slate-700 dark:text-slate-200 hover:bg-slate-500/10 disabled:opacity-30 transition-colors active:scale-90"><ChevronLeft size={24} /></button>
-        <button onClick={nextSlide} disabled={isNextDisabled} className="w-12 h-12 rounded-xl flex items-center justify-center text-slate-700 dark:text-slate-200 hover:bg-slate-500/10 disabled:opacity-30 transition-colors active:scale-90"><ChevronRight size={24} /></button>
+        <button onClick={handleNextClick} disabled={isNextDisabled} className="w-12 h-12 rounded-xl flex items-center justify-center text-slate-700 dark:text-slate-200 hover:bg-slate-500/10 disabled:opacity-30 transition-colors active:scale-90"><ChevronRight size={24} /></button>
       </div>
     </>
   );

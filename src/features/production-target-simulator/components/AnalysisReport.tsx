@@ -3,26 +3,34 @@
 
 import { useMemo, ReactNode } from 'react';
 
-import { motion } from "framer-motion";
 import { Line } from 'react-chartjs-2';
 import { ChartOptions } from 'chart.js';
-import { Package, AlertTriangle, CheckCircle2, Info, Loader2, Download } from "lucide-react";
+import { Package, AlertTriangle, CheckCircle2, Info } from "lucide-react";
 import { formatThousand } from "../utils/formatters";
 
+interface Results {
+    avgDailySales: number;
+    rop: number;
+    safetyStock: number;
+    targetProduction: number;
+    isAlert: boolean;
+    stdDevMonthly: number;
+    stdDevDaily: number;
+    zScore: number;
+    leadTime: number;
+}
+
 interface AnalysisReportProps {
-  t: {
-    (key: string, params?: any): string;
-    rich(key: string, params?: any): React.ReactNode;
-  };
+  t: any;
+  results: Results | null;
+  stock: number;
+  leadTime: number;
   sku: string;
   isSyncing?: boolean;
   onDownload: () => void;
-  results: any; // Simplified for brevity
-  stock: number;
-  leadTime: number;
 }
 
-export const AnalysisReport = ({ t, sku, isSyncing, onDownload, results, stock, leadTime }: AnalysisReportProps) => {
+export const AnalysisReport = ({ t, results, stock, leadTime }: AnalysisReportProps) => {
 
   const chartData = useMemo(() => {
     if (!results) return null;

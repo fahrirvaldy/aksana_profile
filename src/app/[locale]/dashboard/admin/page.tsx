@@ -6,7 +6,6 @@ import { supabase } from "@/lib/supabase/client";
 import { 
   Loader2, 
   ArrowLeft, 
-  ExternalLink, 
   Users, 
   MessageSquare,
   ShieldCheck,
@@ -166,7 +165,7 @@ export default function AdminPage() {
                     <td className="px-6 py-5">
                       <div className="max-w-xs">
                         <p className="text-sm text-slate-700 dark:text-slate-400 line-clamp-2 italic leading-relaxed">
-                          "{lead.business_challenge || 'Tidak ada pesan khusus.'}"
+                          &quot;{lead.business_challenge || 'Tidak ada pesan khusus.'}&quot;
                         </p>
                       </div>
                     </td>

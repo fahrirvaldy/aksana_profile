@@ -3,7 +3,7 @@ interface ExportData {
   title: string;
   divisionName: string;
   formData: Record<string, string>;
-  t: (key: string, params?: any) => string;
+  t: (key: string, params?: Record<string, any>) => string;
 }
 
 export const exportToWord = ({ title, divisionName, formData, t }: ExportData) => {

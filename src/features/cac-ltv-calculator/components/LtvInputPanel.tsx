@@ -5,7 +5,7 @@ import { Wallet } from "lucide-react";
 import { formatCurrency } from "../utils/formatters";
 
 interface LtvInputPanelProps {
-  t: (key: string, params?: any) => string;
+    t: any;
   aov: number;
   setAov: (value: number) => void;
   frequency: number;

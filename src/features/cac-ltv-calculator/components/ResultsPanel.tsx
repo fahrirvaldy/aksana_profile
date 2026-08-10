@@ -2,11 +2,11 @@
 "use client";
 
 import { Doughnut } from 'react-chartjs-2';
-import { BrainCircuit, TrendingUp, Loader2, Info } from "lucide-react";
+import { BrainCircuit, TrendingUp, Loader2 } from "lucide-react";
 import { formatCurrency } from "../utils/formatters";
 
 interface ResultsPanelProps {
-  t: (key: string) => string;
+    t: any;
   ratio: number;
   cac: number;
   ltv: number;

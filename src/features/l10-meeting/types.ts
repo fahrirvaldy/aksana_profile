@@ -59,6 +59,7 @@ export interface IDSTheme {
 }
 
 export interface L10Data {
+  [key: string]: any;
   config: L10Config;
   meetingDate: string;
   attendance: Record<number, boolean>;

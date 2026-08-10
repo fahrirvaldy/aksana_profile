@@ -6,7 +6,7 @@ import { Record, PeriodType } from "../types";
 import { formatCurrency } from "../utils/formatCurrency";
 
 interface InputTabProps {
-  t: (key: string, params?: any) => string;
+    t: any;
   periodType: PeriodType;
   setPeriodType: (type: PeriodType) => void;
   initialBalance: number;

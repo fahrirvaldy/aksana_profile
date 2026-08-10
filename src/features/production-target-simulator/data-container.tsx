@@ -23,7 +23,7 @@ export default function ProductionDataContainer({ user }: Props) {
       if (user) {
         setIsLoading(true);
         const data = await getToolData(user, TOOL_ID);
-        setInitialData(data || {});
+        setInitialData(data as ProductionData || undefined);
         setIsLoading(false);
       }
     };

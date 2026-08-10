@@ -3,7 +3,7 @@
 
 import { User } from "@supabase/supabase-js";
 import { useTranslations } from "next-intl";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import { L10Data } from "./types";
 import { useL10Meeting } from "./hooks/useL10Meeting";
 import { SlideRenderer } from "./components/SlideRenderer";
@@ -18,7 +18,7 @@ interface L10MeetingContainerProps {
   initialSlide?: number;
 }
 
-export default function L10MeetingContainer({ user, onSave, isSyncing, initialData, initialSlide }: L10MeetingContainerProps) {
+export default function L10MeetingContainer({ onSave, isSyncing, initialData, initialSlide }: L10MeetingContainerProps) {
   const t = useTranslations("Tools.L10");
   const {
     data, updateData,
@@ -29,8 +29,9 @@ export default function L10MeetingContainer({ user, onSave, isSyncing, initialDa
     isTimerRunning, setIsTimerRunning,
     averageRating,
     pullOffTrackData,
-    handleIssueCheck
-  } = useL10Meeting({ initialData, onSave, t, initialSlide });
+    handleIssueCheck,
+    prioritizeAndSetThemes
+  } = useL10Meeting({ initialData, onSave, initialSlide });
 
   const nonScorecardRoles = ['ceo', 'owner', 'integrator'];
   const scorecardDivisions = data.config.divisions.filter(
@@ -50,11 +51,15 @@ export default function L10MeetingContainer({ user, onSave, isSyncing, initialDa
         toggleTimer={() => setIsTimerRunning(!isTimerRunning)}
         resetTimer={() => { setTimeLeft(5400); setIsTimerRunning(false); }}
         prevSlide={() => setCurrentSlide(s => Math.max(s - 1, 0))}
-        nextSlide={() => setCurrentSlide(s => Math.min(s + 1, totalSlides - 1))}
+        nextSlide={() => {
+          setCurrentSlide(s => Math.min(s + 1, totalSlides - 1));
+        }}
         isPrevDisabled={currentSlide === 0}
         isNextDisabled={currentSlide === totalSlides - 1}
         data={data}
         averageRating={averageRating}
+        currentSlide={currentSlide}
+        prioritizeAndSetThemes={prioritizeAndSetThemes}
       />
 
       <div className="flex-1 px-4 md:px-6 xl:px-8 pb-12 pt-4 relative overflow-visible flex flex-col">

@@ -10,7 +10,7 @@ interface SetupModalProps {
   show: boolean;
   onClose: () => void;
   data: L10Data;
-  updateData: (path: string, value: any) => void;
+  updateData: <T,>(path: string, value: T) => void;
 }
 
 export const SetupModal = ({ show, onClose, data, updateData }: SetupModalProps) => {

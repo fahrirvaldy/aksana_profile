@@ -4,7 +4,7 @@
 import { FileSignature, Download, CheckCircle2, Loader2 } from "lucide-react";
 
 interface Step4Props {
-  t: (key: string, params?: any) => string;
+  t: (key: string, params?: Record<string, any>) => string;
   formData: Record<string, string>;
   onNew: () => void;
   onExport: () => void;

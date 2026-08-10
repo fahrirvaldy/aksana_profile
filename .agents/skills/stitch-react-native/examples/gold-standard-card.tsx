@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { View, Text, Image, Pressable, StyleSheet, Platform } from 'react-native';
+import { View, Text, Image, Pressable, StyleSheet } from 'react-native';
 import { colors, shadows } from '../src/theme';
 
 /**
@@ -50,6 +50,7 @@ export const ActivityCard: React.FC<ActivityCardProps> = ({
       accessibilityLabel={`${username} ${action.toLowerCase()} in ${repoName}`}
     >
       <View style={styles.leftContent}>
+        {/* eslint-disable-next-line jsx-a11y/alt-text */}
         <Image
           source={{ uri: avatarUrl }}
           style={styles.avatar}

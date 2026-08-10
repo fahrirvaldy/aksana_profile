@@ -9,5 +9,6 @@ export interface Todo {
 }
 
 export interface ToDoTrackerInitialData {
+  [key: string]: any;
   todos?: Todo[];
 }

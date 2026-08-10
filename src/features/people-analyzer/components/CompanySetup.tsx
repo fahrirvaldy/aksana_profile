@@ -59,7 +59,7 @@ export function CompanySetup({ onComplete }: { onComplete: (seats: Record<string
       }
 
       onComplete(standardizedSeats, compName);
-    } catch (err) {
+    } catch {
       setError("Gagal memproses data. Silakan coba lagi.");
     } finally {
       setIsGenerating(false);
@@ -127,7 +127,7 @@ export function CompanySetup({ onComplete }: { onComplete: (seats: Record<string
           </div>
         </div>
 
-        {error && <div className="p-4 bg-red-50 text-red-600 text-sm font-bold rounded-2xl border border-red-100 text-center shadow-sm">{error}</div>}
+        {error ? <div className="p-4 bg-red-50 text-red-600 text-sm font-bold rounded-2xl border border-red-100 text-center shadow-sm">{error}</div> : null}
 
         <button 
           onClick={handleGenerate}

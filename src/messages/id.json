@@ -278,11 +278,16 @@
     "L10": {
       "title": "LEVEL 10 MEETING",
       "dateLabel": "Tanggal Rapat Efektif",
+      "exportReport": "Ekspor Laporan",
       "pdf": {
         "generating": "MENYIAPKAN PDF...",
         "export": "EKSPOR LAPORAN L10"
       },
       "syncing": "MENYINKRONKAN...",
+      "saved": "Berhasil Disimpan",
+      "saveManual": "Simpan Manual",
+      "saving": "Menyimpan...",
+      "exportingPDF": "Mengekspor PDF...",
       "slides": {
         "intro": {
           "title": "LEVEL 10 MEETING"
@@ -366,7 +371,8 @@
         "rocks": "Rock Kuartalan (Prioritas)",
         "addRock": "TAMBAH ROCK BARU",
         "launch": "MULAI SESI RAPAT"
-      }
+      },
+      "discussionTheme": "Tema Diskusi {index}"
     },
     "People": {
       "title": "Analisis SDM",

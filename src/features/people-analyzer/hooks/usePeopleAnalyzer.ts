@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { PeopleAnalyzerData, ViewType, Employee } from "../types";
+import { PeopleAnalyzerData, ViewType, Employee, Seat } from "../types";
 
 interface PeopleAnalyzerProps {
   onSave?: (data: PeopleAnalyzerData) => void;
@@ -12,19 +12,21 @@ interface PeopleAnalyzerProps {
 export const usePeopleAnalyzer = ({ onSave, initialData }: PeopleAnalyzerProps) => {
   const [view, setView] = useState<ViewType>('setup');
   const [companyName, setCompanyName] = useState(initialData?.companyName || "");
-  const [seats, setSeats] = useState<Record<string, { req: any }>>(initialData?.seats || {});
+  const [seats, setSeats] = useState<Record<string, Seat>>(initialData?.seats || {});
   const [employees, setEmployees] = useState<Employee[]>(initialData?.employees || []);
 
   const prevInitialData = useRef<PeopleAnalyzerData | undefined>(initialData);
 
   useEffect(() => {
     if (initialData && initialData !== prevInitialData.current) {
-      setCompanyName(initialData.companyName || "");
-      setSeats(initialData.seats || {});
-      setEmployees(initialData.employees || []);
-      if (initialData.companyName && Object.keys(initialData.seats || {}).length > 0) {
-        setView('dashboard');
-      }
+        setTimeout(() => {
+            setCompanyName(initialData.companyName || "");
+            setSeats(initialData.seats || {});
+            setEmployees(initialData.employees || []);
+            if (initialData.companyName && Object.keys(initialData.seats || {}).length > 0) {
+                setView('dashboard');
+            }
+        }, 0);
       prevInitialData.current = initialData;
     }
   }, [initialData]);
@@ -35,7 +37,7 @@ export const usePeopleAnalyzer = ({ onSave, initialData }: PeopleAnalyzerProps) 
     }
   }, [onSave]);
 
-  const handleSetupComplete = (generatedSeats: Record<string, { req: any }>, name: string) => {
+  const handleSetupComplete = (generatedSeats: Record<string, Seat>, name: string) => {
     setSeats(generatedSeats);
     setCompanyName(name);
     setView('dashboard');

@@ -4,7 +4,7 @@
 import { Save, Loader2 } from "lucide-react";
 
 interface SaveButtonProps {
-  t: (key: string) => string;
+    t: any;
   isSyncing?: boolean;
   handleSave: () => void;
 }

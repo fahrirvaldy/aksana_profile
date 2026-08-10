@@ -1,10 +1,8 @@
-
 "use client";
 
 import { User } from "@supabase/supabase-js";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations } from "next-intl";
-
 import { SOPData } from "./types";
 import { useSopGenerator } from "./hooks/useSopGenerator";
 import { getDivisions, getFormSchemas } from "./constants";
@@ -41,7 +39,7 @@ export default function SOPGeneratorContainer({ onSave, isSyncing, initialData }
   const handleExport = () => {
     if (!selectedDivision) return;
     const divisionName = DIVISIONS.find(d => d.id === selectedDivision)?.name || "SOP";
-    const title = formData[FORM_SCHEMAS[selectedDivision!][0].label] || t('export.filename');
+    const title = formData[FORM_SCHEMAS[selectedDivision as keyof typeof FORM_SCHEMAS][0].label] || t('export.filename');
     exportToWord({ title, divisionName, formData, t });
   };
 
@@ -74,7 +72,7 @@ export default function SOPGeneratorContainer({ onSave, isSyncing, initialData }
               t={t}
               onBack={() => setStep(1)}
               divisionName={DIVISIONS.find(d => d.id === selectedDivision)?.name || ""}
-              schema={FORM_SCHEMAS[selectedDivision]}
+              schema={FORM_SCHEMAS[selectedDivision as keyof typeof FORM_SCHEMAS]}
               formData={formData}
               setFormData={setFormData}
               onAiReview={handleAiReview}

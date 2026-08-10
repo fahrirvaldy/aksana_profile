@@ -10,7 +10,7 @@ interface FormField {
 }
 
 interface Step2Props {
-  t: (key: string, params?: any) => string;
+  t: (key: string, params?: Record<string, any>) => string;
   onBack: () => void;
   divisionName: string;
   schema: FormField[];

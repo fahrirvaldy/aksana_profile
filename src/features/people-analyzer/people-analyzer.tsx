@@ -3,7 +3,6 @@
 
 import { User } from "@supabase/supabase-js";
 import { PeopleAnalyzerData, Seat, ViewType } from "./types";
-import { useTranslations } from "next-intl";
 import { useState, useEffect } from "react";
 import { CompanySetup } from "./components/CompanySetup";
 
@@ -14,15 +13,16 @@ interface PeopleAnalyzerContainerProps {
   initialData?: PeopleAnalyzerData;
 }
 
-export default function PeopleAnalyzerContainer({ user, onSave, isSyncing, initialData }: PeopleAnalyzerContainerProps) {
-  const t = useTranslations("Tools.PeopleAnalyzer");
+export default function PeopleAnalyzerContainer({ onSave, initialData }: PeopleAnalyzerContainerProps) {
   const [view, setView] = useState<ViewType>('setup');
   const [data, setData] = useState<PeopleAnalyzerData | undefined>(initialData);
 
   useEffect(() => {
     if (initialData && initialData.companyName) {
-      setData(initialData);
-      setView('dashboard');
+      setTimeout(() => {
+        setData(initialData);
+        setView('dashboard');
+      }, 0);
     }
   }, [initialData]);
 

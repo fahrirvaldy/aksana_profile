@@ -22,6 +22,7 @@ interface ToDoTrackerProps {
 
 export default function ToDoTrackerContainer({ user, onSave, isSyncing, initialData }: ToDoTrackerProps) {
   const t = useTranslations("Tools.Todo");
+  const locale = useLocale();
   const [isExporting, setIsExporting] = useState(false);
   const captureRef = useRef<HTMLDivElement>(null);
 
@@ -43,7 +44,7 @@ export default function ToDoTrackerContainer({ user, onSave, isSyncing, initialD
     setIsExporting(true);
     // Wait a moment for the state to update and UI to re-render without export-ignored elements
     await new Promise(resolve => setTimeout(resolve, 100));
-    await handleDownloadImage(captureRef, t);
+    await handleDownloadImage(captureRef);
     setIsExporting(false);
   }
 
@@ -81,7 +82,7 @@ export default function ToDoTrackerContainer({ user, onSave, isSyncing, initialD
         {isExporting && (
           <div className="mt-12 pt-8 border-t border-slate-200 dark:border-slate-800 flex justify-between items-center text-slate-600 dark:text-slate-300 text-xs font-bold uppercase tracking-[0.2em] shadow-sm">
             <p>Aksana Business Lab - {t('title')}</p>
-            <p>{new Date().toLocaleDateString(useLocale(), { dateStyle: 'full' })}</p>
+            <p>{new Date().toLocaleDateString(locale, { dateStyle: 'full' })}</p>
           </div>
         )}
       </div>

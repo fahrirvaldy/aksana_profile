@@ -1,4 +1,6 @@
 
+import React from 'react';
+
 // src/__mocks__/next-intl.tsx
 
 export const useTranslations = (namespace: string) => (key: string) => `${namespace}.${key}`;
@@ -10,7 +12,7 @@ export const createNavigation = () => ({
     back: jest.fn(),
   }),
   usePathname: () => '/mock-path',
-  Link: (props: any) => <a>{props.children}</a>,
+  Link: (props: React.PropsWithChildren<Record<string, unknown>>) => <a>{props.children}</a>,
 });
 
-export const defineRouting = (config: any) => config;
+export const defineRouting = (config: Record<string, unknown>) => config;

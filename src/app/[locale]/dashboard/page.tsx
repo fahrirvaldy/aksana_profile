@@ -25,6 +25,7 @@ import {
   ClipboardList
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { L10Data } from "@/features/l10-meeting/types";
 
 interface ToolHistory {
   tool_slug: string;
@@ -176,23 +177,23 @@ export default function DashboardPage() {
 
   // Ops & Team Metrics
   const l10Metrics = useMemo(() => {
-    const data = l10Data;
-    if (!data || !(data.ratings as any)) return { rating: 0, issues: 0 };
+    const data = l10Data as L10Data | undefined;
+    if (!data || !data.ratings) return { rating: 0, issues: 0 };
     
-    const ratings = Object.entries(data.ratings as any)
-      .filter(([idx]) => (data.attendance as any)?.[parseInt(idx)])
+    const ratings = Object.entries(data.ratings)
+      .filter(([idx]) => data.attendance?.[parseInt(idx)])
       .map(([, val]) => val as number);
     
     const ratingValue = ratings.length === 0 ? 0 : (ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(1);
     
     return { 
       rating: ratingValue, 
-      issues: (data.idsSession as any)?.manualIssues?.length || 0
+      issues: data.idsSession?.issues?.length || 0
     };
   }, [l10Data]);
 
   const peopleMetrics = useMemo(() => {
-    const members = (peopleData?.members as any[]) || [];
+    const members = (peopleData?.members as { values?: { [key: string]: string }; gwc?: { get?: string; want?: string; capacity?: string }; }[]) || [];
     if (members.length === 0) return { avgFit: 0, count: 0 };
 
     interface Member {
@@ -206,7 +207,7 @@ export default function DashboardPage() {
       return acc + (valuesCount + gwcCount);
     }, 0);
 
-    const maxPoints = members.length * ( ((peopleData?.coreValues as any[])?.length || 0) + 3);
+    const maxPoints = members.length * ( ((peopleData?.coreValues as string[])?.length || 0) + 3);
     return {
       avgFit: maxPoints > 0 ? (totalFit / maxPoints) * 100 : 0,
       count: members.length
@@ -217,7 +218,7 @@ export default function DashboardPage() {
     interface Task {
       status: string;
     }
-    const tasks = (todoData?.tasks as any[]) || [];
+    const tasks = (todoData?.tasks as { status: string }[]) || [];
     const completed = tasks.filter((t: Task) => t.status === 'done').length;
     return {
       total: tasks.length,
@@ -228,7 +229,7 @@ export default function DashboardPage() {
 
   // Marketing & Production Metrics
   const funnelMetrics = useMemo(() => {
-    const data = funnelData?.inputs as any;
+    const data = funnelData?.inputs as { budget?: number; cpm?: number; ctr?: number; visit?: number; atc?: number; checkout?: number; aov?: number; };
     const impressions = ((data?.budget || 0) / (data?.cpm || 1)) * 1000;
     const clicks = impressions * ((data?.ctr || 0) / 100);
     const visitors = clicks * ((data?.visit || 0) / 100);
@@ -243,7 +244,7 @@ export default function DashboardPage() {
   }, [funnelData]);
 
   const productionMetrics = useMemo(() => {
-    const data = productionData as any;
+    const data = productionData as { salesInput?: string; category?: string; leadTime?: number; stock?: number; };
     if (!data) return null;
 
     const salesArray = (data.salesInput || "")
@@ -508,7 +509,7 @@ export default function DashboardPage() {
                     <div className="flex justify-between items-end">
                       <div className="space-y-1">
                         <p className="text-xs font-bold text-slate-700 uppercase tracking-widest">SOP Terakhir</p>
-                        <h4 className="text-xl font-bold line-clamp-1">{Object.values((sopData?.formData as any) || {})[0] as string || "Untitled"}</h4>
+                        <h4 className="text-xl font-bold line-clamp-1">{Object.values((sopData?.formData as Record<string, string>) || {})[0] as string || "Untitled"}</h4>
                         <p className="text-[10px] text-slate-700 uppercase font-bold">Divisi: {sopData?.division as string}</p>
                       </div>
                       <Link href="/tools" className="p-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-400 hover:bg-slate-900 dark:hover:bg-slate-50 hover:text-white dark:hover:text-slate-950 transition-all">

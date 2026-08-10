@@ -9,7 +9,7 @@ import { FunnelSimulatorInitialData, FunnelInputs, Profiling } from "../types";
 interface FunnelSimulatorProps {
   initialData?: FunnelSimulatorInitialData;
   onSave?: (data: FunnelSimulatorInitialData) => void;
-  t: (key: string, params?: any) => string;
+    t: (key: string, params?: Record<string, any>) => string;
 }
 
 export const useFunnelSimulator = ({ initialData, onSave, t }: FunnelSimulatorProps) => {
@@ -32,8 +32,10 @@ export const useFunnelSimulator = ({ initialData, onSave, t }: FunnelSimulatorPr
 
   useEffect(() => {
     if (initialData && initialData !== prevInitialData.current) {
-      if (initialData.inputs) setInputs(initialData.inputs);
-      if (initialData.profiling) setProfiling(initialData.profiling);
+      setTimeout(() => {
+        if (initialData.inputs) setInputs(initialData.inputs);
+        if (initialData.profiling) setProfiling(initialData.profiling);
+      }, 0);
       prevInitialData.current = initialData;
     }
   }, [initialData]);

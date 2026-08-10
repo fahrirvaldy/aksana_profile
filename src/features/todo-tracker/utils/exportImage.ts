@@ -1,7 +1,7 @@
 
 import React from 'react';
 
-export const handleDownloadImage = async (captureRef: React.RefObject<HTMLDivElement | null>, t: (key: string) => string) => {
+export const handleDownloadImage = async (captureRef: React.RefObject<HTMLDivElement | null>) => {
   if (!captureRef.current) return;
   
   try {

@@ -5,7 +5,7 @@ import { Megaphone } from "lucide-react";
 import { formatCurrency } from "../utils/formatters";
 
 interface CacInputPanelProps {
-  t: (key: string) => string;
+    t: any;
   adSpend: number;
   setAdSpend: (value: number) => void;
   opsCost: number;

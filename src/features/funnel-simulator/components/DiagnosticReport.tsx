@@ -5,7 +5,7 @@ import { Zap, AlertCircle, CheckCircle2, BarChart3 } from "lucide-react";
 import { Profiling } from "../types";
 
 interface DiagnosticReportProps {
-  t: (key: string, params?: any) => string;
+    t: (key: string, params?: Record<string, any>) => string;
   profiling: Profiling;
   diagnostic: {
     biggestLeak: { label: string; diff: number } | undefined;

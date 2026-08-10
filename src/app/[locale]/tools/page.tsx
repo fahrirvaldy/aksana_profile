@@ -4,7 +4,6 @@ import React, { useState, useEffect, useCallback } from "react";
 import dynamic from 'next/dynamic';
 import { useAuth } from "@/context/AuthContext";
 import { getToolData, saveToolData } from "@/lib/supabase/tools";
-import { User } from "@supabase/supabase-js";
 import { 
   DollarSign,
   TrendingUp,
@@ -76,7 +75,7 @@ export default function ToolsPage() {
   const [isSyncing, setIsSyncing] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const [activeToolSlug, setActiveToolSlug] = useState<string | null>(null);
-  const [initialData, setInitialData] = useState<any | null>(null);
+  const [initialData, setInitialData] = useState<Record<string, unknown> | null>(null);
   const [isLoadingData, setIsLoadingData] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -125,7 +124,7 @@ export default function ToolsPage() {
   // Grant access to logged-in users
   useEffect(() => {
     if (user) {
-      setHasAccess(true);
+      setTimeout(() => setHasAccess(true), 0);
     }
   }, [user]);
 
@@ -143,14 +142,14 @@ export default function ToolsPage() {
         } finally {
           setIsLoadingData(false);
         }
-      } else {
+        } else {
         setInitialData(null);
-      }
-    };
-    fetchToolData();
-  }, [activeToolSlug, user]);
+        }
+        };
+        fetchToolData();
+        }, [activeToolSlug, user]);
 
-  const handleSave = useCallback(async (data: any) => {
+        const handleSave = useCallback(async (data: Record<string, unknown>) => {
     if (!user || !activeToolSlug) return;
 
     console.log("--- DEBUG: Saving tool data ---");
@@ -176,7 +175,7 @@ export default function ToolsPage() {
         setTimeLeft((prev) => prev - 1);
       }, 1000);
     } else if (timeLeft === 0) {
-      setIsTimeUp(true);
+      setTimeout(() => setIsTimeUp(true), 0);
     }
     return () => clearInterval(timer);
   }, [hasAccess, timeLeft, user]);

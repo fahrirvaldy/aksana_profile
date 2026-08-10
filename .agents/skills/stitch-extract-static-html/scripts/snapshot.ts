@@ -225,6 +225,16 @@ function validateOpts(opts: Opts): void {
   }
 }
 
+interface SnapshotWindow extends Window {
+  __snapshot: {
+    CONCURRENCY: number;
+    toDataUri: (url: string) => Promise<string | null>;
+    processInBatches: <T, R>(items: T[], batchSize: number, fn: (item: T) => Promise<R>) => Promise<(R | null)[]>;
+    extractCssUrls: (cssText: string) => Array<{ url: string; fullMatch: string; start: number; end: number }>;
+    replaceCssUrls: (cssText: string, replacements: Array<{ start: number; end: number; dataUri: string }>) => string;
+  };
+}
+
 // ---------------------------------------------------------------------------
 // Main snapshot logic
 // ---------------------------------------------------------------------------
@@ -339,9 +349,9 @@ async function snapshot(opts: Opts): Promise<void> {
         } else {
           throw new Error(`Selector "${opts.click}" not found in main document or child frames.`);
         }
-      } catch (clickErr: any) {
+      } catch (clickErr: unknown) {
         console.error(`⚠️ Click action failed:`, clickErr);
-        stats.warnings.push(`Click action failed: ${clickErr.message || clickErr}`);
+        stats.warnings.push(`Click action failed: ${(clickErr as Error).message || clickErr}`);
       }
     }
 
@@ -386,7 +396,7 @@ async function snapshot(opts: Opts): Promise<void> {
         for (const selector of items) {
           try {
             document.querySelectorAll(selector).forEach((el) => el.remove());
-          } catch (e) {
+          } catch (e: unknown) {
             console.warn(`Invalid selector "${selector}":`, e);
           }
         }
@@ -405,11 +415,11 @@ async function snapshot(opts: Opts): Promise<void> {
     // ----- Inject shared browser-side helpers (deduplication) -----
     // Mock __name to prevent esbuild generated code from failing in browser
     await page.evaluate(() => {
-      (window as any).__name = (fn: any, name: string) => fn;
+      (window as any).__name = (fn: (...args: any[]) => any, _name: string) => fn;
     });
 
     await page.evaluate((concurrency: number) => {
-      (window as any).__snapshot = {
+      (window as SnapshotWindow).__snapshot = {
         CONCURRENCY: concurrency,
 
         toDataUri: async (url: string): Promise<string | null> => {
@@ -477,9 +487,9 @@ async function snapshot(opts: Opts): Promise<void> {
               while (
                 i < len &&
                 (cssText[i] === ' ' ||
-                  cssText[i] === '\t' ||
-                  cssText[i] === '\n' ||
-                  cssText[i] === '\r')
+                  cssText[i] === '	' ||
+                  cssText[i] === '
+')
               ) {
                 i++;
               }
@@ -496,7 +506,7 @@ async function snapshot(opts: Opts): Promise<void> {
               if (quote) {
                 // Quoted: read until matching unescaped quote
                 while (i < len && cssText[i] !== quote) {
-                  if (cssText[i] === '\\' && i + 1 < len) {
+                  if (cssText[i] === '' && i + 1 < len) {
                     i++; // skip backslash
                     url += cssText[i]; // include next char literally
                   } else {
@@ -511,9 +521,9 @@ async function snapshot(opts: Opts): Promise<void> {
                   i < len &&
                   cssText[i] !== ')' &&
                   cssText[i] !== ' ' &&
-                  cssText[i] !== '\t' &&
-                  cssText[i] !== '\n' &&
-                  cssText[i] !== '\r'
+                  cssText[i] !== '	' &&
+                  cssText[i] !== '
+'
                 ) {
                   url += cssText[i];
                   i++;
@@ -524,9 +534,9 @@ async function snapshot(opts: Opts): Promise<void> {
               while (
                 i < len &&
                 (cssText[i] === ' ' ||
-                  cssText[i] === '\t' ||
-                  cssText[i] === '\n' ||
-                  cssText[i] === '\r')
+                  cssText[i] === '	' ||
+                  cssText[i] === '
+')
               ) {
                 i++;
               }
@@ -627,7 +637,7 @@ async function snapshot(opts: Opts): Promise<void> {
 
                 iframe.parentNode!.replaceChild(wrapper, iframe);
               }
-            } catch (e) {
+            } catch {
               // Ignore cross-origin iframes; the Puppeteer frame loop will process them
             }
           }
@@ -656,7 +666,7 @@ async function snapshot(opts: Opts): Promise<void> {
 
           // Inject __name mock to prevent esbuild helper ReferenceError in child frame
           await frame.evaluate(() => {
-            (window as any).__name = (fn: any) => fn;
+            (window as any).__name = (fn: (...args: any[]) => any) => fn;
           });
 
           // Resolve all relative assets inside the frame to absolute URLs relative to the frame's URL
@@ -667,7 +677,7 @@ async function snapshot(opts: Opts): Promise<void> {
                 try {
                   const abs = new URL(val, base).href;
                   el.setAttribute(attr, abs);
-                } catch (e) { }
+                } catch { }
               }
             };
             document.querySelectorAll('img[src]').forEach(img => resolveAttr(img, 'src'));
@@ -678,7 +688,7 @@ async function snapshot(opts: Opts): Promise<void> {
             // Resolve relative url() references in inline <style> tags
             document.querySelectorAll('style').forEach((styleEl) => {
               if (styleEl.textContent) {
-                styleEl.textContent = styleEl.textContent.replace(/url\(['"]?([^'")\s]+)['"]?\)/gi, (match, url) => {
+                styleEl.textContent = styleEl.textContent.replace(/url\(['"]?([^'"]\)\s]+)['"]?\)/gi, (match, url) => {
                   if (
                     url.startsWith('data:') ||
                     url.startsWith('http:') ||
@@ -862,14 +872,15 @@ async function snapshot(opts: Opts): Promise<void> {
           if (!sheet?.cssRules) continue;
           let cssText = '';
           for (let j = 0; j < sheet.cssRules.length; j++) {
-            cssText += sheet.cssRules[j].cssText + '\n';
+            cssText += sheet.cssRules[j].cssText + '
+';
           }
           if (cssText.length > 0) {
             // Write the rules as text content so they survive DOM serialization
             styleEl.textContent = cssText;
             count++;
           }
-        } catch (e) {
+        } catch {
           // Cross-origin or security error, ignore
         }
       }
@@ -882,7 +893,7 @@ async function snapshot(opts: Opts): Promise<void> {
     // -----------------------------------------------------------------------
     console.log('🎨 Inlining external stylesheets...');
     stats.stylesheets = await page.evaluate(async () => {
-      const { toDataUri, extractCssUrls, replaceCssUrls } = (window as any).__snapshot;
+      const { toDataUri, extractCssUrls, replaceCssUrls } = (window as SnapshotWindow).__snapshot;
       let count = 0;
       const links = Array.from(
         document.querySelectorAll('link[rel="stylesheet"]'),
@@ -936,8 +947,8 @@ async function snapshot(opts: Opts): Promise<void> {
           }
           link.parentNode!.replaceChild(style, link);
           count++;
-        } catch (e) {
-          console.warn(`Failed to inline stylesheet: ${link.href}`, e);
+        } catch (e: unknown) {
+          console.warn(`Failed to inline stylesheet: ${link.href}`, e as Error);
         }
       }
       return count;
@@ -949,7 +960,7 @@ async function snapshot(opts: Opts): Promise<void> {
     // -----------------------------------------------------------------------
     console.log('🖼️  Inlining images as base64...');
     stats.images = await page.evaluate(async () => {
-      const { toDataUri, processInBatches, CONCURRENCY } = (window as any).__snapshot;
+      const { toDataUri, processInBatches, CONCURRENCY } = (window as SnapshotWindow).__snapshot;
       let count = 0;
 
       // --- <img src="..."> ---
@@ -975,7 +986,7 @@ async function snapshot(opts: Opts): Promise<void> {
         const newParts: string[] = [];
 
         await processInBatches(parts, CONCURRENCY, async (part: string) => {
-          const [url, ...descriptors] = part.split(/\s+/);
+          const [url, ...descriptors] = part.split(/\s+/) as [string, ...string[]];
           if (url.startsWith('data:')) {
             newParts.push(part);
             return;
@@ -1006,7 +1017,7 @@ async function snapshot(opts: Opts): Promise<void> {
         const newParts: string[] = [];
 
         await processInBatches(parts, CONCURRENCY, async (part: string) => {
-          const [url, ...descriptors] = part.split(/\s+/);
+          const [url, ...descriptors] = part.split(/\s+/) as [string, ...string[]];
           if (url.startsWith('data:')) {
             newParts.push(part);
             return;
@@ -1035,22 +1046,22 @@ async function snapshot(opts: Opts): Promise<void> {
 
         // Use matchAll to handle multiple url() references
         const urlPattern =
-          /url\(['"]?(https?:\/\/[^'"\)\s]+)['"]?\)/g;
+          /url\(['"]?(https?:\/\/[^'"]\)\s]+)['"]?\)/g;
         const matches = [...style.matchAll(urlPattern)];
         if (matches.length === 0) continue;
 
         let newStyle = style;
         // Process in reverse order to preserve string positions
         for (let i = matches.length - 1; i >= 0; i--) {
-          const m = matches[i];
-          const dataUri = await toDataUri(m[1]);
+          const m = matches[i] as RegExpMatchArray;
+          const dataUri = await toDataUri(m[1] as string);
           if (dataUri) {
             newStyle =
               newStyle.substring(0, m.index!) +
               "url('" +
               dataUri +
               "')" +
-              newStyle.substring(m.index! + m[0].length);
+              newStyle.substring(m.index! + (m[0] as string).length);
             count++;
           }
         }
@@ -1072,7 +1083,7 @@ async function snapshot(opts: Opts): Promise<void> {
         extractCssUrls,
         replaceCssUrls,
         CONCURRENCY,
-      } = (window as any).__snapshot;
+      } = (window as SnapshotWindow).__snapshot;
       let count = 0;
 
       /** Check if a URL points to a font file (skip — too large, not visual) */
@@ -1087,7 +1098,7 @@ async function snapshot(opts: Opts): Promise<void> {
 
         // Filter to only http(s) URLs that aren't fonts
         const toInline = urlRefs.filter(
-          (ref: any) =>
+          (ref: { url: string; start: number; end: number; }) =>
             (ref.url.startsWith('http://') ||
               ref.url.startsWith('https://')) &&
             (!isFontFile(ref.url) || inlineFonts),
@@ -1097,7 +1108,7 @@ async function snapshot(opts: Opts): Promise<void> {
 
         // Fetch all URLs concurrently
         const fetched: Array<{ start: number; end: number; dataUri: string }> = [];
-        await processInBatches(toInline, CONCURRENCY, async (ref: any) => {
+        await processInBatches(toInline, CONCURRENCY, async (ref: { url: string; start: number; end: number; }) => {
           const dataUri = await toDataUri(ref.url);
           if (dataUri) {
             fetched.push({ start: ref.start, end: ref.end, dataUri });
@@ -1119,7 +1130,7 @@ async function snapshot(opts: Opts): Promise<void> {
     // -----------------------------------------------------------------------
     console.log('🔗 Inlining additional resources (SVG, video, favicons)...');
     const additionalStats = await page.evaluate(async () => {
-      const { toDataUri, processInBatches, CONCURRENCY } = (window as any).__snapshot;
+      const { toDataUri, processInBatches, CONCURRENCY } = (window as SnapshotWindow).__snapshot;
       const stats = { svgImages: 0, videoPoster: 0, favicons: 0 };
 
       // --- SVG <image href="..."> and <image xlink:href="..."> ---
@@ -1261,7 +1272,7 @@ async function snapshot(opts: Opts): Promise<void> {
     // 6. Clean up injected helpers
     // -----------------------------------------------------------------------
     await page.evaluate(() => {
-      delete (window as any).__snapshot;
+      delete (window as Partial<SnapshotWindow>).__snapshot;
     });
 
     // -----------------------------------------------------------------------
@@ -1269,7 +1280,8 @@ async function snapshot(opts: Opts): Promise<void> {
     // -----------------------------------------------------------------------
     console.log('📦 Extracting final HTML...');
     const html = await page.evaluate(
-      () => '<!DOCTYPE html>\n' + document.documentElement.outerHTML,
+      () => '<!DOCTYPE html>
+' + document.documentElement.outerHTML,
     );
 
     // Write output
@@ -1283,7 +1295,8 @@ async function snapshot(opts: Opts): Promise<void> {
     stats.durationMs = Date.now() - startTime;
 
     const sizeKB = (stats.sizeBytes / 1024).toFixed(1);
-    console.log(`\n✅ Snapshot saved to ${outputPath} (${sizeKB} KB)`);
+    console.log(`
+✅ Snapshot saved to ${outputPath} (${sizeKB} KB)`);
     console.log(
       `   ${stats.stylesheets} stylesheets, ${stats.images} images, ${stats.cssUrls} CSS urls inlined`,
     );
@@ -1294,13 +1307,15 @@ async function snapshot(opts: Opts): Promise<void> {
     console.log(`   Completed in ${stats.durationMs}ms`);
 
     if (stats.warnings.length > 0) {
-      console.log(`\n⚠️  ${stats.warnings.length} warning(s):`);
+      console.log(`
+⚠️  ${stats.warnings.length} warning(s):`);
       stats.warnings.forEach((w) => console.log(`   • ${w}`));
     }
 
     // JSON output for CI/CD integration
     if (opts.json) {
-      console.log('\n--- JSON Stats ---');
+      console.log('
+--- JSON Stats ---');
       console.log(JSON.stringify(stats, null, 2));
     }
   } finally {

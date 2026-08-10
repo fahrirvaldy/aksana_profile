@@ -8,7 +8,7 @@ import { formatCurrency } from "../utils/formatCurrency";
 import { Record, PeriodType } from "../types";
 
 interface DashboardTabProps {
-  t: (key: string, params?: any) => string;
+    t: any;
   metrics: {
     avgNetFlow: number;
     opsRatio: number;

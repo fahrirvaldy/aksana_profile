@@ -6,7 +6,7 @@ import { ShieldCheck, Info, AlertTriangle } from "lucide-react";
 import { formatValue } from "../utils/formatters";
 
 interface HealthPanelProps {
-  t: (key: string, params?: any) => string;
+    t: (key: string, params?: Record<string, any>) => string;
   currency: 'IDR' | 'USD';
   healthMetrics: {
     cac: number;

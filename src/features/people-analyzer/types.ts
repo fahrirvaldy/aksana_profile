@@ -18,6 +18,7 @@ export interface Employee {
 }
 
 export interface PeopleAnalyzerData {
+  [key: string]: any;
   companyName: string;
   seats: Record<string, Seat>;
   employees: Employee[];

@@ -13,24 +13,24 @@
     "description": "Empowering your business growth.",
     "hero": {
       "title": "Making Business More",
-      "subtitle": "Orderly, Growing, and Calming.",
-      "description": "A space for entrepreneurs to grow and build a solid, more empowered business foundation.",
-      "approach": "Our approach: Simple, Measurable, and Human.",
-      "ctaStart": "Start Now",
+      "subtitle": "Tidy, Growing, and Calming.",
+      "description": "A growth space for entrepreneurs to progress and build a solid and more empowered business foundation.",
+      "approach": "Our approach: Simple, Measured, and Human.",
+      "ctaStart": "Get Started",
       "ctaExplore": "Explore Tools"
     },
     "features": {
       "organized": {
         "title": "Neat Structure",
-        "description": "Transform messy data into a solid, organized system."
+        "description": "Transform messy data into a solid and organized system."
       },
       "growth": {
-        "title": "Measurable Growth",
+        "title": "Measured Growth",
         "description": "Use our simulation tools to see the direction of your business progress and ROI."
       },
       "calm": {
-        "title": "Operational Peace",
-        "description": "Human-centric technology designed to reduce the entrepreneur's mental load."
+        "title": "Operational Calm",
+        "description": "Human technology designed to reduce the entrepreneur's mental load."
       }
     }
   },
@@ -39,42 +39,42 @@
   },
   "Tools": {
     "CacLtv": {
-      "title": "Biaya Akuisisi (CAC)",
-      "adSpend": "Anggaran Iklan (Monthly)",
-      "opsCost": "Biaya Ops Iklan (Gaji/Agency)",
-      "newCustomers": "Jumlah Pelanggan Baru",
-      "cacResult": "CAC Hasil:",
+      "title": "Acquisition Cost (CAC)",
+      "adSpend": "Ad Spend (Monthly)",
+      "opsCost": "Ad Ops Cost (Salary/Agency)",
+      "newCustomers": "Number of New Customers",
+      "cacResult": "CAC Result:",
       "ltvTitle": "Lifetime Value (LTV)",
-      "aov": "AOV (Rata-rata Order)",
-      "frequency": "Frekuensi (Bulan)",
-      "lifespan": "Lifespan (Bulan)",
+      "aov": "AOV (Average Order Value)",
+      "frequency": "Frequency (Month)",
+      "lifespan": "Lifespan (Month)",
       "margin": "Margin (%)",
-      "ltvResult": "LTV Hasil:",
+      "ltvResult": "LTV Result:",
       "healthRatio": "Marketing Health Ratio",
       "analysis": "LTV : CAC Performance Analysis",
       "ratioLabel": "LTV / CAC RATIO",
       "totalCac": "Total CAC",
       "netLtv": "Net LTV",
-      "aiRecommendation": "Rekomendasi Aksana AI",
-      "realtime": "Dihitung secara real-time",
-      "syncing": "MENYINKRONKAN...",
-      "burnMoney": "Bakar Uang! CAC lebih tinggi dari nilai pelanggan. Segera audit iklan Anda.",
-      "healthyOps": "Operasional Sehat, tapi butuh efisiensi lebih untuk growth agresif.",
-      "scaleAds": "Skalakan Iklan! ROI Anda luar biasa. Waktunya injek modal lebih besar.",
-      "whatIsLtvCac": "Apa itu Rasio LTV:CAC?",
-      "ltvCacDescription": "Metrik ini mengukur hubungan antara nilai yang diberikan pelanggan selama masa hidup mereka dan biaya yang dikeluarkan untuk mendapatkan mereka. Rasio ideal untuk bisnis growth adalah 3:1 atau lebih tinggi.",
-      "loss": "Bisnis merugi setiap kali mendapatkan pelanggan baru.",
-      "stable": "Bisnis stabil, namun margin tipis untuk reinvestasi.",
-      "veryHealthy": "Bisnis sangat sehat. Skalakan marketing budget Anda.",
+      "aiRecommendation": "Aksana AI Recommendation",
+      "realtime": "Calculated in real-time",
+      "syncing": "SYNCING...",
+      "burnMoney": "Burning Money! CAC is higher than customer value. Audit your ads immediately.",
+      "healthyOps": "Healthy Operations, but need more efficiency for aggressive growth.",
+      "scaleAds": "Scale Ads! Your ROI is amazing. Time to inject more capital.",
+      "whatIsLtvCac": "What is LTV:CAC Ratio?",
+      "ltvCacDescription": "This metric measures the relationship between the value a customer brings over their lifetime and the cost to acquire them. The ideal ratio for a growth business is 3:1 or higher.",
+      "loss": "The business loses money every time it acquires a new customer.",
+      "stable": "The business is stable, but the margin is thin for reinvestment.",
+      "veryHealthy": "The business is very healthy. Scale your marketing budget.",
       "placeholders": {
-        "aov": "Rp",
-        "frequency": "Berapa kali beli/bln",
-        "lifespan": "Berapa bln setia"
+        "aov": "$",
+        "frequency": "How many purchases/month",
+        "lifespan": "How many months loyal"
       }
     },
     "Cashflow": {
       "tabs": {
-        "input": "Input Data",
+        "input": "Data Input",
         "dashboard": "Cash Dashboard",
         "report": "Deep Research"
       },
@@ -84,10 +84,10 @@
         "lockBalance": "Lock Initial Balance",
         "balanceLocked": "Balance Locked"
       },
-      "addRecord": "Add {period} Record",
+      "addRecord": "Add Record {period}",
       "placeholders": {
-        "name": "Name of {period} (e.g. January)",
-        "rp": "Rp"
+        "name": "{period} Name (e.g., January)",
+        "rp": "$"
       },
       "labels": {
         "inOps": "In-Ops",
@@ -104,7 +104,7 @@
         "totalOut": "Total Out",
         "netFlow": "Net Flow",
         "balance": "Balance",
-        "empty": "No data recorded yet. Start by inputting initial balance and your first record."
+        "empty": "No data recorded yet. Start by inputting your initial balance and first record."
       },
       "dashboard": {
         "healthScore": "Health Score",
@@ -122,43 +122,43 @@
           "mingguan": "Weeks",
           "harian": "Days"
         },
-        "chartTitle": "Cash Flow Trend Graph",
-        "chartPlaceholder": "Input at least 1 record to see the graph."
+        "chartTitle": "Cash Flow Trend Chart",
+        "chartPlaceholder": "Input at least 1 record to see the chart."
       },
       "report": {
         "diagnosis": "Structural Diagnosis",
         "status": {
-          "solid": "Your cash flow shows a very solid structure with high resilience.",
+          "solid": "Your cash flow shows a very solid structure with high durability.",
           "risk": "There is a potential liquidity risk that needs to be closely monitored in the medium term.",
-          "critical": "Critical financial health. Expenditure structure exceeds income capacity."
+          "critical": "Critical financial health. Expenditure structure exceeds revenue capacity."
         },
         "alerts": {
-          "bleedingTitle": "Bleeding Operational:",
-          "bleedingDesc": "Operational income is not enough to cover daily costs. Business depends on external funding injection.",
+          "bleedingTitle": "Bleeding Operations:",
+          "bleedingDesc": "Operational income is not enough to cover daily costs. The business depends on external funding injections.",
           "shortRunwayTitle": "Short Runway:",
-          "shortRunwayDesc": "Cash reserves only last less than 3 periods. Dangerous if there are payment delays from clients.",
+          "shortRunwayDesc": "Cash reserves will only last for less than 3 periods. Danger if there are delays in payments from clients.",
           "highEfficiencyTitle": "High Efficiency:",
           "highEfficiencyDesc": "Strong positive operational margin. You have room for expansion or reinvestment."
         },
         "actionPlan": "Action Plan",
         "tasks": {
-          "audit": "Audit fixed operational costs and look for at least 15% savings.",
-          "pricing": "Review pricing model to increase gross margin.",
+          "audit": "Audit fixed operational costs and find savings of at least 15%.",
+          "pricing": "Review the pricing model to increase gross margin.",
           "safetyNet": "Prepare an emergency credit line or find investors for a safety net.",
-          "arPolicy": "Tighten collection policy (AR) to speed up inflow.",
+          "arPolicy": "Tighten the collection policy (AR) to speed up inflow.",
           "surplus": "Start allocating surplus to short-term investment instruments or expansion funds.",
-          "update": "Update this ledger at the end of every {period} for data accuracy."
+          "update": "Update this ledger at the end of each {period} for data accuracy."
         }
       },
       "cloud": {
         "save": "Save to Cloud",
         "syncing": "Syncing..."
       },
-      "confirmReset": "Delete all recording data?"
+      "confirmReset": "Delete all recorded data?"
     },
     "Funnel": {
       "title": "Marketing Funnel Simulator",
-      "subtitle": "Simulate traffic flow and your business revenue potential.",
+      "subtitle": "Simulate your business's traffic flow and potential revenue.",
       "export": "Download PNG",
       "syncing": "Syncing...",
       "profiling": {
@@ -170,8 +170,8 @@
       "inputs": {
         "title": "Funnel Parameter Input",
         "budget": "Marketing Budget",
-        "aov": "AOV (Average Order)",
-        "cpm": "CPM (Cost per 1k Imp)",
+        "aov": "AOV (Average Order Value)",
+        "cpm": "CPM (Cost per 1k Impressions)",
         "ctr": "CTR (%)",
         "visit": "Visit Rate (%)",
         "atc": "ATC Rate (%)",
@@ -191,10 +191,10 @@
       "diagnostic": {
         "title": "AI Diagnostic Report",
         "basedOn": "Based on {industry} industry benchmark",
-        "leakTitle": "Biggest Leak Point",
+        "leakTitle": "Biggest Leakage Point",
         "leakBelow": "{diff}% below average",
         "healthy": "Healthy Funnel",
-        "healthyDesc": "Performance above industry benchmark.",
+        "healthyDesc": "Performance is above industry benchmark.",
         "recommendationTitle": "AI Strategic Recommendation"
       },
       "visual": {
@@ -203,23 +203,23 @@
         "steps": {
           "impressions": "Impressions",
           "clicks": "Clicks",
-          "visit": "Visit",
+          "visit": "Visits",
           "atc": "ATC",
-          "purchases": "Buy"
+          "purchases": "Purchases"
         }
       },
       "recommendations": {
-        "ctr": "Your ad content is less attractive. Try using a stronger hook or more contrasting visuals.",
-        "visit": "Landing page (LP) is slow or not relevant to the ad. Check loading speed and message consistency.",
-        "atc": "Offer on product page is less convincing. Add social proof or clarify product benefits.",
-        "checkout": "Checkout process is too complicated or shipping is too expensive. Consider free shipping promo or form simplification.",
-        "default": "Focus on creative content optimization to increase CTR."
+        "ctr": "Your ad content is less engaging. Try using a stronger hook or more contrasting visuals.",
+        "visit": "The landing page (LP) is slow or irrelevant to the ad. Check loading speed and message consistency.",
+        "atc": "The offer on the product page is less convincing. Add social proof or clarify product benefits.",
+        "checkout": "The checkout process is too complicated or shipping costs are too expensive. Consider free shipping promos or simplifying the form.",
+        "default": "Focus on optimizing creative content to increase CTR."
       }
     },
     "Growth": {
       "global": {
         "title": "Global Settings",
-        "subtitle": "Simulate simultaneous increase for 5-Ways strategy.",
+        "subtitle": "Simulate simultaneous increases for the 5-Ways strategy.",
         "growth": "Simultaneous Increase (%)",
         "period": "Analysis Period",
         "per": "Per {period}"
@@ -230,14 +230,14 @@
         "target": "Target",
         "leads": "Number of Leads",
         "conv": "Conversion Rate",
-        "trans": "Avg. Transactions",
-        "sale": "Avg. Sale Value",
+        "trans": "Average Transactions",
+        "sale": "Average Sale Value",
         "margin": "Profit Margin",
         "customers": "Customers"
       },
       "costs": {
-        "marketing": "Marketing Cost ({period})",
-        "fixed": "Fixed Cost ({period})"
+        "marketing": "Marketing Costs ({period})",
+        "fixed": "Fixed Costs ({period})"
       },
       "results": {
         "title": "Final Profit Projection",
@@ -248,8 +248,8 @@
         "save": "Save Growth Strategy"
       },
       "waterfall": {
-        "title": "Profit Jump Visualization",
-        "label": "Profit Jump"
+        "title": "Profit Leap Visualization",
+        "label": "Profit Leap"
       },
       "health": {
         "efficiency": "Acquisition Efficiency (CAC vs LTV)",
@@ -258,12 +258,12 @@
           "fair": "FAIR",
           "loss": "LOSS"
         },
-        "cac": "Cost to Acquire (CAC)",
+        "cac": "Acquisition Cost (CAC)",
         "ltv": "Lifetime Value (LTV)",
         "ratio": "LTV/CAC Ratio"
       },
       "bep": {
-        "title": "Target Break-Even Point (BEP)",
+        "title": "Break-Even Point (BEP) Target",
         "revenue": "BEP Revenue",
         "statusLabel": "Revenue Status",
         "status": {
@@ -272,7 +272,7 @@
         },
         "progress": "Break-Even Progress",
         "success": "Congratulations! Your business has passed the operational break-even point.",
-        "needed": "Need additional revenue {val} to reach BEP."
+        "needed": "Need an additional {val} in revenue to reach BEP."
       }
     },
     "L10": {
@@ -283,12 +283,17 @@
         "export": "EXPORT L10 REPORT"
       },
       "syncing": "SYNCING...",
+      "saveManual": "Save Manual",
+      "saving": "Saving...",
+      "exportingPDF": "Exporting PDF...",
+      "exportReport": "Export Report",
+      "saved": "Saved Successfully",
       "slides": {
         "intro": {
           "title": "LEVEL 10 MEETING"
         },
         "start": {
-          "title": "Initial Segment",
+          "title": "Opening Segment",
           "subtitle": "Attendance & Good News (5 Minutes)",
           "attendance": "Attendance List",
           "goodNews": "Good News",
@@ -330,47 +335,47 @@
         },
         "todo": {
           "title": "To-Do List",
-          "subtitle": "Last Week Review & Action Plan",
+          "subtitle": "Last Week's Review & Action Plan",
           "owner": "Owner:",
-          "placeholder": "What's the task?",
-          "empty": "No tasks for this week.",
+          "placeholder": "What is the task?",
+          "empty": "No tasks for this week yet.",
           "add": "Add New To-Do List"
         },
         "ids": {
           "title": "IDS Session",
           "subtitle": "Identify, Discuss, Solve (60 Minutes)",
           "pull": "Pull Off-Track Data",
-          "identify": "1. Identify (Issues)",
+          "identify": "1. Identify (Problem)",
           "discuss": "2. Discuss (Notes)",
-          "solve": "3. Solve (Action Items)",
+          "solve": "3. Solve (Action Plan)",
           "placeholderIssues": "New issue...",
           "placeholderNotes": "Write important discussion notes here...",
-          "placeholderSolutions": "What is the final solution? Put it in the To-Do List if necessary...",
-          "add": "Input New Issue"
+          "placeholderSolutions": "What is the final solution? Add to To-Do List if necessary..."
         },
         "conclude": {
-          "title": "Conclude",
+          "title": "Conclusion",
           "subtitle": "\"How effective was this meeting for achieving the vision?\" (1 - 10)",
           "scoreLabel": "Composite Quality Score",
           "ratingPlaceholder": "0",
-          "empty": "Select attendees to give a rating."
+          "empty": "Select participants to give a rating."
         }
       },
       "setup": {
-        "title": "Meeting Engine Setup",
-        "subtitle": "Configure meeting structure for maximum efficiency.",
+        "title": "Meeting Machine Setup",
+        "subtitle": "Configure the meeting structure for maximum efficiency.",
         "company": "Company / Organization",
-        "divisions": "MEETING ATTENDEES DIVISIONS",
+        "divisions": "MEETING PARTICIPANT DIVISIONS",
         "placeholderDiv": "Division Name {n}",
         "addDiv": "ADD NEW DIVISION",
         "rocks": "Quarterly Rocks (Priorities)",
         "addRock": "ADD NEW ROCK",
-        "launch": "LAUNCH MEETING SESSION"
-      }
+        "launch": "START MEETING SESSION"
+      },
+      "discussionTheme": "Discussion Theme {index}"
     },
     "People": {
-      "title": "People Analyzer",
-      "subtitle": "Talent Management & Psychometric",
+      "title": "HR Analysis",
+      "subtitle": "Talent Management & Psychometrics",
       "syncing": "SYNCING",
       "addEmployee": "Add Employee",
       "dashboard": "Dashboard",
@@ -379,7 +384,7 @@
         "description": "Define your team structure. Our AI will map the ideal psychometric standards for each position.",
         "companyName": "Company Name",
         "placeholderCompany": "PT Maju Bersama...",
-        "seats": "Divisions / Seats",
+        "seats": "Divisions / Roles (Seats)",
         "placeholderSeat": "Example: Marketing, Frontend Dev, HR...",
         "add": "Add",
         "empty": "No divisions registered yet.",
@@ -391,27 +396,27 @@
       "dashboardView": {
         "empty": {
           "title": "Start Team Database",
-          "description": "You have established {n} divisions. Now, run assessments for your employees to see their capacity fit.",
+          "description": "You have defined {n} divisions. Now, run assessments for your employees to see their capacity fit.",
           "structure": "Saved Structure:"
         },
         "sidebar": "Talent Database",
         "fitStatus": "Fit Status",
-        "needAdjustment": "Need Adjustment",
+        "needAdjustment": "Needs Adjustment",
         "optimal": "Optimal (Right Seat)",
-        "visualization": "Capacity Visualization vs Standards",
+        "visualization": "Capacity vs Standard Visualization",
         "actual": "ACTUAL CAPACITY",
         "standard": "AI SEAT STANDARD",
         "actualLabel": "Actual: {actual} / Standard: {required}",
         "recommendation": "Aksana System Recommendation",
-        "gapDesc": "Employee shows competence gap in {traits}. {role} position requires higher standards.",
-        "reassignment": "Re-assignment Potential",
-        "reassignmentDesc": "{name}'s character pattern has a {percent}% match with {role} position standards. Consider rotation for performance optimization.",
-        "perfectFit": "Perfect Placement",
-        "perfectFitDesc": "{name}'s capacity is very aligned with the strategic needs of {role} position. Focus on delegation and further development in this path.",
+        "gapDesc": "The employee shows a competency gap in the {traits} aspect. The {role} position requires a higher standard.",
+        "reassignment": "Potential Re-assignment",
+        "reassignmentDesc": "{name}'s character pattern has a {percent}% match with the {role} position standard. Consider rotation for performance optimization.",
+        "perfectFit": "Perfect Fit",
+        "perfectFitDesc": "{name}'s capacity is highly aligned with the strategic needs of the {role} position. Focus on delegation and further development in this path.",
         "traits": {
           "creativity": "Creativity & Innovation",
           "leadership": "Leadership",
-          "detail": "Detail Accuracy",
+          "detail": "Detail Orientation",
           "execution": "Execution & Logic"
         },
         "anomalies": {
@@ -425,79 +430,79 @@
         "title": "Talent Assessment",
         "description": "Scenario-based psychological mapping to determine the best placement.",
         "name": "Full Name",
-        "placeholderName": "Enter candidate name...",
+        "placeholderName": "Enter candidate's name...",
         "role": "Target Position",
         "start": "Start Psychometric Test",
         "progress": "Progress: {step} / {total}",
-        "finished": "{percent}% FINISHED"
+        "finished": "{percent}% COMPLETE"
       },
       "questions": {
         "q1": {
           "text": "When a sudden crisis occurs where a major client complains about your team's work, what is your first instinct?",
           "options": {
-            "leadership": "Gather the team to immediately divide emergency handling tasks.",
-            "detail": "Analyze data logs and previous reports to find the exact location of the error.",
+            "leadership": "Gather the team to immediately delegate emergency handling tasks.",
+            "detail": "Analyze data logs and previous reports to find the exact source of the error.",
             "creativity": "Think of creative compensation or additional services to calm the client.",
-            "execution": "Immediately call the client and solve the technical problem right then and there."
+            "execution": "Immediately call the client and resolve the technical issue on the spot."
           }
         },
         "q2": {
-          "text": "If you are asked to lead a new product launch project, what part do you enjoy most?",
+          "text": "If you were asked to lead a new product launch project, which part would you enjoy the most?",
           "options": {
-            "creativity": "Designing product concepts and branding strategies that have never existed before.",
-            "execution": "Ensuring the timeline runs fast and weekly targets are achieved without excuses.",
-            "detail": "Developing detailed SOPs and checking QA (Quality Assurance) before release.",
-            "leadership": "Motivating team members across divisions so the product vision is aligned."
+            "creativity": "Designing a product concept and branding strategy that has never existed before.",
+            "execution": "Ensuring the timeline runs fast and weekly targets are met without excuses.",
+            "detail": "Compiling detailed SOPs and checking QA (Quality Assurance) before release.",
+            "leadership": "Motivating cross-divisional team members so that the product vision is aligned."
           }
         },
         "q3": {
-          "text": "Your colleague is on leave and you have to back up their work which contains hundreds of lines of spreadsheet data. Your reaction?",
+          "text": "Your colleague is on leave and you have to back up their work which contains hundreds of rows of spreadsheet data. Your reaction?",
           "options": {
-            "detail": "Great. I love tidying up and making sure the numbers are accurate.",
+            "detail": "Great. I like to tidy up and make sure the numbers are accurate.",
             "leadership": "I will delegate some parts to other staff to be more efficient.",
-            "execution": "I will do it as fast as possible so today's target is still completed.",
-            "creativity": "I will try to create new formulas/macros to make the format more attractive and easy to read."
+            "execution": "I'll do it as quickly as possible so today's target is still met.",
+            "creativity": "I will try to create a new formula/macro to make the format more interesting and easier to read."
           }
         },
         "q4": {
           "text": "In an annual evaluation meeting, your communication style is usually...",
           "options": {
             "execution": "Focus on action items to be executed immediately tomorrow.",
-            "creativity": "Giving wild ideas about the company's future direction.",
-            "leadership": "Directing the discussion so all team members get a chance to speak.",
-            "detail": "Bringing complete notes about achieved/failed metrics and KPIs."
+            "creativity": "Give wild ideas about the future direction of the company.",
+            "leadership": "Direct the discussion so that all team members get a chance to speak.",
+            "detail": "Bring complete notes on achieved/failed metrics and KPIs."
           }
         },
         "q5": {
-          "text": "What is the biggest weakness that you (or others) often realize in yourself?",
+          "text": "What is the biggest weakness you (or others) often notice in yourself?",
           "options": {
             "execution": "Often ignoring small rules to achieve goals quickly.",
-            "detail": "Too perfectionist on small things so sometimes slow.",
-            "creativity": "Often jumping from one idea to another before the first one is finished.",
-            "leadership": "Too much taking over work because of lack of patience seeing a slow team."
+            "detail": "Too perfectionistic on small things so sometimes slow.",
+            "creativity": "Often jumping from one idea to another before the first idea is finished.",
+            "leadership": "Taking over too much work because of impatience with a slow team."
           }
         }
       },
-      "confirmDelete": "Are you sure you want to delete this employee data?",
-      "confirmReset": "Attention: Restarting company profile will delete all division and employee data. Continue?",
+      "confirmDelete": "Are you sure you want to delete this employee's data?",
+      "confirmReset": "Warning: Restarting the company profile will delete all division and employee data. Continue?",
       "resetTitle": "Reset Profile"
     },
     "Production": {
       "identity": {
         "title": "Product Identity",
         "sku": "Product Name / SKU",
-        "placeholderSku": "Example: Hijab Voal Ultra",
+        "placeholderSku": "Example: Ultra Voal Hijab",
         "category": "Strategic Category",
         "magnet": "Magnet Product 🔥",
         "profit": "Profit Product 💰",
-        "magnetDesc": "Magnet Product: Must always be available (Service Level 98%). Generally used as a puller for your store visitors.",
-        "profitDesc": "Profit Product: Focus on capital turnover (Service Level 90%). Tolerable if occasionally out of stock for capital efficiency."
+        "magnetDesc": "Magnet Product: Must always be available (Service Level 98%). Generally used to attract visitors to your store.",
+        "profitDesc": "Profit Product: Focus on capital turnover (Service Level 90%). Can be tolerated if occasionally out of stock for capital efficiency."
       },
       "data": {
         "title": "Field Data",
         "sales": "Monthly Sales History",
         "placeholderSales": "Example: 150, 180, 140, 210, 190, 250",
-        "salesNote": "* Separate with comma. Can use dot as thousand separator.",
+        "salesNote": "* Separate with commas. You can use a dot as a thousand separator.",
         "leadTime": "Lead Time (Days)",
         "placeholderLeadTime": "7",
         "stock": "Remaining Stock (Pcs)",
@@ -505,7 +510,7 @@
       },
       "analysis": {
         "subtitle": "Production Target Simulation",
-        "untitled": "Untitled SKU",
+        "untitled": "Untitled Product",
         "sync": "Sync...",
         "export": "Download PNG",
         "processing": "Processing...",
@@ -513,17 +518,17 @@
         "errorAlert": "An error occurred while processing the image.",
         "reportFilename": "Production-Target-Report-",
         "waiting": "Waiting for Valid Data",
-        "waitingDesc": "Enter at least 2 sales history data to start analysis.",
+        "waitingDesc": "Enter at least 2 historical sales data to start the analysis.",
         "alert": "🚨 Time to Produce!",
-        "safe": "✅ Stock is Still Safe",
-        "alertDesc": "Remaining stock ({stock}) is already below Production Alarm ({rop}).",
-        "safeDesc": "Stock amount is still sufficient for operational needs.",
+        "safe": "✅ Stock Still Safe",
+        "alertDesc": "Remaining stock ({stock}) is already below the Production Alarm ({rop}).",
+        "safeDesc": "The amount of stock is still sufficient for operational needs.",
         "targetLabel": "Current Production Target",
         "pcs": "Pcs",
-        "avgSales": "Avg Sales / Day",
+        "avgSales": "Average Sales / Day",
         "avgSalesUnit": "Pcs per day",
         "safetyStock": "Safety Stock 🛡️",
-        "safetyStockDesc": "Safe limit before stock runs out",
+        "safetyStockDesc": "Safety limit before running out of stock",
         "rop": "Production Alarm 🔔",
         "ropDesc": "Start production if stock reaches this number",
         "chartTitle": "Stock Movement Simulation",
@@ -536,7 +541,7 @@
           "stdDevMonthly": "<bold>Monthly Fluctuation (StdDev):</bold> {val}",
           "stdDevDaily": "<bold>Daily Normalization:</bold> {val1} / √30 = {val2}",
           "safetyStock": "<bold>Safety Stock:</bold> Z-Score({z}) × Daily Fluctuation × √LeadTime({lt}) = <highlight>{res}</highlight>",
-          "rop": "<bold>Production Alarm:</bold> (Daily Avg × Lead Time) + Safety Stock = <highlight>{res}</highlight>"
+          "rop": "<bold>Production Alarm:</bold> (Daily Average × Lead Time) + Safety Stock = <highlight>{res}</highlight>"
         }
       }
     },
@@ -553,21 +558,21 @@
       },
       "step2": {
         "back": "Back",
-        "division": "{name} Division",
-        "title": "Draft SOP Details",
+        "division": "Division {name}",
+        "title": "SOP Details Draft",
         "subtitle": "Complete the data below. AI will help refine the language later.",
         "generate": "Generate with Aksana AI"
       },
       "step3": {
-        "title": "AI Analysis Completed",
-        "subtitle": "Aksana AI has analyzed risks and metrics for your SOP.",
+        "title": "AI Analysis Complete",
+        "subtitle": "Aksana AI has analyzed the risks and metrics for your SOP.",
         "riskTitle": "Risk Analysis",
-        "kpiTitle": "Recommended KPIs",
+        "kpiTitle": "KPI Recommendation",
         "edit": "Edit Draft",
-        "approve": "Approve & Refine Document",
+        "approve": "Approve & Finalize Document",
         "risks": [
-          "Potential coordination delays at step 2 due to lack of physical checklist.",
-          "High human error risk on manual data input. Recommendation: Use software validation."
+          "Potential for coordination delays in step 2 due to lack of a physical checklist.",
+          "High risk of human error in manual data input. Recommendation: Use software validation."
         ],
         "kpis": {
           "accuracy": "Accuracy Rate",
@@ -579,7 +584,7 @@
         "subtitle": "STANDARD OPERATING PROCEDURE • AKSANA BUSINESS LAB",
         "author": "Author",
         "authorVal": "Aksana AI Business Intelligence",
-        "date": "Publish Date",
+        "date": "Date Published",
         "new": "Create New SOP",
         "export": "Export to Word (.doc)",
         "save": "Save to Cloud"
@@ -598,34 +603,34 @@
           "description": "Sales, Branding, & Social Media"
         },
         "hrd": {
-          "name": "HRD",
+          "name": "HR / HRD",
           "description": "Recruitment & Discipline"
         }
       },
       "schemas": {
         "ops": [
-          { "label": "Process Name / Workflow", "placeholder": "E.g.: Goods Delivery Procedure" },
-          { "label": "Main Person in Charge", "placeholder": "E.g.: Warehouse Manager" },
+          { "label": "Process / Workflow Name", "placeholder": "e.g., Goods Shipping Procedure" },
+          { "label": "Main Person in Charge", "placeholder": "e.g., Warehouse Manager" },
           { "label": "Tools & Materials Needed", "placeholder": "Mention tools or software..." },
-          { "label": "Work Steps (Sequence)", "placeholder": "1. Receive order...\n2. Packing...\n3. Ship..." }
+          { "label": "Work Steps (Sequence)", "placeholder": "1. Receive order...2. Packing...3. Ship..." }
         ],
         "fin": [
-          { "label": "Financial Procedure Name", "placeholder": "E.g.: Reimbursement Request" },
-          { "label": "Authorizer (Permit Giver)", "placeholder": "E.g.: CFO or Finance Lead" },
-          { "label": "Process Time Limit (SLA)", "placeholder": "E.g.: Maximum 2x24 Hours" },
-          { "label": "Mandatory Supporting Documents", "placeholder": "Original receipt, Invoice, etc..." }
+          { "label": "Financial Procedure Name", "placeholder": "e.g., Reimbursement Submission" },
+          { "label": "Authorizer", "placeholder": "e.g., CFO or Finance Lead" },
+          { "label": "Process Deadline (SLA)", "placeholder": "e.g., Max 2x24 Hours" },
+          { "label": "Required Supporting Documents", "placeholder": "Original receipt, Invoice, etc..." }
         ],
         "mkt": [
-          { "label": "Campaign Name / Activity", "placeholder": "E.g.: Instagram Content Posting" },
-          { "label": "Target Audience", "placeholder": "Who is being targeted?" },
-          { "label": "Creative Steps & Execution", "placeholder": "Brainstorming -> Design -> Approval..." },
+          { "label": "Campaign / Activity Name", "placeholder": "e.g., Instagram Content Posting" },
+          { "label": "Target Audience", "placeholder": "Who is it for?" },
+          { "label": "Creative & Execution Steps", "placeholder": "Brainstorming -> Design -> Approval..." },
           { "label": "Success Metrics", "placeholder": "Number of leads, engagement rate, etc..." }
         ],
         "hrd": [
-          { "label": "Policy Name / SOP", "placeholder": "E.g.: New Employee Onboarding" },
+          { "label": "Policy / SOP Name", "placeholder": "e.g., New Employee Onboarding" },
           { "label": "Related Departments", "placeholder": "All divisions or specific..." },
           { "label": "Process Stages", "placeholder": "Prepare laptop -> Sign Contract -> Training..." },
-          { "label": "Sanctions If Violated (Optional)", "placeholder": "Written warning, etc..." }
+          { "label": "Sanctions for Violation (Optional)", "placeholder": "Written warning, etc..." }
         ]
       },
       "export": {
@@ -633,15 +638,15 @@
         "docTitle": "STANDARD OPERATING PROCEDURE",
         "divisi": "Division: {name}",
         "riskAnalysis": "AI Risk Analysis",
-        "riskRecommendation": "Based on the draft, AI recommends double checking on critical steps to avoid human error.",
+        "riskRecommendation": "Based on the draft, AI recommends double-checking critical steps to avoid human error.",
         "kpiTitle": "Key Performance Indicators (KPI)",
         "accuracy": "Process Accuracy: 98%",
-        "sla": "SLA Fulfillment: < 24 Hours"
+        "sla": "Fulfillment SLA: < 24 Hours"
       }
     },
     "Todo": {
       "title": "Task Tracker",
-      "subtitle": "Monitor strategic task execution of the team in real-time.",
+      "subtitle": "Monitor the execution of the team's strategic tasks in real-time.",
       "export": "Download Image",
       "progress": "Team Progress",
       "addNew": "Add New Task",
@@ -650,58 +655,58 @@
       "save": "Save",
       "listTitle": "Execution List",
       "tasksCount": "{n} Tasks",
-      "allPic": "All PIC",
+      "allPic": "All PICs",
       "deadline": "Deadline: {date}",
-      "empty": "No tasks in this list.",
+      "empty": "No tasks in this list yet.",
       "sync": {
         "syncing": "Syncing...",
         "connected": "Cloud Connected",
-        "save": "Save Manual"
+        "save": "Save Manually"
       }
     }
   },
   "ServicePage": {
     "title": "Integrated Solutions for a <italic>More Empowered</italic> Business",
-    "subtitle": "We provide services that combine technological precision with a deep understanding of the real challenges entrepreneurs face. Not just digitalization, but system alignment for sustainable growth.",
-    "detailButton": "VIEW DETAIL",
-    "consultationButton": "Consult on This Issue",
+    "subtitle": "We provide services that combine technological precision with a deep understanding of the real challenges entrepreneurs face. Not just digitization, but system alignment for sustainable growth.",
+    "detailButton": "SEE DETAILS",
+    "consultationButton": "Consult This Issue",
     "modalTitle": "ANALOGY",
     "services": [
       {
         "title": "Business Checkup 360",
-        "tagline": "Structural Diagnosis",
-        "analogy": "A digital MRI to map the health of your business's organs.",
-        "explanation": "Dissecting operational flows to find efficiency bottlenecks."
+        "tagline": "Structure Diagnosis",
+        "analogy": "Digital MRI to map the health of business organs.",
+        "explanation": "Dissection of operational flow to find inefficiency blockages."
       },
       {
         "title": "Growth OS",
         "tagline": "System Integration",
-        "analogy": "An Autopilot system so the business runs steadily without you holding the wheel 24/7.",
+        "analogy": "Autopilot system for the business to run stably without having to hold the wheel 24/7.",
         "explanation": "Building operational independence for your time freedom."
       },
       {
         "title": "Founder Finance Clarity",
         "tagline": "Financial Architecture",
-        "analogy": "A precise aircraft cockpit—making every number speak of opportunities.",
-        "explanation": "An intuitive dashboard for clarity in strategic decision-making."
+        "analogy": "A precise Airplane Cockpit—making every number speak about opportunities.",
+        "explanation": "Intuitive dashboard for clarity in strategic decision-making."
       },
       {
         "title": "People & Culture Reset",
-        "tagline": "Cultural Alignment",
-        "analogy": "Aligning the team's heartbeat to move in one harmony.",
+        "tagline": "Culture Alignment",
+        "analogy": "Aligning the Team's Heartbeat to move in one harmony.",
         "explanation": "Building a culture of ownership to minimize internal drama."
       },
       {
         "title": "Market & Product Sprint",
         "tagline": "Validation Acceleration",
-        "analogy": "A telescope lens to ensure the product lands exactly where customers desire.",
+        "analogy": "Telescope Lens to ensure the product lands right at the customer's desire point.",
         "explanation": "Cutting failure risk through real market data validation."
       },
       {
         "title": "Aksana Partner",
         "tagline": "Strategic Elevation",
-        "analogy": "An expert navigator sitting beside you through every sharp turn in business.",
-        "explanation": "Regular mentoring to ensure strategies are executed correctly."
+        "analogy": "An Expert Navigator sitting next to you through every sharp business turn.",
+        "explanation": "Regular assistance to ensure strategy is executed correctly."
       }
     ]
   },
@@ -715,10 +720,10 @@
     "sessionOverMessage": "Your trial session has ended. Let's upgrade your access to permanently save this analysis.",
     "contactTeam": "Contact Aksana Team",
     "unlockAccess": "Unlock Tools Access",
-    "unlockAccessSubtitle": "Fill in a short form to get exclusive trial access.",
+    "unlockAccessSubtitle": "Fill in a brief form to get exclusive trial access.",
     "form": {
         "fullName": "Full Name",
-        "fullNamePlaceholder": "How should we greet you?",
+        "fullNamePlaceholder": "How should we address you?",
         "businessName": "Business Name",
         "businessNamePlaceholder": "Your company or brand name",
         "sector": "Business Sector",
@@ -726,19 +731,19 @@
         "whatsapp": "WhatsApp Number",
         "whatsappPlaceholder": "628xxxxxxxxxx",
         "biggestChallenge": "Biggest Challenge",
-        "biggestChallengePlaceholder": "Tell us a bit about the business problem you want to solve...",
+        "biggestChallengePlaceholder": "Tell us a bit about the business obstacle you want to solve...",
         "submitButton": "Start Business Analysis",
         "processing": "Processing...",
-        "submitDisclaimer": "By pressing the button, you will get access to Aksana's exclusive simulations."
+        "submitDisclaimer": "By pressing the button, you will get access to Aksana's exclusive simulation."
     },
     "tools": [
         { "name": "Cashflow Analysis", "description": "Cash flow analysis for business financial health.", "status": "Active", "action": "Use Tool" },
         { "name": "Growth Simulator", "description": "Simulate your business growth projections.", "status": "Active", "action": "Use Tool" },
         { "name": "SOP Generator", "description": "Create Standard Operating Procedures automatically.", "status": "Active", "action": "Use Tool" },
         { "name": "CAC vs LTV", "description": "Analysis of acquisition cost efficiency vs customer value.", "status": "Active", "action": "Use Tool" },
-        { "name": "Funnel Simulator", "description": "Simulate your marketing funnel conversions.", "status": "Active", "action": "Use Tool" },
-        { "name": "Production Target Simulator", "description": "Calculate the optimal production target for the company.", "status": "Active", "action": "Use Tool" },
-        { "name": "Template L10 Meeting", "description": "An effective weekly meeting structure.", "status": "Active", "action": "Use Tool" },
+        { "name": "Funnel Simulator", "description": "Simulate your marketing funnel conversion.", "status": "Active", "action": "Use Tool" },
+        { "name": "Production Target Simulator", "description": "Calculate the company's optimal production target.", "status": "Active", "action": "Use Tool" },
+        { "name": "Template L10 Meeting", "description": "Effective weekly meeting structure.", "status": "Active", "action": "Use Tool" },
         { "name": "People Analyzer", "description": "Evaluate team alignment with cultural values.", "status": "Active", "action": "Use Tool" },
         { "name": "To-Do Tracker", "description": "Monitor the execution of the team's strategic tasks.", "status": "Active", "action": "Use Tool" }
     ],
@@ -749,7 +754,7 @@
   },
   "ContactPage": {
     "title": "Contact Us",
-    "subtitle": "Have a question or want to collaborate? We're here to listen.",
+    "subtitle": "Have questions or want to collaborate? We are ready to listen.",
     "successMessage": "Thank you! Your message has been received. The Aksana team will contact you shortly.",
     "sendAnotherMessage": "Send another message",
     "form": {
@@ -762,10 +767,10 @@
         "submitButton": "Send Message",
         "sending": "Sending..."
     },
-    "errorMessage": "Sorry, there was a problem sending your message. Please try again in a moment."
+    "errorMessage": "Sorry, there was a problem sending your message. Please try again in a few moments."
   },
   "LoginPage": {
-    "title": "Welcome Back",
+    "title": "Welcome",
     "subtitle": "Log in to your Aksana account",
     "emailLabel": "Email",
     "emailPlaceholder": "name@company.com",
@@ -774,7 +779,7 @@
     "submitButton": "Login",
     "verifying": "Verifying...",
     "errorMessage": "The email or password you entered is incorrect.",
-    "restrictedAccess": "Access is restricted to exclusive Aksana clients.",
+    "restrictedAccess": "Restricted access for exclusive Aksana clients.",
     "contactUs": "Contact our team",
     "getAccount": " to get an account."
   }

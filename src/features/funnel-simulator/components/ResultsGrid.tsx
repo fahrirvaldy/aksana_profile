@@ -5,7 +5,7 @@ import { TrendingUp, Target } from "lucide-react";
 import { formatCurrency, formatNumber } from "../utils/formatters";
 
 interface ResultsGridProps {
-  t: (key: string, params?: any) => string;
+    t: (key: string, params?: Record<string, any>) => string;
   results: {
     roas: number;
     revenue: number;

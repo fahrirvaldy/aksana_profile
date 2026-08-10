@@ -31,9 +31,17 @@ export default function LoginPage() {
 
       // Redirect to tools on success (Dashboard is hidden)
       router.push("/tools");
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Graceful Failure UI (Amber/Orange)
-      setAuthError(error.message || t('errorMessage'));
+      let message: string;
+      if (error instanceof Error) {
+        message = error.message;
+      } else if (typeof error === 'string') {
+        message = error;
+      } else {
+        message = t('errorMessage');
+      }
+      setAuthError(message);
     } finally {
       setIsLoading(false);
     }

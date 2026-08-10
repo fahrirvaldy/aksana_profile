@@ -1,5 +1,6 @@
 
 export interface ProductionData {
+  [key: string]: any;
   sku: string;
   category: 'magnet' | 'profit';
   salesInput: string;

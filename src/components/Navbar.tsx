@@ -4,7 +4,7 @@ import { Link, usePathname, useRouter } from "@/i18n/routing";
 import aksanaLogo from "@/assets/image/logo.png";
 import { ThemeToggle } from "./ThemeToggle";
 import { LanguageSwitcher } from "./layout/LanguageSwitcher";
-import { Menu, X, UserCircle, LogOut } from "lucide-react";
+import { Menu, X, LogOut } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
 import { useAuth } from "@/context/AuthContext";
 import { useTranslations } from 'next-intl';

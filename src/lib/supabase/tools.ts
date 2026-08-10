@@ -8,7 +8,7 @@ import { User } from "@supabase/supabase-js";
 const TABLE_NAME = 'user_tools_history';
 
 // Mengambil data untuk tool tertentu milik user
-export const getToolData = async (user: User, toolSlug: string): Promise<any | null> => {
+export const getToolData = async (user: User, toolSlug: string): Promise<Record<string, unknown> | null> => {
   try {
     const { data, error } = await supabase
       .from(TABLE_NAME)
@@ -23,15 +23,15 @@ export const getToolData = async (user: User, toolSlug: string): Promise<any | n
     }
 
     // Kembalikan 'saved_state' dari baris pertama, atau null jika tidak ada
-    return (data && data.length > 0) ? data[0].saved_state : null;
-  } catch (error: any) {
+    return (data && data.length > 0) ? data[0].saved_state as Record<string, unknown> : null;
+  } catch (error: unknown) {
     console.error(`Error fetching data for ${toolSlug}. Full error:`, JSON.stringify(error, null, 2));
     return null;
   }
 };
 
 // Menyimpan atau memperbarui data untuk tool tertentu
-export const saveToolData = async (user: User, toolSlug: string, toolData: any): Promise<boolean> => {
+export const saveToolData = async (user: User, toolSlug: string, toolData: Record<string, unknown>): Promise<boolean> => {
   try {
     const { error } = await supabase
       .from(TABLE_NAME)

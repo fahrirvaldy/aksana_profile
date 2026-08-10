@@ -4,13 +4,13 @@
 import { TrendingUp, RefreshCcw } from "lucide-react";
 
 interface CostInputsProps {
-  t: (key: string, params?: any) => string;
+    t: (key: string, params?: Record<string, any>) => string;
   period: 'Bulan' | 'Tahun';
   marketingCost: number;
   setMarketingCost: (cost: number) => void;
   fixedCost: number;
   setFixedCost: (cost: number) => void;
-  handleSave: (data: any) => void;
+  handleSave: (data: { marketingCost?: number; fixedCost?: number }) => void;
 }
 
 export const CostInputs = (
