@@ -8,7 +8,7 @@ import ConditionalFooter from "@/components/layout/ConditionalFooter";
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
-import { PageTransition } from "@/components/PageTransition";
+
 import { ProfileChecker } from '@/components/layout/ProfileChecker';
 
 
@@ -67,9 +67,7 @@ export default async function RootLayout({
               <ProfileChecker>
                 <Navbar />
                 <main className="flex-grow pt-20 flex flex-col items-stretch">
-                  <PageTransition>
-                    {children}
-                  </PageTransition>
+                  {children}
                 </main>
                 <ConditionalFooter />
               </ProfileChecker>

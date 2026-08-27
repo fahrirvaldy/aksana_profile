@@ -1,4 +1,3 @@
-
 export interface L10Config {
   companyName: string;
   divisions: string[];
@@ -81,4 +80,9 @@ export interface L10Data {
     solutions: string;
   };
   ratings: Record<number, number | string>;
+  timer: {
+    isTimerRunning: boolean;
+    timeLeft: number;
+    timerEndTime: number | null;
+  };
 }

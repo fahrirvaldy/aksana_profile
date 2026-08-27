@@ -288,6 +288,10 @@
       "saveManual": "Simpan Manual",
       "saving": "Menyimpan...",
       "exportingPDF": "Mengekspor PDF...",
+      "exportAllSlidesTitle": "Ekspor semua slide ke satu PDF",
+      "exportAllSlides": "Ekspor Semua Slide",
+      "exportingSlide": "Mengekspor slide",
+      "exportImageTitle": "Ekspor slide saat ini sebagai gambar",
       "slides": {
         "intro": {
           "title": "LEVEL 10 MEETING"

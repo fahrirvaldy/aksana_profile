@@ -1,9 +1,8 @@
-
-"use client";
+'use client';
 
 import { useState } from "react";
-
-import { Clock, Play, Pause, RotateCcw, Settings, ChevronLeft, ChevronRight, Download, Loader2, Cloud } from "lucide-react";
+import { User } from "@supabase/supabase-js";
+import { Clock, Play, Pause, RotateCcw, Settings, ChevronLeft, ChevronRight, Download, Loader2, Cloud, History, Camera, FileOutput } from "lucide-react";
 import { pdf } from "@react-pdf/renderer";
 import L10PDFDocument from "../pdf/L10PDFDocument";
 import { L10Data } from "../types";
@@ -13,6 +12,8 @@ interface MeetingControlsProps {
   isSyncing?: boolean;
   handleSave?: () => void;
   showSetup: () => void;
+  showHistory?: () => void;
+  user?: User | null;
   timeLeft: number;
   isTimerRunning: boolean;
   toggleTimer: () => void;
@@ -25,10 +26,22 @@ interface MeetingControlsProps {
   averageRating: string;
   currentSlide: number;
   prioritizeAndSetThemes: () => void;
+  handleExportImage?: () => void;
+  isExportingImage?: boolean;
+  handleExportAllSlides?: () => void;
+  isExportingAllSlides?: boolean;
+  exportProgressMessage?: string;
 }
 
 export const MeetingControls = (
-  { t, isSyncing, handleSave, showSetup, timeLeft, isTimerRunning, toggleTimer, resetTimer, prevSlide, nextSlide, isPrevDisabled, isNextDisabled, data, averageRating, currentSlide, prioritizeAndSetThemes }: MeetingControlsProps
+  { 
+    t, isSyncing, handleSave, showSetup, showHistory, user, 
+    timeLeft, isTimerRunning, toggleTimer, resetTimer, 
+    prevSlide, nextSlide, isPrevDisabled, isNextDisabled, 
+    data, averageRating, currentSlide, prioritizeAndSetThemes, 
+    handleExportImage, isExportingImage, 
+    handleExportAllSlides, isExportingAllSlides, exportProgressMessage
+  }: MeetingControlsProps
 ) => {
   const [isExporting, setIsExporting] = useState(false);
 
@@ -36,10 +49,8 @@ export const MeetingControls = (
     if (isExporting) return;
     setIsExporting(true);
     
-    // Force save before exporting to get latest data
     if (handleSave) {
       handleSave();
-      // Give a brief moment for state to potentially update if saving is async
       await new Promise(resolve => setTimeout(resolve, 200));
     }
 
@@ -97,22 +108,39 @@ export const MeetingControls = (
               <button onClick={resetTimer} className="hover:scale-110 transition-transform active:scale-95 text-black dark:text-slate-300"><RotateCcw size={20} /></button>
             </div>
           </div>
-          <button onClick={handleExportPDF} disabled={isExporting} className="flex items-center gap-3 px-6 py-4 bg-slate-900 dark:bg-white text-white dark:text-slate-950 rounded-3xl font-black hover:scale-105 transition-all text-xs active:scale-95 disabled:opacity-50 disabled:grayscale shadow-md">
-            {isExporting ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />}
-            {isExporting ? t("exportingPDF") : t("exportReport")}
-          </button>
+          <div className="flex items-center gap-3">
+            <button onClick={handleExportPDF} disabled={isExporting} className="flex items-center gap-3 px-6 py-4 bg-slate-900 dark:bg-white text-white dark:text-slate-950 rounded-3xl font-black hover:scale-105 transition-all text-xs active:scale-95 disabled:opacity-50 disabled:grayscale shadow-md">
+              {isExporting ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />}
+              {isExporting ? t("exportingPDF") : t("exportReport")}
+            </button>
+
+            {handleExportAllSlides && (
+              <button onClick={handleExportAllSlides} disabled={isExportingAllSlides || isExportingImage} title={t("exportAllSlidesTitle")} className="flex items-center gap-3 px-6 py-4 bg-blue-600 text-white rounded-3xl font-black hover:scale-105 transition-all text-xs active:scale-95 disabled:opacity-50 disabled:grayscale shadow-md">
+                {isExportingAllSlides ? <Loader2 size={16} className="animate-spin" /> : <FileOutput size={16} />}
+                {isExportingAllSlides ? exportProgressMessage : t("exportAllSlides")}
+              </button>
+            )}
+
+            {handleExportImage && (
+              <button onClick={handleExportImage} disabled={isExportingImage || isExportingAllSlides} title={t("exportImageTitle")} className="flex items-center justify-center w-14 h-14 bg-slate-900 dark:bg-white text-white dark:text-slate-950 rounded-3xl font-black hover:scale-105 transition-all text-xs active:scale-95 disabled:opacity-50 disabled:grayscale shadow-md">
+                {isExportingImage ? <Loader2 size={16} className="animate-spin" /> : <Camera size={20} />}
+              </button>
+            )}
+          </div>
           <div title={isSyncing ? t("saving") : t("saved")} className="flex items-center justify-center w-12 h-12 rounded-full bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 shadow-sm">
             {isSyncing ? <Loader2 size={16} className="animate-spin text-blue-500" /> : <Cloud size={16} className="text-emerald-600" />}
           </div>
-
-          {handleSave && (
-            <button onClick={handleSave} disabled={isSyncing} className="flex items-center gap-3 px-6 py-4 bg-white dark:bg-slate-900 rounded-3xl font-black hover:scale-105 transition-all text-xs active:scale-95 shadow-md border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200">
-              {t("saveManual")}
+        </div>
+        <div className="flex items-center gap-3">
+          {user && showHistory && (
+            <button onClick={showHistory} className="p-4 rounded-3xl bg-white dark:bg-slate-900 shadow-lg border border-slate-200 dark:border-slate-800 text-black dark:text-slate-100 hover:text-blue-500 transition-all active:scale-90">
+              <History size={24} />
             </button>
           )}
-
+          <button onClick={showSetup} className="p-4 rounded-3xl bg-white dark:bg-slate-900 shadow-lg border border-slate-200 dark:border-slate-800 text-black dark:text-slate-100 hover:text-blue-500 hover:rotate-90 transition-all duration-700 active:scale-90">
+            <Settings size={24} />
+          </button>
         </div>
-        <button onClick={showSetup} className="p-4 rounded-3xl bg-white dark:bg-slate-900 shadow-lg border border-slate-200 dark:border-slate-800 text-black dark:text-slate-100 hover:text-blue-500 hover:rotate-90 transition-all duration-700 active:scale-90"><Settings size={24} /></button>
       </div>
 
       {/* Bottom Controls */}

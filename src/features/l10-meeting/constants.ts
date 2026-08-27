@@ -1,4 +1,3 @@
-
 import { L10Data, IDSTheme } from "./types";
 
 export const generateDefaultTheme = (index: number): IDSTheme => ({
@@ -29,5 +28,10 @@ export const DEFAULT_DATA: L10Data = {
     themes: [generateDefaultTheme(1), generateDefaultTheme(2), generateDefaultTheme(3)],
     solutions: ""
   },
-  ratings: {}
+  ratings: {},
+  timer: {
+    isTimerRunning: false,
+    timeLeft: 5400,
+    timerEndTime: null,
+  }
 };

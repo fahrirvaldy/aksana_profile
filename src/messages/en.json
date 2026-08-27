@@ -287,6 +287,10 @@
       "saving": "Saving...",
       "exportingPDF": "Exporting PDF...",
       "exportReport": "Export Report",
+      "exportAllSlidesTitle": "Export all slides to a single PDF",
+      "exportAllSlides": "Export All Slides",
+      "exportingSlide": "Exporting slide",
+      "exportImageTitle": "Export current slide as image",
       "saved": "Saved Successfully",
       "slides": {
         "intro": {

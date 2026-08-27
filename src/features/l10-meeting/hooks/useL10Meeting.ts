@@ -1,76 +1,163 @@
-
 "use client";
 
 import { useState, useMemo, useEffect, useRef } from "react";
 import { L10Data, IDSIssue } from "../types";
 import { DEFAULT_DATA, generateDefaultTheme } from "../constants";
+import { supabase } from "@/lib/supabase/client";
+import { RealtimeChannel, User } from "@supabase/supabase-js";
 
 interface L10MeetingProps {
   initialData?: L10Data;
-  onSave?: (data: L10Data) => void;
+  onSave?: (data: L10Data & { currentSlide?: number }) => void;
   initialSlide?: number;
+  user?: User | null;
 }
 
-export const useL10Meeting = ({ initialData, onSave, initialSlide }: L10MeetingProps) => {
+const L10_MEETING_CHANNEL = "l10-meeting-room";
+
+export const useL10Meeting = ({ initialData, onSave, initialSlide, user }: L10MeetingProps) => {
   const [data, setData] = useState<L10Data>(() => {
-    if (initialData) {
-      const merged = { ...initialData };
-      if (!merged.idsSession) merged.idsSession = { issues: [], themes: [], solutions: "" };
-      if (!merged.idsSession.themes || merged.idsSession.themes.length === 0) {
-        merged.idsSession.themes = [generateDefaultTheme(1), generateDefaultTheme(2), generateDefaultTheme(3)];
-      }
-      return merged as L10Data;
+    const baseData = initialData || DEFAULT_DATA;
+    if (!baseData.timer) {
+      baseData.timer = { isTimerRunning: false, timeLeft: 5400, timerEndTime: null };
     }
-    return DEFAULT_DATA;
+    if (!baseData.idsSession) baseData.idsSession = { issues: [], themes: [], solutions: "" };
+    if (!baseData.idsSession.themes || baseData.idsSession.themes.length === 0) {
+      baseData.idsSession.themes = [generateDefaultTheme(1), generateDefaultTheme(2), generateDefaultTheme(3)];
+    }
+    return baseData as L10Data;
   });
+
+  const channelRef = useRef<RealtimeChannel | null>(null);
+  const isRemoteUpdate = useRef(false);
 
   const [currentSlide, setCurrentSlide] = useState(initialSlide || 0);
   const [showSetup, setShowSetup] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
   const [activeThemeTab, setActiveThemeTab] = useState<number>(0);
-  const [timeLeft, setTimeLeft] = useState(5400); // 90 minutes
-  const [isTimerRunning, setIsTimerRunning] = useState(false);
-  const timerEndTimeRef = useRef<number | null>(null);
+  const [displayTime, setDisplayTime] = useState(data.timer.timeLeft);
 
+  const isBroadcasting = useRef(false);
+
+  // Effect to broadcast data changes
   useEffect(() => {
-    localStorage.setItem('l10-meeting-data', JSON.stringify({ data, currentSlide }));
-  }, [data, currentSlide]);
-
-  // useEffect(() => {
-  //   if (!initialData) {
-  //       setTimeout(() => setShowSetup(true), 0);
-  //   }
-  // }, [initialData]);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (onSave) onSave(data);
+    if (isRemoteUpdate.current) {
+      isRemoteUpdate.current = false;
+      return;
+    }
+    const dbSaveTimer = setTimeout(() => {
+      if (onSave) onSave({ ...data, currentSlide });
     }, 1500);
-    return () => clearTimeout(timer);
-  }, [data, onSave]);
 
+    const broadcastTimer = setTimeout(() => {
+      if (channelRef.current) {
+        isBroadcasting.current = true;
+        channelRef.current.send({
+          type: 'broadcast',
+          event: 'data_update',
+          payload: { data },
+        });
+        setTimeout(() => { isBroadcasting.current = false; }, 100);
+      }
+    }, 500);
+
+    return () => {
+      clearTimeout(broadcastTimer);
+      clearTimeout(dbSaveTimer);
+    };
+  }, [data, onSave, currentSlide]);
+
+  // Effect to subscribe to realtime channel
   useEffect(() => {
-    let intervalId: NodeJS.Timeout;
-    if (isTimerRunning) {
-      timerEndTimeRef.current = Date.now() + timeLeft * 1000;
+    if (!user?.id) return;
+
+    const userSpecificChannel = `${L10_MEETING_CHANNEL}-${user.id}`;
+    const channel = supabase.channel(userSpecificChannel, {
+      config: { broadcast: { self: false } },
+    });
+
+    channel.on('broadcast', { event: 'data_update' }, ({ payload }) => {
+      if (isBroadcasting.current) return;
+      isRemoteUpdate.current = true;
+      setData(payload.data);
+    });
+
+    channel.subscribe();
+    channelRef.current = channel;
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user?.id]);
+
+  // Effect for local timer countdown based on synced state
+  useEffect(() => {
+    let intervalId: NodeJS.Timeout | undefined;
+
+    if (data.timer.isTimerRunning && data.timer.timerEndTime) {
       intervalId = setInterval(() => {
-        if (timerEndTimeRef.current) {
-          const remainingMs = timerEndTimeRef.current - Date.now();
-          if (remainingMs <= 0) {
-            setTimeLeft(0);
-            setIsTimerRunning(false);
-            clearInterval(intervalId);
-          } else {
-            setTimeLeft(Math.ceil(remainingMs / 1000));
+        const remainingMs = data.timer.timerEndTime! - Date.now();
+        if (remainingMs <= 0) {
+          setDisplayTime(0);
+          if (data.timer.isTimerRunning) { // Prevent multiple updates
+            updateData("timer", { ...data.timer, isTimerRunning: false, timeLeft: 0 });
           }
+          clearInterval(intervalId);
+        } else {
+          setDisplayTime(Math.ceil(remainingMs / 1000));
         }
       }, 250);
+    } else {
+       setDisplayTime(data.timer.timeLeft);
     }
-    return () => { if (intervalId) clearInterval(intervalId); };
-  }, [isTimerRunning, timeLeft]);
 
-  const attendees = useMemo(() => {
-    return ['Owner', 'Integrator', ...data.config.divisions];
-  }, [data.config.divisions]);
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, [data.timer.isTimerRunning, data.timer.timerEndTime, data.timer.timeLeft]);
+
+
+  const updateData = <T,>(path: string, value: T) => {
+    setData(prev => {
+      const setDeep = <T,>(obj: Record<string, T> | T[], pathKeys: string[], val: T): Record<string, T> | T[] => {
+        if (pathKeys.length === 0) return val as Record<string, T> | T[];
+        const [currentKey, ...remainingKeys] = pathKeys;
+        const isArray = Array.isArray(obj);
+        const cloned = isArray ? [...(obj || [])] : { ...(obj || {}) };
+        const targetKey = isArray ? parseInt(currentKey, 10) : currentKey;
+        (cloned as Record<string, any>)[targetKey] = setDeep((cloned as Record<string, any>)[targetKey], remainingKeys, val);
+        return cloned;
+      };
+      const keys = path.split('.');
+      return setDeep(prev, keys, value) as L10Data;
+    });
+  };
+
+  const toggleTimer = () => {
+    const wasRunning = data.timer.isTimerRunning;
+    const newTimeLeft = displayTime; // Use local display time as source of truth when pausing
+
+    const newTimerState = {
+        isTimerRunning: !wasRunning,
+        timeLeft: newTimeLeft,
+        timerEndTime: !wasRunning ? Date.now() + (newTimeLeft * 1000) : null,
+    };
+    updateData('timer', newTimerState);
+  };
+
+  const resetTimer = () => {
+    updateData('timer', { 
+      isTimerRunning: false, 
+      timeLeft: 5400, 
+      timerEndTime: null 
+    });
+  };
+
+  const handleLoadHistory = (historyData: L10Data) => {
+    setData(historyData);
+  };
+
+  const attendees = useMemo(() => ['Owner', 'Integrator', ...data.config.divisions], [data.config.divisions]);
 
   const averageRating = useMemo(() => {
     let totalScore = 0;
@@ -87,23 +174,6 @@ export const useL10Meeting = ({ initialData, onSave, initialSlide }: L10MeetingP
     });
     return activeCount > 0 ? (totalScore / activeCount).toFixed(1) : "0.0";
   }, [data, attendees]);
-
-  const updateData = <T,>(path: string, value: T) => {
-    setData(prev => {
-      const setDeep = <T,>(obj: Record<string, T> | T[], pathKeys: string[], val: T): Record<string, T> | T[] => {
-        if (pathKeys.length === 0) return val as Record<string, T> | T[];
-        const [currentKey, ...remainingKeys] = pathKeys;
-        const isArray = Array.isArray(obj);
-        const cloned = isArray ? [...(obj || [])] : { ...(obj || {}) };
-        const targetKey = isArray ? parseInt(currentKey, 10) : currentKey;
-         
-        (cloned as Record<string, any>)[targetKey] = setDeep((cloned as Record<string, any>)[targetKey], remainingKeys, val);
-        return cloned;
-      };
-      const keys = path.split('.');
-      return setDeep(prev, keys, value) as L10Data;
-    });
-  };
 
   const pullOffTrackData = () => {
     const issuesList = data.idsSession?.issues || [];
@@ -123,9 +193,7 @@ export const useL10Meeting = ({ initialData, onSave, initialSlide }: L10MeetingP
         newIssues.push({ id: `rock-${i}-${Date.now()}-${Math.random()}`, source: picLabel, text: rockText, isResolved: false, isSelectedForDiscussion: false, votes: 0 });
       }
     });
-    if (newIssues.length > 0) {
-      updateData('idsSession.issues', [...issuesList, ...newIssues]);
-    }
+    if (newIssues.length > 0) updateData('idsSession.issues', [...issuesList, ...newIssues]);
   };
 
   const handleIssueCheck = (index: number, checked: boolean) => {
@@ -140,30 +208,13 @@ export const useL10Meeting = ({ initialData, onSave, initialSlide }: L10MeetingP
   const prioritizeAndSetThemes = () => {
     const issues = data.idsSession?.issues || [];
     if (issues.length === 0) return;
-
     const sortedIssues = [...issues].sort((a, b) => b.votes - a.votes);
-
     const newThemes = [...(data.idsSession.themes || [])].map((theme, index) => {
-      if (sortedIssues[index]) {
-        return { ...theme, topic: sortedIssues[index].text };
-      }
-      // Reset to default if there's no issue for this slot
+      if (sortedIssues[index]) return { ...theme, topic: sortedIssues[index].text };
       return { ...theme, topic: `Discussion Theme ${index + 1}` };
     });
-
     updateData('idsSession.themes', newThemes);
   };
 
-  return {
-    data, updateData,
-    currentSlide, setCurrentSlide,
-    showSetup, setShowSetup,
-    activeThemeTab, setActiveThemeTab,
-    timeLeft, setTimeLeft,
-    isTimerRunning, setIsTimerRunning,
-    averageRating,
-    pullOffTrackData,
-    handleIssueCheck,
-    prioritizeAndSetThemes,
-  };
+  return { data, updateData, currentSlide, setCurrentSlide, showSetup, setShowSetup, showHistory, setShowHistory, handleLoadHistory, activeThemeTab, setActiveThemeTab, displayTime, toggleTimer, resetTimer, averageRating, pullOffTrackData, handleIssueCheck, prioritizeAndSetThemes };
 };
