@@ -30,6 +30,10 @@ export const useL10Meeting = ({ initialData, onSave, initialSlide, user }: L10Me
 
   const channelRef = useRef<RealtimeChannel | null>(null);
   const isRemoteUpdate = useRef(false);
+  const onSaveRef = useRef(onSave);
+  useEffect(() => {
+    onSaveRef.current = onSave;
+  }, [onSave]);
 
   const [currentSlide, setCurrentSlide] = useState(initialSlide || 0);
   const [showSetup, setShowSetup] = useState(false);
@@ -46,7 +50,7 @@ export const useL10Meeting = ({ initialData, onSave, initialSlide, user }: L10Me
       return;
     }
     const dbSaveTimer = setTimeout(() => {
-      if (onSave) onSave({ ...data, currentSlide });
+      onSaveRef.current?.({ ...data, currentSlide });
     }, 1500);
 
     const broadcastTimer = setTimeout(() => {
@@ -65,7 +69,7 @@ export const useL10Meeting = ({ initialData, onSave, initialSlide, user }: L10Me
       clearTimeout(broadcastTimer);
       clearTimeout(dbSaveTimer);
     };
-  }, [data, onSave, currentSlide]);
+  }, [data, currentSlide]);
 
   // Effect to subscribe to realtime channel
   useEffect(() => {
@@ -86,6 +90,7 @@ export const useL10Meeting = ({ initialData, onSave, initialSlide, user }: L10Me
     channelRef.current = channel;
 
     return () => {
+      channelRef.current = null;
       supabase.removeChannel(channel);
     };
   }, [user?.id]);

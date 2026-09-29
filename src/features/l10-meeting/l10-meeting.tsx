@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { User } from "@supabase/supabase-js";
 import { useTranslations } from "next-intl";
 import { AnimatePresence } from "framer-motion";
@@ -60,15 +60,19 @@ export default function L10MeetingContainer({ user, onSave, isSyncing, initialDa
 
   const originalSlide = currentSlide; // Save the original slide
 
+  // Keep onSave in a ref so a new callback identity never re-triggers autosave
+  const onSaveRef = useRef(onSave);
   useEffect(() => {
-    if (onSave) {
-      const timer = setTimeout(() => {
-        onSave({ ...data, currentSlide });
-      }, 650);
+    onSaveRef.current = onSave;
+  }, [onSave]);
 
-      return () => clearTimeout(timer);
-    }
-  }, [data, onSave, currentSlide]);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      onSaveRef.current?.({ ...data, currentSlide });
+    }, 650);
+
+    return () => clearTimeout(timer);
+  }, [data, currentSlide]);
 
   const nonScorecardRoles = ['ceo', 'owner', 'integrator'];
   const scorecardDivisions = data.config.divisions.filter(

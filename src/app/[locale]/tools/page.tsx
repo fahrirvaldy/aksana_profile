@@ -1,10 +1,9 @@
 'use client';
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import dynamic from 'next/dynamic';
 import { useAuth } from "@/context/AuthContext";
 import { getToolData, saveToolData } from "@/lib/supabase/tools";
-import { supabase } from "@/lib/supabase/client"; // Import Supabase client
 import { 
   DollarSign,
   TrendingUp,
@@ -142,21 +141,18 @@ export default function ToolsPage() {
     fetchToolData();
   }, [activeToolSlug, user?.id]);
 
-  const handleSave = async (data: Record<string, unknown>) => {
+  const handleSave = useCallback(async (data: Record<string, unknown>) => {
     if (!activeToolSlug) return;
 
-    const { data: { user: currentUser } } = await supabase.auth.getUser();
-
-    if (!currentUser) {
+    if (!user) {
       console.warn("Save aborted: No user is currently logged in.");
-      setIsSyncing(false);
       return;
     }
 
     setIsSyncing(true);
-    await saveToolData(currentUser, activeToolSlug, data);
+    await saveToolData(user, activeToolSlug, data);
     setTimeout(() => setIsSyncing(false), 500);
-  };
+  }, [activeToolSlug, user]);
 
   useEffect(() => {
     if (user) return;

@@ -28,6 +28,10 @@ export const getToolData = async (user: User, toolSlug: string): Promise<Record<
   }
 };
 
+// Riwayat L10 dicatat paling sering sekali per interval agar autosave tidak membanjiri tabel
+const HISTORY_MIN_INTERVAL_MS = 5 * 60 * 1000;
+let lastHistoryInsertAt = 0;
+
 // Menyimpan atau memperbarui data untuk tool tertentu, dan mencatat riwayat untuk L10 Meeting
 export const saveToolData = async (user: User, toolSlug: string, toolData: Record<string, unknown>): Promise<boolean> => {
   try {
@@ -48,7 +52,8 @@ export const saveToolData = async (user: User, toolSlug: string, toolData: Recor
     }
 
     // 2. Jika ini adalah L10 Meeting, simpan juga ke tabel riwayat (INSERT)
-    if (toolSlug === 'l10-meeting') {
+    if (toolSlug === 'l10-meeting' && Date.now() - lastHistoryInsertAt >= HISTORY_MIN_INTERVAL_MS) {
+      lastHistoryInsertAt = Date.now();
       const { error: insertError } = await supabase
         .from(L10_MEETING_HISTORY_TABLE)
         .insert({
